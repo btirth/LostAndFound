@@ -21,20 +21,14 @@ function LandingPage() {
 
     const [showLoginUp, setShowLoginUp] = useState(false);
 
-    function handleToggleForm(){
-        if (showLoginUp){
-            setShowLoginUp(false);
-        }else{
-            setShowLoginUp(true);
-        }
-    }
+   
     function redirectToLogin(){
         window.location = '/login'
     }
 
     return (
         <div className='landing-main' >
-            <Navbar>
+            <Navbar style={{height:'80px'}}>
                 <Navbar.Brand href="#"><img width={200} src={Logo} /></Navbar.Brand> 
 
                 <Navbar.Collapse className="justify-content-end">
@@ -66,9 +60,8 @@ function LandingPage() {
                                 showLoginUp ? <LoginCard /> : <SignUpCard />
                                 
                             }
-                            <h6 className='mt-3'>{showLoginUp ? 'Don\'t have an account? ' : 'Already have an account? '}<a style={{textDecoration: 'underline', color: 'blue' }} onClick={redirectToLogin}>Click here</a></h6>
-                            {/* <Button variant='link' size='sm' onClick={handleToggleForm} className='mb-3 mx-4' >{showLoginUp ? 'New User' : 'Already has an account?'} </Button> */}
-                        </Card>
+                           <div style={{textAlign:'center',paddingBottom:'5px'}}>  <h6 className='mt-3'>{showLoginUp ? 'Don\'t have an account? ' : 'Already have an account? '}<a style={{textDecoration: 'underline', color: 'blue' }} onClick={redirectToLogin}>Click here</a></h6> </div>
+                          </Card>
                     </Col>
                 </Row>
                 <Row className="text-center" style={box1Style}>

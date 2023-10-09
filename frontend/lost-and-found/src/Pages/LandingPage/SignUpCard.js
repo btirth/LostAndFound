@@ -137,60 +137,11 @@ const SignUpCard = () => {
 
 
 
-    // if (props.user.jwtToken) {
-
-    //     toast.success(`Welcome ${props.user.firstName}!`)
-
-    //     // return window.location.pathname = "/"
-
-    //     return <Redirect to='/' />
-
-    // }
-
-
 
     const handleSubmitSignUp = async (e) => {
 
         e.preventDefault()
-        // if (!companyName || validator.isEmpty(companyName)) return toast.warn('CompanyName is required')
-
-        // if (!firstName || validator.isEmpty(firstName)) return toast.warn('firstName is required')
-
-        // if (!lastName || validator.isEmpty(lastName)) return toast.warn('lastName is required')
-
-        // if (!email || validator.isEmpty(email)) return toast.warn('email is required')
-
-        // if (!validator.isEmail(email)) return toast.warn('email is not valid')
-
-        // if (!password || validator.isEmpty(password)) return toast.warn('password not valid')
-
-
-
-        // if (!phone || validator.isEmpty(password)) return toast.warn('password not valid')
-
-        // const phone_number = phone.startsWith('0') ? `+6${phone}` : `+60${phone}`
-
-
-
-        // props.requestUserSignUp({
-
-        //     companyName,
-
-        //     firstName,
-
-        //     lastName,
-
-        //     email,
-
-        //     password,
-
-        //     phone_number,
-
-        //     fleetSize,
-
-        //     isEmailSubscribed
-
-        // })
+       
 
         try {
             const response = await axios.post('https://dev-3vtey6tugvrs4132.us.auth0.com/dbconnections/signup', {
@@ -203,7 +154,6 @@ const SignUpCard = () => {
               name: `${firstName} ${lastName}`,
             });
       
-            // Handle success, e.g., redirect to the login page or show a success message
             console.log('Signup successful:', response.data);
       
             // Clear input fields

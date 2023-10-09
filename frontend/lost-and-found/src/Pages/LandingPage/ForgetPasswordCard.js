@@ -1,15 +1,29 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
+import { Navbar, Card, Col, Container, Row,Button,Form,Alert } from 'react-bootstrap'
+import validator from 'validator'
+import { toast } from 'react-toastify'
+import axios from 'axios'
+// Components
+import LoginCard from './LoginCard'
+import SignUpCard from './SignUpCard'
 
-const ForgetPasswordCard = () => {
+function ForgetPasswordCard()  {
 
     const [email, setEmail] = useState('')
     const [done, setDone] = useState(false)
 
-    const handlePostResetPassword = async () => {
-
+    const handlePostResetPassword = async (e) => {
+        e.preventDefault()
+        
         try {
-            await userSubmitForgotPassword(email)
-            toast.success('Please check your email to continue')
+            const response = await axios.post('https://dev-3vtey6tugvrs4132.us.auth0.com/dbconnections/change_password', {
+    client_id: '0UOtlCkeRywKyHbavmcbu6iihiUnwVYI',
+    email: email,
+    connection: 'Username-Password-Authentication',
+  });
+
+  console.log(response.data);
+
             setDone(true)
         } catch (e) {
             toast.error(e.response?.data || e.message)
@@ -18,13 +32,8 @@ const ForgetPasswordCard = () => {
         }
     }
 
- 
+  
 
-    const handleSubmitForgetPassword = (e) => {
-        e.preventDefault()
-        if (!email || validator.isEmpty(email)) return toast.error('email is required')
-        //To Add: API to reset password
-    }
 
  
 
@@ -37,15 +46,17 @@ const ForgetPasswordCard = () => {
                         Your reset password link has been sent to your email
                     </Alert>
                     :
-                    <Form onSubmit={handleSubmitForgetPassword}>
+                    <Form onSubmit={handlePostResetPassword}>
                         <Form.Group >
                             <Form.Label>Account Email</Form.Label>
                             <Form.Control value={email} onChange={(evt) => setEmail(evt.currentTarget.value)} required type='email' placeholder='name@email.com' />
                         </Form.Group>
-                        <Button type='submit' className='w-100' >Reset My Password</Button>
+                        <Button type='submit' className='w-100 mt-4' style={{backgroundColor:'#75e6a3',color:'black'}}>Reset My Password</Button>
                     </Form>
             }
         </Card.Body>
     )
 
 }
+
+export default ForgetPasswordCard

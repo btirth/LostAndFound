@@ -66,25 +66,6 @@ const LoginCard = () => {
 
 
 
-    // useEffect(() => {
-
-    //     // const loginSuccess = EventBus.on(ACTION_TYPES.USER_LOGIN_SUCCEEDED, handleLoginSuccess)
-
-    //     const loginFailed = EventBus.on(ACTION_TYPES.USER_LOGIN_FAILED, handleLoginFailed)
-
-
-
-    //     return () => {
-
-    //         // loginSuccess()
-
-    //         loginFailed()
-
-    //     }
-
-    // }, [])
-
-
 
     const handleLoginFailed = ({ errorMessages }) => {
 

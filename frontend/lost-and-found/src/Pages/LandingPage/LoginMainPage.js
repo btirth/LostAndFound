@@ -9,6 +9,7 @@ import Logo from '../../Assets/Images/LAF-logo.png'
 // Components
 import LoginCard from './LoginCard'
 import SignUpCard from './SignUpCard'
+import ForgetPasswordCard from './ForgetPasswordCard'
 
 // import { Link, Redirect } from 'react-router-dom'
 
@@ -20,18 +21,21 @@ function LoginMainPage() {
     const box2Style = { backgroundColor: '#75e6a3', color: '#333333', padding: '20px' };
 
     const [showLoginUp, setShowLoginUp] = useState(true);
+    const [ForgotPassword, setForgotPassword] = useState(false);
 
     function handleToggleForm(){
-        if (showLoginUp){
-            setShowLoginUp(false);
-        }else{
-            setShowLoginUp(true);
-        }
+        window.location = '/signup'
+    }
+    function showLoginPage(){
+        window.location = '/login'
+    }
+    function showForgotPassword(){
+        setForgotPassword(true)
     }
 
     return (
         <div className='landing-main' >
-            <Navbar>
+            <Navbar style={{height:'80px'}}>
                 <Navbar.Brand href="#"><img width={200} src={Logo} /></Navbar.Brand> 
 
                 <Navbar.Collapse className="justify-content-end">
@@ -60,11 +64,15 @@ function LoginMainPage() {
                                 //     <ForgetPasswordCard />
 
                                 //     :
-                                showLoginUp ? <LoginCard /> : <SignUpCard />
+                                ForgotPassword ? <ForgetPasswordCard /> : <LoginCard />
                                 
                             }
-                            <h6 className='mt-3'>{showLoginUp ? 'Don\'t have an account? ' : 'Already have an account? '}<a style={{textDecoration: 'underline', color: 'blue' }} onClick={handleToggleForm}>Click here</a></h6>
+                            { !ForgotPassword ?
+                           <div style={{textAlign:'center',paddingBottom:'5px'}}> <h6 className='mt-3'>{showLoginUp ? 'Don\'t have an account? ' : 'Already have an account? '}<a style={{textDecoration: 'underline', color: 'blue' }} onClick={handleToggleForm}>Click here</a></h6></div>
+                            : <></>}
                             {/* <Button variant='link' size='sm' onClick={handleToggleForm} className='mb-3 mx-4' >{showLoginUp ? 'New User' : 'Already has an account?'} </Button> */}
+                           { !ForgotPassword ? <div style={{textAlign:'center',paddingBottom:'10px'}}><h6 className='mt-3'>{showLoginUp ? 'Forgot Password?' : ''}<a style={{textDecoration: 'underline', color: 'blue' }} onClick={showForgotPassword}>Click here</a></h6> </div>
+                            :<div style={{textAlign:'center',paddingBottom:'10px'}}><h6 className='mt-3'>{'Back to Login '}<a style={{textDecoration: 'underline', color: 'blue' }} onClick={showLoginPage}>Click here</a></h6></div>}
                         </Card>
                     </Col>
                 </Row>
