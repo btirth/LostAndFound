@@ -7,6 +7,7 @@ import { Link, Redirect } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 import validator from 'validator'
+import axios from 'axios'
 
 
 
@@ -15,12 +16,13 @@ const LoginCard = () => {
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [errorMessage, setErrorMessage] = useState(false)
     const [emailHelper, setEmailHelper] = useState(null)
     const [passwordHelper, setPasswordHelper] = useState(null)
 
     const btStyle={backgroundColor:'#75e6a3',color:'black'};
 
-    const handleSubmitLogin = (e) => {
+    const handleSubmitLogin = async(e) => {
         e.preventDefault()
         setPasswordHelper(null)
         setEmailHelper(null)
@@ -31,8 +33,34 @@ const LoginCard = () => {
 
         if (!password || validator.isEmpty(password)) return toast.error('password is required')
 
+        try {
+            const response = await axios.post('https://dev-3vtey6tugvrs4132.us.auth0.com/oauth/token', {
+              grant_type: 'password',
+              username: email,
+              password: password,
+              client_id: '0UOtlCkeRywKyHbavmcbu6iihiUnwVYI',
+            });
+      
+            const accessToken = response.data.access_token;
+            console.log("accessToken",accessToken);
+      
+            // Store the access token in local storage or a secure storage method
+            localStorage.setItem('access_token', accessToken);
+            
+            setErrorMessage(false)
+          
+            window.location = '/home'
 
-        // To Add: API for login
+      
+            // Redirect to the home page or another protected route
+            // You can use React Router for this purpose
+            // Example: history.push('/home');
+          } catch (error) {
+            // Handle login errors
+            console.error('Login error:', error);
+            setErrorMessage(true)
+          
+          }
 
     }
 
@@ -100,6 +128,8 @@ const LoginCard = () => {
                 </Form.Group>
                 <div style={{ marginTop: '10px' }}>
                     <Button type='submit' className='w-100' style={btStyle} >Sign In</Button>
+                    {errorMessage ? <h2 style={{ backgroundColor: 'lightcoral', color: 'black', fontWeight: 'bold', fontSize: '20px', marginTop: '10px', textAlign: 'center' }}>Incorrect Credentials! Please Try Again!</h2> : <></>}
+
                 </div>
             </Form>
             

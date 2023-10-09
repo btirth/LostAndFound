@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from 'react'
 
+import { Redirect } from 'react-router-dom';
 import { Alert, Button, Card, Col, Container, Form, InputGroup, Row } from 'react-bootstrap'
 
 import { Check } from 'react-bootstrap-icons'
+import { storeAccessToken, signup  } from '../../actions/authActions';
+
+import { useDispatch, useSelector } from 'react-redux';
+
+import  FailedAlert from '../../Components/FailedAlert'
 
 // import { Link, Redirect } from 'react-router-dom'
 
-// import { FailedAlert, SuccessAlert } from '../../components'
+import  SuccessAlert  from '../../Components/SuccessAlert'
 
 import { toast } from 'react-toastify'
 
 import validator from 'validator'
+import axios from 'axios'
 
 const SignUpCard = () => {
 
@@ -28,28 +35,29 @@ const SignUpCard = () => {
     const [passwordConditions, setPasswordConditions] = useState(null)
 
     const [confirmPass, setConfirmPass] = useState(null)
+    const dispatch = useDispatch();
+    const signupError = useSelector((state) => state.signupError);
 
 
+    useEffect(() => {
 
-    // useEffect(() => {
+        if (passwordConditions !== null) {
 
-    //     if (passwordConditions !== null) {
+            if (passwordConditions[0].checked === true && passwordConditions[1].checked === true && passwordConditions[2].checked === true && confirmPass === true) {
 
-    //         if (passwordConditions[0].checked === true && passwordConditions[1].checked === true && passwordConditions[2].checked === true && confirmPass === true) {
+                const password = document.querySelector('#password').value
 
-    //             const password = document.querySelector('#password').value
+                setPassword(password)
 
-    //             setPassword(password)
+            } else {
 
-    //         } else {
+                setPassword('')
 
-    //             setPassword('')
+            }
 
-    //         }
+        }
 
-    //     }
-
-    // }, [confirmPass])
+    }, [confirmPass])
 
 
 
@@ -141,26 +149,26 @@ const SignUpCard = () => {
 
 
 
-    const handleSubmitSignUp = (e) => {
+    const handleSubmitSignUp = async (e) => {
 
         e.preventDefault()
-        if (!companyName || validator.isEmpty(companyName)) return toast.warn('CompanyName is required')
+        // if (!companyName || validator.isEmpty(companyName)) return toast.warn('CompanyName is required')
 
-        if (!firstName || validator.isEmpty(firstName)) return toast.warn('firstName is required')
+        // if (!firstName || validator.isEmpty(firstName)) return toast.warn('firstName is required')
 
-        if (!lastName || validator.isEmpty(lastName)) return toast.warn('lastName is required')
+        // if (!lastName || validator.isEmpty(lastName)) return toast.warn('lastName is required')
 
-        if (!email || validator.isEmpty(email)) return toast.warn('email is required')
+        // if (!email || validator.isEmpty(email)) return toast.warn('email is required')
 
-        if (!validator.isEmail(email)) return toast.warn('email is not valid')
+        // if (!validator.isEmail(email)) return toast.warn('email is not valid')
 
-        if (!password || validator.isEmpty(password)) return toast.warn('password not valid')
+        // if (!password || validator.isEmpty(password)) return toast.warn('password not valid')
 
 
 
-        if (!phone || validator.isEmpty(password)) return toast.warn('password not valid')
+        // if (!phone || validator.isEmpty(password)) return toast.warn('password not valid')
 
-        const phone_number = phone.startsWith('0') ? `+6${phone}` : `+60${phone}`
+        // const phone_number = phone.startsWith('0') ? `+6${phone}` : `+60${phone}`
 
 
 
@@ -184,6 +192,34 @@ const SignUpCard = () => {
 
         // })
 
+        try {
+            const response = await axios.post('https://dev-3vtey6tugvrs4132.us.auth0.com/dbconnections/signup', {
+              client_id: '0UOtlCkeRywKyHbavmcbu6iihiUnwVYI',
+              email: email,
+              password: password,
+              connection: 'Username-Password-Authentication',
+              given_name: firstName,
+              family_name: lastName,
+              name: `${firstName} ${lastName}`,
+            });
+      
+            // Handle success, e.g., redirect to the login page or show a success message
+            console.log('Signup successful:', response.data);
+      
+            // Clear input fields
+            setFirstName('');
+            setLastName('');
+            setEmail('');
+            setPassword('');
+            window.location = '/login'
+
+            // setError('');
+          } catch (error) {
+            // Handle errors, e.g., display error messages
+            // setError('Error signing up. Please try again.');
+            console.error('Error signing up:', error);
+          }
+
     }
 
 
@@ -206,15 +242,7 @@ const SignUpCard = () => {
                     <Form.Label>Email</Form.Label>
                     <Form.Control required onChange={(e) => setEmail(e.currentTarget.value)} type='email' placeholder='name@email.com' />
                 </Form.Group>
-                <Form.Group>
-                    <Form.Label>Phone No.</Form.Label>
-                    <InputGroup>
-                        {/* <InputGroup.Prepend>
-                            <InputGroup.Text>+1</InputGroup.Text> 
-                        </InputGroup.Prepend> */}
-                        <Form.Control required onChange={(e) => setPhone(e.currentTarget.value)} type='tel' pattern='[0-9]{7,11}' placeholder='123456789' />
-                    </InputGroup>
-                </Form.Group>
+               
 
                 <Form.Group >
 
@@ -224,15 +252,14 @@ const SignUpCard = () => {
                         passwordConditions.map(({ text, checked }, i) => (
                             <div key={i} className='p-0 m-0'>
                                 {
-                                    checked
-                                    // checked ?
-                                    //     <SuccessAlert text={text} /> :
-                                    //     <FailedAlert text={text} />
+                                    checked ?
+                                        <SuccessAlert text={text} /> :
+                                        <FailedAlert text={text} />
                                 }
                             </div>
                         ))
                     }
-                    <Form.Control required id='password' onChange={passwordChecker} type='password' />
+                    <Form.Control required autoComplete="new-password" id='password' onChange={passwordChecker} type='password' />
                 </Form.Group>
 
                 <Form.Group >

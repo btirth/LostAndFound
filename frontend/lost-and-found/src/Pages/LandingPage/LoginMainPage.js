@@ -14,12 +14,12 @@ import SignUpCard from './SignUpCard'
 
 
 
-function LandingPage() {
+function LoginMainPage() {
     const imgvar = LandingPageImg;
     const box1Style = { backgroundColor: '#75e6a3', color: '#333333', padding: '20px' };
     const box2Style = { backgroundColor: '#75e6a3', color: '#333333', padding: '20px' };
 
-    const [showLoginUp, setShowLoginUp] = useState(false);
+    const [showLoginUp, setShowLoginUp] = useState(true);
 
     function handleToggleForm(){
         if (showLoginUp){
@@ -27,9 +27,6 @@ function LandingPage() {
         }else{
             setShowLoginUp(true);
         }
-    }
-    function redirectToLogin(){
-        window.location = '/login'
     }
 
     return (
@@ -66,7 +63,7 @@ function LandingPage() {
                                 showLoginUp ? <LoginCard /> : <SignUpCard />
                                 
                             }
-                            <h6 className='mt-3'>{showLoginUp ? 'Don\'t have an account? ' : 'Already have an account? '}<a style={{textDecoration: 'underline', color: 'blue' }} onClick={redirectToLogin}>Click here</a></h6>
+                            <h6 className='mt-3'>{showLoginUp ? 'Don\'t have an account? ' : 'Already have an account? '}<a style={{textDecoration: 'underline', color: 'blue' }} onClick={handleToggleForm}>Click here</a></h6>
                             {/* <Button variant='link' size='sm' onClick={handleToggleForm} className='mb-3 mx-4' >{showLoginUp ? 'New User' : 'Already has an account?'} </Button> */}
                         </Card>
                     </Col>
@@ -104,4 +101,4 @@ function LandingPage() {
     );
 }
 
-export default LandingPage;
+export default LoginMainPage;
