@@ -1,12 +1,25 @@
-import React from 'react';
-import Navbar from '../../Components/Navbar'; // Import the Navbar component
+import React, { useState } from 'react';
+import Navbar from '../../Components/Navbar';
+import FoundItemForm from '../FoundItemForm/FoundItemForm';
 
 const HomePage = () => {
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
+  const openForm = () => {
+    setIsFormOpen(true);
+  };
+
+  const closeForm = () => {
+    setIsFormOpen(false);
+  };
+
   return (
     <div>
-        <Navbar></Navbar>
+      <Navbar />
       <h2>Welcome to the Home Page</h2>
-      {/* Content for the home page */}
+      <button onClick={openForm}>Report Found Item</button>
+      <FoundItemForm isOpen={isFormOpen} onRequestClose={closeForm} />
+      {/* Other content */}
     </div>
   );
 };
