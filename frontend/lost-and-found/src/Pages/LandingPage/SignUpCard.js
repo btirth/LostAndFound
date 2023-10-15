@@ -29,7 +29,7 @@ const SignUpCard = () => {
     const [phone, setPhone] = useState('')
     const [isEmailSubscribed, setIsEmailSubscribed] = useState(true)
     // const [fleetSize, setFleetSize] = useState(fleetSizeOptions[0])
-
+    const [error, setError] = useState(null);
 
 
     const [passwordConditions, setPasswordConditions] = useState(null)
@@ -141,7 +141,7 @@ const SignUpCard = () => {
     const handleSubmitSignUp = async (e) => {
 
         e.preventDefault()
-       
+        setError(null);
 
         try {
             const response = await axios.post('https://dev-3vtey6tugvrs4132.us.auth0.com/dbconnections/signup', {
@@ -168,6 +168,7 @@ const SignUpCard = () => {
             // Handle errors, e.g., display error messages
             // setError('Error signing up. Please try again.');
             console.error('Error signing up:', error);
+            setError('Something went wrong. Please try again.'); 
           }
 
     }
@@ -178,7 +179,8 @@ const SignUpCard = () => {
 
         <Card.Body>
             <Card.Title>Welcome</Card.Title>
-
+            {error && <Alert variant="danger">{error}</Alert>} 
+      
             <Form className='text-left' onSubmit={handleSubmitSignUp} >
                 <Form.Group className='m-1'>
                     <Form.Label>First Name</Form.Label>
