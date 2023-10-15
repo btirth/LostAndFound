@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Modal, Form, Button } from 'react-bootstrap';
+import { Modal, Form, Button, Alert } from 'react-bootstrap'; 
 import { CSSTransition } from 'react-transition-group';
-import './FoundItemForm.css'; // Import custom CSS for styling and animation
+import './FoundItemForm.css';
 
 const FoundItemForm = ({ isOpen, onRequestClose }) => {
   const [formData, setFormData] = useState({
@@ -11,6 +11,7 @@ const FoundItemForm = ({ isOpen, onRequestClose }) => {
   });
 
   const [mediaFiles, setMediaFiles] = useState([]);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -27,7 +28,7 @@ const FoundItemForm = ({ isOpen, onRequestClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onRequestClose(); 
+    setIsSubmitted(true); 
   };
 
   return (
@@ -42,51 +43,57 @@ const FoundItemForm = ({ isOpen, onRequestClose }) => {
           <Modal.Title>Report Found Item</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form onSubmit={handleSubmit} className="found-item-form">
-            <Form.Group className="found-item-group">
-              <Form.Label>Item Name</Form.Label>
-              <Form.Control
-                type="text"
-                name="itemName"
-                value={formData.itemName}
-                onChange={handleInputChange}
-                className="found-item-input"
-              />
-            </Form.Group>
-            <Form.Group className="found-item-group">
-              <Form.Label>Item Description</Form.Label>
-              <Form.Control
-                as="textarea"
-                name="itemDescription"
-                value={formData.itemDescription}
-                onChange={handleInputChange}
-                className="found-item-textarea"
-              />
-            </Form.Group>
-            <Form.Group className="found-item-group">
-              <Form.Check
-                type="checkbox"
-                label="Is this item sensitive?"
-                name="isSensitive"
-                checked={formData.isSensitive}
-                onChange={handleInputChange}
-                className="found-item-checkbox"
-              />
-            </Form.Group>
-            <Form.Group className="found-item-group">
-              <Form.Label>Upload Images or Videos</Form.Label>
-              <Form.Control
-                type="file"
-                accept="image/*,video/*"
-                multiple
-                onChange={handleMediaChange}
-                className="found-item-input"
-              />
-            </Form.Group>
-            <Button variant="primary" type="submit" className="found-item-button">
-              Submit
-            </Button>
-          </Form>
+          {isSubmitted ? ( 
+            <Alert variant="success">
+              Thank you for your submission!
+            </Alert>
+          ) : (
+            <Form onSubmit={handleSubmit} className="found-item-form">
+              <Form.Group className="found-item-group">
+                <Form.Label>Item Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="itemName"
+                  value={formData.itemName}
+                  onChange={handleInputChange}
+                  className="found-item-input"
+                />
+              </Form.Group>
+              <Form.Group className="found-item-group">
+                <Form.Label>Item Description</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  name="itemDescription"
+                  value={formData.itemDescription}
+                  onChange={handleInputChange}
+                  className="found-item-textarea"
+                />
+              </Form.Group>
+              <Form.Group className="found-item-group">
+                <Form.Check
+                  type="checkbox"
+                  label="Is this item sensitive?"
+                  name="isSensitive"
+                  checked={formData.isSensitive}
+                  onChange={handleInputChange}
+                  className="found-item-checkbox"
+                />
+              </Form.Group>
+              <Form.Group className="found-item-group">
+                <Form.Label>Upload Images or Videos</Form.Label>
+                <Form.Control
+                  type="file"
+                  accept="image/*,video/*"
+                  multiple
+                  onChange={handleMediaChange}
+                  className="found-item-input"
+                />
+              </Form.Group>
+              <Button variant="primary" type="submit" className="found-item-button">
+                Submit
+              </Button>
+            </Form>
+          )}
         </Modal.Body>
       </Modal>
     </CSSTransition>
