@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Form, Button } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 // import { CSSTransition } from 'react-transition-group';
 // import LocationPicker from './LocationPicker';
 // import 'leaflet/dist/leaflet.css';
@@ -16,12 +16,7 @@ const LostItemForm = () => {
         isSensitive: false
     });
 
-    const [locations, setLocations] = useState([]);
-
-    const addLocation = (newLocation) => {
-        console.log(newLocation)
-        setLocations([...locations, newLocation]);
-    };
+   
 
     const [mediaFiles, setMediaFiles] = useState([]);
 
@@ -35,16 +30,13 @@ const LostItemForm = () => {
 
     const handleMediaChange = (e) => {
         const selectedFile = Array.from(e.target.files)[0];
-        const tempfiles = mediaFiles.copyWithin();
-        tempfiles.push(selectedFile)
-        setMediaFiles(tempfiles);
+        setMediaFiles([...mediaFiles,selectedFile]);
         // console.log(mediaFiles)
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(formData)
-        console.log(locations)
         console.log(mediaFiles)
 
     };
@@ -52,7 +44,7 @@ const LostItemForm = () => {
     return (
         <div>
             <Navbar></Navbar>
-            <h2>Add your lost item here!</h2>
+            <h2 style={{textAlign:'center'}}>Add your lost item here!</h2>
             <Form onSubmit={handleSubmit} className="lost-item-form">
                 <Form.Group className="lost-item-group">
                     <Form.Label>Item Name</Form.Label>
@@ -95,17 +87,18 @@ const LostItemForm = () => {
                         className="lost-item-input"
                     />
                 </Form.Group>
-                <h1>Location Picker</h1>
-                {/* <LocationPicker onLocationChange={addLocation} /> */}
-                <MapWrapper />
-                <h2>Pinned Locations:</h2>
-                <ul>
+                <div className="lost-item-group">
+                    <Form.Label>Location Picker</Form.Label>
+                    {/* <LocationPicker onLocationChange={addLocation} /> */}
+                    <MapWrapper />
+                </div>
+                {/* <ul>
                     {locations.map((location, index) => (
                         <li key={index}>
                             Latitude: {location[0]}, Longitude: {location[1]}
                         </li>
                     ))}
-                </ul>
+                </ul> */}
                 <Button variant="primary" type="submit" className="lost-item-button">
                     Submit
                 </Button>
