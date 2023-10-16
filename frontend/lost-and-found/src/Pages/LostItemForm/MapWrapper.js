@@ -30,6 +30,7 @@ function LeafletgeoSearch() {
         customIcon
       }
     });
+    console.log("searchControl",searchControl);
 
     map.addControl(searchControl);
 
@@ -47,7 +48,7 @@ class MapWrapper extends React.Component {
           center={center}
           zoom={13}
           scrollWheelZoom={true}
-          style={{ height: '100vh' }}
+          style={{ height: '400px', width: '400px' }}
         >
           <TileLayer
             attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'

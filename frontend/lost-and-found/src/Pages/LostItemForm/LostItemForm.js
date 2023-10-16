@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
 // import { CSSTransition } from 'react-transition-group';
-import LocationPicker from './LocationPicker';
+// import LocationPicker from './LocationPicker';
 // import 'leaflet/dist/leaflet.css';
 
 import './LostItemForm.css'; // Import custom CSS for styling and animation
