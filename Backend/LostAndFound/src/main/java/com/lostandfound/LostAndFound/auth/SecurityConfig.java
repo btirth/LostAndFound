@@ -1,4 +1,4 @@
-package com.LostAndFound.LostAndFound.auth;
+package com.lostandfound.LostAndFound.auth;
 
 import com.auth0.spring.security.api.JwtWebSecurityConfigurer;
 import org.springframework.beans.factory.annotation.Value;
