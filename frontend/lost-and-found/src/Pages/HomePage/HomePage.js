@@ -4,13 +4,18 @@ import FoundItemForm from '../FoundItemForm/FoundItemForm';
 
 const HomePage = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [resetVariable, setResetVariable] = useState(false);
 
   const openForm = () => {
     setIsFormOpen(true);
+    setResetVariable(false)
+
   };
 
   const closeForm = () => {
     setIsFormOpen(false);
+    setResetVariable(true)
+
   };
 
   return (
@@ -18,7 +23,7 @@ const HomePage = () => {
       <Navbar />
       <h2>Welcome to the Home Page</h2>
       <button onClick={openForm}>Report Found Item</button>
-      <FoundItemForm isOpen={isFormOpen} onRequestClose={closeForm} />
+      <FoundItemForm isOpen={isFormOpen} onRequestClose={closeForm} resetVariable ={resetVariable} />
       {/* Other content */}
     </div>
   );

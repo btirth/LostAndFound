@@ -1,14 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Form, Button, Alert } from 'react-bootstrap'; 
 import { CSSTransition } from 'react-transition-group';
 import './FoundItemForm.css';
-
-const FoundItemForm = ({ isOpen, onRequestClose }) => {
+import MapWrapper from './MapWrapper';
+const FoundItemForm = ({ isOpen, onRequestClose,resetVariable }) => {
   const [formData, setFormData] = useState({
     itemName: '',
     itemDescription: '',
     isSensitive: false,
   });
+
+  useEffect(() => {
+    if (resetVariable) {
+      setIsSubmitted(false); 
+      setFormData({
+        itemName: '',
+        itemDescription: '',
+        isSensitive: false,
+      })
+    }
+  
+    return () => {
+      
+    }
+  }, [resetVariable])
+  
+
+  const onHideHandle = () =>{
+      setIsSubmitted(false); 
+      setFormData({
+        itemName: '',
+        itemDescription: '',
+        isSensitive: false,
+      })
+
+    }
 
   const [mediaFiles, setMediaFiles] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -38,7 +64,7 @@ const FoundItemForm = ({ isOpen, onRequestClose }) => {
       classNames="fade"
       unmountOnExit
     >
-      <Modal show={isOpen} onHide={onRequestClose}>
+      <Modal show={isOpen} onHide={onRequestClose} size={'xl'} >
         <Modal.Header closeButton>
           <Modal.Title>Report Found Item</Modal.Title>
         </Modal.Header>
@@ -57,6 +83,7 @@ const FoundItemForm = ({ isOpen, onRequestClose }) => {
                   value={formData.itemName}
                   onChange={handleInputChange}
                   className="found-item-input"
+                  required
                 />
               </Form.Group>
               <Form.Group className="found-item-group">
@@ -67,6 +94,7 @@ const FoundItemForm = ({ isOpen, onRequestClose }) => {
                   value={formData.itemDescription}
                   onChange={handleInputChange}
                   className="found-item-textarea"
+                  required
                 />
               </Form.Group>
               <Form.Group className="found-item-group">
@@ -77,6 +105,7 @@ const FoundItemForm = ({ isOpen, onRequestClose }) => {
                   checked={formData.isSensitive}
                   onChange={handleInputChange}
                   className="found-item-checkbox"
+                  
                 />
               </Form.Group>
               <Form.Group className="found-item-group">
@@ -87,8 +116,15 @@ const FoundItemForm = ({ isOpen, onRequestClose }) => {
                   multiple
                   onChange={handleMediaChange}
                   className="found-item-input"
+                  required
                 />
               </Form.Group>
+              <div className="lost-item-group">
+                    <Form.Label>Location Picker</Form.Label>
+                    {/* <LocationPicker onLocationChange={addLocation} /> */}
+                    <MapWrapper />
+                </div>
+
               <Button variant="primary" type="submit" className="found-item-button">
                 Submit
               </Button>
