@@ -16,7 +16,7 @@ const LoginCard = () => {
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [errorMessage, setErrorMessage] = useState(false)
+    const [errorMessage, setErrorMessage] = useState(null)
     const [emailHelper, setEmailHelper] = useState(null)
     const [passwordHelper, setPasswordHelper] = useState(null)
 
@@ -42,23 +42,19 @@ const LoginCard = () => {
             });
       
             const accessToken = response.data.access_token;
-            console.log("accessToken",accessToken);
       
             // Store the access token in local storage or a secure storage method
             localStorage.setItem('access_token', accessToken);
             
-            setErrorMessage(false)
+            setErrorMessage(null);
           
             window.location = '/home'
 
-      
-            // Redirect to the home page or another protected route
-            // You can use React Router for this purpose
-            // Example: history.push('/home');
+    
           } catch (error) {
             // Handle login errors
-            console.error('Login error:', error);
-            setErrorMessage(true)
+            setErrorMessage(error.response?.data?.error_description || 'An error occurred during login');
+    
           
           }
 
@@ -109,8 +105,10 @@ const LoginCard = () => {
                 </Form.Group>
                 <div style={{ marginTop: '10px' }}>
                     <Button type='submit' className='w-100' style={btStyle} >Sign In</Button>
-                    {errorMessage ? <h2 style={{ backgroundColor: 'lightcoral', color: 'black', fontWeight: 'bold', fontSize: '20px', marginTop: '10px', textAlign: 'center' }}>Incorrect Credentials! Please Try Again!</h2> : <></>}
-
+                    {errorMessage && (
+            <Alert variant="danger" style={{ marginTop: '10px' }}>
+              {errorMessage}
+            </Alert>)}
                 </div>
             </Form>
             
