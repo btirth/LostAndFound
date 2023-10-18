@@ -54,6 +54,7 @@ const LostItemForm = () => {
                         value={formData.itemName}
                         onChange={handleInputChange}
                         className="lost-item-input"
+                        required
                     />
                 </Form.Group>
                 <Form.Group className="lost-item-group">
@@ -64,6 +65,7 @@ const LostItemForm = () => {
                         value={formData.itemDescription}
                         onChange={handleInputChange}
                         className="lost-item-textarea"
+                        required
                     />
                 </Form.Group>
                 <Form.Group className="lost-item-group">
@@ -85,6 +87,7 @@ const LostItemForm = () => {
                         multiple
                         onChange={handleMediaChange}
                         className="lost-item-input"
+                        required
                     />
                 </Form.Group>
                 <div className="lost-item-group">
@@ -92,13 +95,7 @@ const LostItemForm = () => {
                     {/* <LocationPicker onLocationChange={addLocation} /> */}
                     <MapWrapper />
                 </div>
-                {/* <ul>
-                    {locations.map((location, index) => (
-                        <li key={index}>
-                            Latitude: {location[0]}, Longitude: {location[1]}
-                        </li>
-                    ))}
-                </ul> */}
+                
                 <Button variant="primary" type="submit" className="lost-item-button">
                     Submit
                 </Button>
