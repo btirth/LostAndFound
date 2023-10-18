@@ -1,8 +1,8 @@
 package com.lostandfound.LostAndFound.Item.entities;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
 import java.time.LocalDate;
 
 
