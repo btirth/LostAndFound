@@ -2,6 +2,9 @@ package com.lostandfound.LostAndFound.Item.repo;
 
 
 import com.lostandfound.LostAndFound.Item.entities.Item;
+import com.mongodb.client.model.geojson.Point;
+import org.springframework.data.geo.Circle;
+import org.springframework.data.geo.Distance;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -33,4 +36,15 @@ public interface ItemRepository
      */
     @Query("{'isFoundItem': ?0}")
     public List<Item> filterItems(boolean isFoundItem);
+
+    /**
+     *
+     * @param isFoundItem to check only the lost or found item should get
+     * @param longitude where the user want to see any item has been reported
+     * @param latitude where the user want to see any item has been reported
+     * @param distance in meter to check the area by taking the longitude and latitude as center point
+     * @return the list of the item
+     */
+    @Query("{ 'isFoundItem': ?0, 'location' : { $near : { $geometry : { type: 'Point', coordinates: [?1, ?2] }, $maxDistance: ?3 } } }")
+    public List<Item> findByIsFoundItemAndLocationWithin(boolean isFoundItem, double longitude, double latitude,  double distance);
 }

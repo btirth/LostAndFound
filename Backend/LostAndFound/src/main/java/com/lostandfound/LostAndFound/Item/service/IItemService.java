@@ -1,6 +1,7 @@
 package com.lostandfound.LostAndFound.Item.service;
 
 import com.lostandfound.LostAndFound.Item.entities.Item;
+import org.springframework.data.geo.Distance;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public interface IItemService {
      * @param isFoundItem true if looking for found items, false if looking for lost items
      * @return a list of items based on the specified condition
      */
-    List<Item> getList(boolean isFoundItem);
+    List<Item> getList(boolean isFoundItem, double longitude, double latitude,  double distance);
 
     /**
      * Updates an existing item.

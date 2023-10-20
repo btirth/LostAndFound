@@ -1,6 +1,9 @@
 package com.lostandfound.LostAndFound.Item.entities;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
@@ -23,6 +26,9 @@ public class Item {
     private byte[] image;
 
     private boolean isFoundItem;
+
+    @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
+    private GeoJsonPoint location;
 
 
 
@@ -80,7 +86,7 @@ public class Item {
 
     /**
      * set the title to the object of the Item
-     * @param createdBy
+     * @return returns the mailId of the user by whom item was created
      */
     public String getCreatedBy() {
         return createdBy;
@@ -172,5 +178,22 @@ public class Item {
      */
     public void setFoundItem(boolean foundItem) {
         isFoundItem = foundItem;
+    }
+
+    /**
+     * Get the location of the item
+     * @return
+     */
+    public GeoJsonPoint getLocation() {
+        return location;
+    }
+
+    /**
+     *
+     * @param location
+     */
+    public void setLocation(GeoJsonPoint location) {
+
+        this.location = location;
     }
 }

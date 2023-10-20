@@ -4,6 +4,10 @@ import com.lostandfound.LostAndFound.Item.entities.Item;
 import com.lostandfound.LostAndFound.Item.repo.ItemRepository;
 import com.lostandfound.LostAndFound.Item.service.IItemService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.geo.Circle;
+import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.Metrics;
+import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,8 +38,9 @@ public class ItemSeviceImpl implements IItemService {
     }
 
     @Override
-    public List<Item> getList(boolean isFoundItem) {
-        return this.itemRepository.filterItems(isFoundItem);
+    public List<Item> getList(boolean isFoundItem, double longitude, double latitude,  double distance) {
+//        return this.itemRepository.findByLocationWithin(longitude, latitude, distance);
+        return this.itemRepository.findByIsFoundItemAndLocationWithin(isFoundItem, longitude, latitude, distance);
     }
 
     @Override
@@ -48,7 +53,7 @@ public class ItemSeviceImpl implements IItemService {
         storedItem.setDescription(item.getDescription());
         storedItem.setClaimedBy(item.getClaimedBy());
         storedItem.setFoundItem(item.isFoundItem());
-        storedItem.setSensitive(item.isSensitive());
+        storedItem.setLocation(item.getLocation());
 
         this.itemRepository.save(storedItem);
 

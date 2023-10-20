@@ -40,8 +40,8 @@ public class ItemController {
      * @return a list of items based on the specified condition
      */
     @GetMapping("get-list")
-    public List<Item> getList(@RequestParam(required = true) boolean isFoundItem) {
-        return this.iItemService.getList(isFoundItem);
+    public List<Item> getList(@RequestParam(required = true) boolean isFoundItem, @RequestParam(required = true) double longitude, @RequestParam(required = true) double latitude, @RequestParam(required = true) double distance) {
+        return this.iItemService.getList(isFoundItem, longitude, latitude, distance);
     }
     //</editor-fold>
 
