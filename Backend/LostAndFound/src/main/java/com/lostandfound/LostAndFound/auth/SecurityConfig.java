@@ -22,9 +22,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**")
                 .permitAll()
-                .antMatchers("/private")
+                .antMatchers("/test/private")
                 .hasRole("Test")
-                .antMatchers("/public")
+                .antMatchers("/test/public")
                 .permitAll()
                 .anyRequest()
                 .authenticated();
