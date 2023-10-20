@@ -18,7 +18,6 @@ maven-build:
   tags:
     - deployment
   script:
-    - whoami
     - cd Backend/LostAndFound
     - mvn package -B
   artifacts:
@@ -33,28 +32,6 @@ build-temp:
     - 20-backend-cicd
   needs:
     - maven-build
-  script:
-    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io
-    - docker build -t $DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA -f ./Backend/LostAndFound/Dockerfile ./Backend/LostAndFound
-    - docker push $DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA
-
-build-main:
-  stage: build
-  tags:
-    - deployment
-  only:
-    - main
-  script:
-    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io
-    - docker build -t $DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA -f ./Backend/LostAndFound/Dockerfile ./Backend/LostAndFound
-    - docker push $DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA
-
-build-dev:
-  stage: build
-  tags:
-    - deployment
-  only:
-    - dev
   script:
     - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io
     - docker build -t $DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA -f ./Backend/LostAndFound/Dockerfile ./Backend/LostAndFound
@@ -81,6 +58,19 @@ deploy-temp:
     name: development
     url: http://172.17.0.80:8001
 
+build-dev:
+  stage: build
+  tags:
+    - deployment
+  only:
+    - dev
+  needs:
+    - maven-build
+  script:
+    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io
+    - docker build -t $DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA -f ./Backend/LostAndFound/Dockerfile ./Backend/LostAndFound
+    - docker push $DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA
+
 deploy-dev:
   image: alpine:latest
   stage: deploy
@@ -102,6 +92,19 @@ deploy-dev:
     name: development
     url: http://172.17.0.80:8080
 
+build-main:
+  stage: build
+  tags:
+    - deployment
+  only:
+    - main
+  needs:
+    - maven-build
+  script:
+    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io
+    - docker build -t $DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA -f ./Backend/LostAndFound/Dockerfile ./Backend/LostAndFound
+    - docker push $DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA
+
 deploy-main:
   image: alpine:latest
   stage: deploy
@@ -122,4 +125,3 @@ deploy-main:
   environment:
     name: development
     url: http://172.17.0.80:1701
-
