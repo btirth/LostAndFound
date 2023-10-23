@@ -31,6 +31,22 @@ public interface IItemService {
     List<Item> getList(boolean isFoundItem, double longitude, double latitude,  double distance);
 
     /**
+     * Retrieves a list of items based on the user who posted them.
+     * @param createdBy of the user who posted the items
+     * @param isFoundItem true if looking for found items, false if looking for lost items posted by the user
+     * @return a list of items based on the specified condition
+     */
+    List<Item> getList(String createdBy, boolean isFoundItem, int postedAt);
+
+    /**
+     * Retrieves a list of items based on the user who posted them.
+     * @param keyword given by the user to search for
+     * @param postedAt 1 for oldest first, -1 for newest first
+     * @return a list of items based on the specified condition
+     */
+    List<Item> getList(String keyword, int postedAt);
+
+    /**
      * Updates an existing item.
      * @param item needs to be updated
      */

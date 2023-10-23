@@ -57,6 +57,37 @@ public class ItemController {
             return e.getMessage();
         }
     }
+
+    /**
+     * Retrieves a list of items based on the user who posted them.
+     * @param createdBy of the user who posted the items
+     * @param isFoundItem true if looking for found items, false if looking for lost items posted by the user
+     * @return a list of items based on the specified condition
+     */
+    @GetMapping("/get-list-by-user")
+    public Object getListByUser(@RequestParam(required = true) String createdBy, @RequestParam(required = true) boolean isFoundItem, @RequestParam(defaultValue = "-1") int postedAt) {
+        try {
+            return this.iItemService.getList(createdBy, isFoundItem, postedAt);
+        }
+        catch (Exception e) {
+            return e.getMessage();
+        }
+    }
+
+    /**
+     * Retrieves a list of items based on the user who posted them.
+     * @param keyword of the user who posted the items
+     * @return a list of items based on the specified condition
+     */
+    @GetMapping("/get-list-by-keyword")
+    public Object getListByKeyword(@RequestParam(required = true) String keyword, @RequestParam(defaultValue = "-1") int postedAt) {
+        try {
+            return this.iItemService.getList(keyword, postedAt);
+        }
+        catch (Exception e) {
+            return e.getMessage();
+        }
+    }
     //</editor-fold>
 
     //<editor-fold desc="Put requests">
