@@ -1,0 +1,127 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+stages:
+  - build
+  - deploy
+
+variables:
+  DOCKERHUB_IMAGE_PREFIX: "lostandfound12/lost-and-found"
+  DOCKER_TLS_CERTDIR: ""    
+  DOCKER_HOST: "tcp://docker:2375"
+
+maven-build:
+  image: maven:3-amazoncorretto-17
+  stage: build
+  tags:
+    - deployment
+  script:
+    - cd Backend/LostAndFound
+    - mvn package -B
+  artifacts:
+    paths:
+      - Backend/LostAndFound/target/*.jar
+
+build-temp:
+  stage: build
+  tags:
+    - deployment
+  only:
+    - 20-backend-cicd
+  needs:
+    - maven-build
+  script:
+    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io
+    - docker build -t $DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA -f ./Backend/LostAndFound/Dockerfile ./Backend/LostAndFound
+    - docker push $DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA
+
+deploy-temp:
+  image: alpine:latest
+  stage: deploy
+  only:
+    - 20-backend-cicd
+  needs:
+    - build-temp
+  tags:
+    - deployment
+  script:
+    - echo $ID_RSA
+    - chmod og= $ID_RSA
+    - apk update && apk add openssh-client
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull docker.io/$DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f my-app || true"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p 8001:8080 --name my-app docker.io/$DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA"
+  environment:
+    name: development
+    url: http://172.17.0.80:8001
+
+build-dev:
+  stage: build
+  tags:
+    - deployment
+  only:
+    - dev
+  needs:
+    - maven-build
+  script:
+    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io
+    - docker build -t $DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA -f ./Backend/LostAndFound/Dockerfile ./Backend/LostAndFound
+    - docker push $DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA
+
+deploy-dev:
+  image: alpine:latest
+  stage: deploy
+  only:
+    - dev
+  needs:
+    - build-dev
+  tags:
+    - deployment
+  script:
+    - echo $ID_RSA
+    - chmod og= $ID_RSA
+    - apk update && apk add openssh-client
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull docker.io/$DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f my-app || true"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p 8080:8080 --name my-app docker.io/$DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA"
+  environment:
+    name: development
+    url: http://172.17.0.80:8080
+
+build-main:
+  stage: build
+  tags:
+    - deployment
+  only:
+    - main
+  needs:
+    - maven-build
+  script:
+    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io
+    - docker build -t $DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA -f ./Backend/LostAndFound/Dockerfile ./Backend/LostAndFound
+    - docker push $DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA
+
+deploy-main:
+  image: alpine:latest
+  stage: deploy
+  only:
+    - main
+  needs:
+    - build-main
+  tags:
+    - deployment
+  script:
+    - echo $ID_RSA
+    - chmod og= $ID_RSA
+    - apk update && apk add openssh-client
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull docker.io/$DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f my-app || true"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p 1701:8080 --name my-app docker.io/$DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA"
+  environment:
+    name: development
+    url: http://172.17.0.80:1701
