@@ -42,5 +42,7 @@ public interface IItemService {
      */
     void delete(String id);
 
+    boolean isItemExist(String id);
+
 
 }

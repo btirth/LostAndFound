@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Document(collection="item")
@@ -23,7 +24,8 @@ public class Item {
     private String claimedBy;
     private boolean isSensitive;
     private LocalDate postedAt;
-    private byte[] image;
+    private LocalDate lastUpdated;
+    private List<String> image;
 
     private boolean isFoundItem;
 
@@ -152,7 +154,7 @@ public class Item {
      * Gets the image associated with the item.
      * @return the image as a byte array
      */
-    public byte[] getImage() {
+    public List<String> getImage() {
         return image;
     }
 
@@ -160,7 +162,7 @@ public class Item {
      * Sets the image associated with the item.
      * @param image the image as a byte array
      */
-    public void setImage(byte[] image) {
+    public void setImage(List<String> image) {
         this.image = image;
     }
 
@@ -196,4 +198,21 @@ public class Item {
 
         this.location = location;
     }
+
+    /**
+     * Gets the date when the item was posted.
+     * @return the date when the item was posted
+     */
+    public LocalDate getLastUpdated() {
+        return lastUpdated;
+    }
+
+    /**
+     * Sets the date when the item was posted.
+     * @param lastUpdated the date when the item was posted
+     */
+    public void setLastUpdated(LocalDate lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
 }

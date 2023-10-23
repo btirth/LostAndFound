@@ -2,13 +2,9 @@ package com.lostandfound.LostAndFound.Item.repo;
 
 
 import com.lostandfound.LostAndFound.Item.entities.Item;
-import com.mongodb.client.model.geojson.Point;
-import org.springframework.data.geo.Circle;
-import org.springframework.data.geo.Distance;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -47,4 +43,11 @@ public interface ItemRepository
      */
     @Query("{ 'isFoundItem': ?0, 'location' : { $near : { $geometry : { type: 'Point', coordinates: [?1, ?2] }, $maxDistance: ?3 } } }")
     public List<Item> findByIsFoundItemAndLocationWithin(boolean isFoundItem, double longitude, double latitude,  double distance);
+
+    /***
+     *
+     * @param id
+     * @return true if any item with given id is exists
+     */
+    public boolean existsById(String id);
 }
