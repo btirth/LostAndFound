@@ -37,9 +37,21 @@ public class ItemSeviceImpl implements IItemService {
     }
 
     @Override
-    public List<Item> getList(boolean isFoundItem, double longitude, double latitude,  double distance) {
+    public List<Item> getList(boolean isFoundItem, Double longitude, Double latitude,  Double distance) {
+        boolean test;
+        if(longitude != null)
+            test = true;
+        if(latitude!=null)
+            test = false;
+        if(distance!= null)
+            test = true;
+        if(longitude != null && latitude != null && distance != null) {
 //        return this.itemRepository.findByLocationWithin(longitude, latitude, distance);
-        return this.itemRepository.findByIsFoundItemAndLocationWithin(isFoundItem, longitude, latitude, distance);
+                return this.itemRepository.findByIsFoundItemAndLocationWithin(isFoundItem, longitude, latitude, distance);
+        }
+        else {
+            return this.itemRepository.filterItems(isFoundItem);
+        }
     }
 
     @Override
