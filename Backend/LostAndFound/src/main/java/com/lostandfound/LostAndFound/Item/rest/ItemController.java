@@ -49,7 +49,9 @@ public class ItemController {
      * @return a list of items based on the specified condition
      */
     @GetMapping("/get-list")
-    public Object getList(@RequestParam(required = true) boolean isFoundItem, @RequestParam(required = true) double longitude, @RequestParam(required = true) double latitude, @RequestParam(required = true) double distance) {
+    public Object getList(@RequestParam(required = true) boolean isFoundItem, @RequestParam(required = false, defaultValue = "0.0") double longitude,
+                          @RequestParam(required = false, defaultValue = "0.0") double latitude,
+                          @RequestParam(required = false, defaultValue = "0.0") double distance) {
         try {
             return this.iItemService.getList(isFoundItem, longitude, latitude, distance);
         }

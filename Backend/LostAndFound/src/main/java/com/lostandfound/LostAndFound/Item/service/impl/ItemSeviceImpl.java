@@ -38,8 +38,13 @@ public class ItemSeviceImpl implements IItemService {
 
     @Override
     public List<Item> getList(boolean isFoundItem, double longitude, double latitude,  double distance) {
+        if(Double.isNaN(longitude) && Double.isNaN(latitude) && Double.isNaN(distance)) {
 //        return this.itemRepository.findByLocationWithin(longitude, latitude, distance);
-        return this.itemRepository.findByIsFoundItemAndLocationWithin(isFoundItem, longitude, latitude, distance);
+            return this.itemRepository.findByIsFoundItemAndLocationWithin(isFoundItem, longitude, latitude, distance);
+        }
+        else {
+            return this.itemRepository.filterItems(isFoundItem);
+        }
     }
 
     @Override
