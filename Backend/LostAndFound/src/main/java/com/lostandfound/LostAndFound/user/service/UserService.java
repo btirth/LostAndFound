@@ -15,4 +15,5 @@ public interface UserService {
     String insert(User user);
 
     String delete(String email);
+    String update(User user);
 }

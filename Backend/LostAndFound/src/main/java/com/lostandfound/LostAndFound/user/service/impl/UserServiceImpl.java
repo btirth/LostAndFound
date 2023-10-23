@@ -5,6 +5,7 @@ import com.lostandfound.LostAndFound.user.repo.UserRepository;
 import com.lostandfound.LostAndFound.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -54,6 +55,23 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             System.out.println(e);
             return "Error deleting user";
+        }
+    }
+
+    @Override
+    @Transactional
+    public String update(User user) {
+        try {
+            User storedUser = this.userRepository.findByEmail(user.getEmail()).orElseThrow(()-> new IllegalStateException("User does not exist") );
+                storedUser.setName(user.getName());
+                storedUser.setProfilePicUrl(user.getProfilePicUrl());
+
+
+            this.userRepository.save(storedUser);
+            return "User updated successfully";
+
+        } catch (Exception e) {
+            return "Error updating user";
         }
     }
 
