@@ -28,7 +28,7 @@ public interface IItemService {
      * @param isFoundItem true if looking for found items, false if looking for lost items
      * @return a list of items based on the specified condition
      */
-    List<Item> getList(boolean isFoundItem, double longitude, double latitude,  double distance);
+    List<Item> getList(boolean isFoundItem, Double longitude, Double latitude,  Double distance);
 
     /**
      * Retrieves a list of items based on the user who posted them.
