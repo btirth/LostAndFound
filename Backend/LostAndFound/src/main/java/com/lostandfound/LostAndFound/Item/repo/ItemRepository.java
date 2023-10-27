@@ -32,11 +32,13 @@ public interface ItemRepository
     /**
      * pass the boolean flag to get the list of items that has been reported as found or lost
      *
-     * @param isFoundItem
+     * @param isFoundItem true if looking for found items, false if looking for lost items
+     * @param postedAt    1 for oldest first, -1 for newest first
      * @return return the list of item
      */
-    @Query("{'isFoundItem': ?0}")
-    public List<Item> filterItems(boolean isFoundItem);
+    @Aggregation(pipeline = {"{ $match: {'isFoundItem': ?0 }}",
+            "{ $sort: { 'postedAt': ?1 } }"})
+    public List<Item> getList(boolean isFoundItem, int postedAt);
 
     /**
      * @param isFoundItem to check only the lost or found item should get
@@ -63,13 +65,37 @@ public interface ItemRepository
     /**
      * Method for searching the item by keyword
      *
-     * @param keyword
+     * @param keyword to search the item
+     * @param postedAt 1 for oldest first, -1 for newest first
+     * @param isFoundItem true if looking for found items, false if looking for lost items posted by the user
      * @return list of item
      */
-    @Aggregation(pipeline = {"{$search: {text: {query: ?0, path: ['title', 'description']}}}",
-            "{$match: { 'isFoundItem': true }}",
-            "{$sort: { 'postedAt': ?1 } }"})
-    public List<Item> findByKeyword(String keyword, int postedAt);
+    @Aggregation(pipeline = {
+            "{$search: {text: {query: ?0, path: ['title', 'description']}}}",
+            "{$match: { 'isFoundItem': ?1 }}",
+            "{$sort: { 'postedAt': ?2 } }"})
+    public List<Item> findByKeyword(String keyword,boolean isFoundItem, int postedAt);
+
+    /**
+     * Method for searching based on the filter
+     * @param longitude   where the user want to see any item has been reported
+     * @param latitude    where the user want to see any item has been reported
+     * @param distance    in meter to check the area by taking the longitude and latitude as center point
+     * @param isFoundItem to check only the lost or found item should get
+     * @param postedAt 1 for oldest first, -1 for newest first
+     * @return list of items
+     */
+    @Aggregation(pipeline = {
+            "{$geoNear: { "
+                    + "'near': { 'type': 'Point', 'coordinates': [?0, ?1] }, "
+                    + "'distanceField': 'distance', "
+                    + "'spherical': true, "
+                    + "'maxDistance': ?2 "
+                    + "}}",
+            "{$match: { 'isFoundItem': ?3 }}",
+            "{$sort: { 'postedAt': ?4 } }"})
+    public List<Item> findByLocationWithinAndPostedAt(Double longitude, Double latitude, Double distance, boolean isFoundItem,int postedAt);
+
 
     /***
      *
