@@ -1,14 +1,16 @@
 // Navbar.js
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginSuccess, logout } from '../actions/authActions';
 
 const Navbar = () => {
   const dispatch = useDispatch();
-  const [isHovered, setIsHovered] = useState(false);
+  const [isHovered, setIsHovered] = useState(null); // Track the hovered item
 
   const handleLogout = () => {
     localStorage.removeItem('access_token');
+    dispatch(logout());
     window.location = '/login';
   };
 
@@ -16,12 +18,13 @@ const Navbar = () => {
     backgroundColor: '#333',
     color: '#fff',
     padding: '10px 20px',
+    display: 'flex',
+    justifyContent: 'space-between', // Center items in the navbar
   };
 
   const navListStyle = {
     listStyle: 'none',
     display: 'flex',
-    justifyContent: 'space-between',
     margin: '0',
     padding: '0',
   };
@@ -32,19 +35,20 @@ const Navbar = () => {
 
   const navLinkStyle = {
     textDecoration: 'none',
-    color: isHovered ? '#75e6a3' : '#fff',
+    color: '#fff', 
     fontWeight: 'bold',
-    transition: 'color 0.3s ease-in-out',
   };
 
   const logoutButtonStyle = {
-    backgroundColor: isHovered ? '#75e6a3' : '#333',
-    color: isHovered ? '#fff' : '#75e6a3',
     border: 'none',
     padding: '10px 20px',
     borderRadius: '5px',
     cursor: 'pointer',
-    transition: 'background-color 0.3s ease-in-out, color 0.3s ease-in-out',
+  };
+
+  const highlightStyle = {
+    color: '#75e6a3',
+    transition: 'color 0.3s ease-in-out',
   };
 
   return (
@@ -53,24 +57,34 @@ const Navbar = () => {
         <li style={navItemStyle}>
           <Link
             to="/home"
-            style={navLinkStyle}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
+            style={isHovered === 'home' ? { ...navLinkStyle, ...highlightStyle } : navLinkStyle}
+            onMouseEnter={() => setIsHovered('home')}
+            onMouseLeave={() => setIsHovered(null)}
           >
             Home
           </Link>
         </li>
+
         <li style={navItemStyle}>
-          <button
-            onClick={handleLogout}
-            style={logoutButtonStyle}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
+          <Link
+            to="/lost-catalogue"
+            style={isHovered === 'lost-catalogue' ? { ...navLinkStyle, ...highlightStyle } : navLinkStyle}
+            onMouseEnter={() => setIsHovered('lost-catalogue')}
+            onMouseLeave={() => setIsHovered(null)}
           >
-            Logout
-          </button>
+            Lost Catalogue
+          </Link>
         </li>
       </ul>
+
+      <button
+        onClick={handleLogout}
+        style={isHovered === 'logout' ? { ...logoutButtonStyle, ...highlightStyle } : logoutButtonStyle}
+        onMouseEnter={() => setIsHovered('logout')}
+        onMouseLeave={() => setIsHovered(null)}
+      >
+        Logout
+      </button>
     </nav>
   );
 };

@@ -1,9 +1,9 @@
 // authActions.js
 import axios from 'axios';
 
-export const loginSuccess = (user) => ({
+export const loginSuccess = (user, token) => ({
   type: 'LOGIN_SUCCESS',
-  payload: user,
+  payload:  { user, token },
 });
 
 export const loginFailure = (error) => ({
@@ -73,11 +73,11 @@ export const logout = () => ({
           params: auth0Config, // Pass Auth0 configuration as query parameters
         });
   
-        if (!response.data || !response.data.access_token) {
+        if (!response.data || !response.data.id_token) {
           throw new Error('Signup failed');
         }
   
-        const accessToken = response.data.access_token;
+        const accessToken = response.data.id_token;
   
         // Dispatch signup success action
         dispatch(signupSuccess(response.data));

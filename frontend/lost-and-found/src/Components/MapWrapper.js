@@ -17,7 +17,7 @@ const center = [44.653707240893, -63.59127044677735];
 
 
 const customIcon = new Icon({
-    iconUrl: require("./../../Assets/Images/location-pin.png"),
+    iconUrl: require("../Assets/Images/location-pin.png"),
     iconSize: [38, 38]
 }
 )
@@ -28,11 +28,13 @@ function LeafletgeoSearch(props) {
     // const [locations, setLocations] = useState([]);
     const locations = props.locations
     const setLocations = props.setLocationsFun
+    const setLocation = props.setLocationsFun2
 
     const addLocation = (newLocation) => {
         console.log("add point", newLocation)
         console.log("printing locs before", locations);
         setLocations([newLocation]);
+        setLocation([newLocation]);
         console.log("printing locs after", locations);
     };
 
@@ -116,7 +118,7 @@ function LeafletgeoSearch(props) {
 //         );
 //     }
 // }
-function MapWrapper() {
+function MapWrapper({setLocation}) {
 
 
 
@@ -126,17 +128,18 @@ function MapWrapper() {
         const updatedList = [...locations];
         updatedList.splice(index, 1);
         setLocations(updatedList);
+        setLocation(updatedList);
     };
 
     return (
         <div>
             <div id="mapid" >
-                <MapContainer center={center} zoom={13} scrollWheelZoom={true} style={{ width: '900px', height: '400px' }}>
+                <MapContainer center={center} zoom={13} scrollWheelZoom={true} style={{ width: '300px', height: '300px' }}>
                     <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     />
-                    <LeafletgeoSearch locations={locations} setLocationsFun={setLocations} />
+                    <LeafletgeoSearch locations={locations} setLocationsFun={setLocations} setLocationsFun2={setLocation}/>
                 </MapContainer>
             </div>
             <div style={{ width: '75%'}}>

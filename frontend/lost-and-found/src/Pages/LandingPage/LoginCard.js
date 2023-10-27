@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 
 import { Alert, Button, Card, Col, Container, Form, InputGroup, Row } from 'react-bootstrap'
-
+import { useDispatch, useSelector } from 'react-redux';
+import { loginSuccess, logout } from '../../actions/authActions';
 import { Link, Redirect } from 'react-router-dom'
 
 import { toast } from 'react-toastify'
@@ -12,7 +13,8 @@ import axios from 'axios'
 
 
 const LoginCard = () => {
-
+    const user = useSelector((state) => state.user);
+    const dispatch = useDispatch();
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -41,7 +43,7 @@ const LoginCard = () => {
               client_id: '0UOtlCkeRywKyHbavmcbu6iihiUnwVYI',
             });
       
-            const accessToken = response.data.access_token;
+            const accessToken = response.data.id_token;
       
             // Store the access token in local storage or a secure storage method
             localStorage.setItem('access_token', accessToken);
