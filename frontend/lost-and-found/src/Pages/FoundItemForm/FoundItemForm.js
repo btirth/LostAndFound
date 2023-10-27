@@ -3,12 +3,19 @@ import { Modal, Form, Button, Alert } from 'react-bootstrap';
 import { CSSTransition } from 'react-transition-group';
 import './FoundItemForm.css';
 import MapWrapper from './MapWrapper';
+import axios from 'axios';
+
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "./../../firebase-config.js";
+
 const FoundItemForm = ({ isOpen, onRequestClose,resetVariable }) => {
   const [formData, setFormData] = useState({
     itemName: '',
     itemDescription: '',
     isSensitive: false,
   });
+
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     if (resetVariable) {
@@ -38,6 +45,15 @@ const FoundItemForm = ({ isOpen, onRequestClose,resetVariable }) => {
 
   const [mediaFiles, setMediaFiles] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [locations, setLocations] = useState([]);
+
+  const headers = {
+
+    'Content-Type': 'application/json',
+
+    'Authorization':`Bearer ${localStorage.getItem('access_token')}`
+
+  };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -52,10 +68,70 @@ const FoundItemForm = ({ isOpen, onRequestClose,resetVariable }) => {
     setMediaFiles(selectedFiles);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     setIsSubmitted(true); 
+
+    //uploading images
+    const fileLinks=await uploadImages(mediaFiles);
+    console.log(locations);
+    const coordinates=[locations[0].lng,locations[0].lat];
+
+    //submitting form data
+    try {
+        const response = await axios.post('http://localhost:8080/api/v1/item', {
+            title: formData["itemName"],
+            description: formData["itemDescription"],
+            createdBy: "test@gmail.com",
+            image: fileLinks,
+            location: {
+                coordinates: coordinates,
+                type: "Point"
+            },
+            foundItem: true,
+            sensitive: formData["isSensitive"]
+        },{headers});
+  
+        
+        setErrorMessage(null);
+      
+        window.location = '/home'
+
+
+      } catch (error) {
+        // Handle login errors
+        setErrorMessage(error.response?.data?.error_description || 'An error occurred during form submission');
+
+      
+      }
   };
+
+  async function uploadImages(files) {
+    try {
+        const fileLinks = [];
+
+        for (let index = 0; index < files.length; index++) {
+            const file = files[index];
+            let todayDate = new Date().getUTCMilliseconds().toString();
+            const fileRef = ref(storage, `lostnfound/${file.name}-${todayDate}-${index}`);
+
+            try {
+                const snapshot = await uploadBytes(fileRef, file);
+                const url = await getDownloadURL(snapshot.ref);
+                fileLinks.push(url);
+                console.log(file.name, url);
+            } catch (error) {
+                console.error('Error getting download URL:', error);
+            }
+        }
+
+        console.log('Images uploaded successfully.');
+        return fileLinks;
+    } catch (error) {
+        console.error('Error uploading images:', error);
+        return [];
+    }
+}
 
   return (
     <CSSTransition
@@ -122,7 +198,7 @@ const FoundItemForm = ({ isOpen, onRequestClose,resetVariable }) => {
               <div className="lost-item-group">
                     <Form.Label>Location Picker</Form.Label>
                     {/* <LocationPicker onLocationChange={addLocation} /> */}
-                    <MapWrapper />
+                    <MapWrapper locations={locations} setLocationsFun={setLocations}/>
                 </div>
 
               <Button variant="primary" type="submit" className="found-item-button">

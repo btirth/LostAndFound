@@ -41,7 +41,7 @@ const LoginCard = () => {
               client_id: '0UOtlCkeRywKyHbavmcbu6iihiUnwVYI',
             });
       
-            const accessToken = response.data.access_token;
+            const accessToken = response.data.id_token;
       
             // Store the access token in local storage or a secure storage method
             localStorage.setItem('access_token', accessToken);
