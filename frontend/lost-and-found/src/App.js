@@ -7,7 +7,7 @@ import SigninPage from './Pages/LandingPage/LoginMainPage'; // Import your Signi
 import HomePage from './Pages/HomePage/HomePage';
 import PrivateRoute from './Components/PrivateRoute'; // Import the PrivateRoute component
 import LostItemForm from './Pages/LostItemForm/LostItemForm';
-
+import LostCatalogue from './Components/LostCatalogue';
 
 const App = () => {
   return (
@@ -18,6 +18,7 @@ const App = () => {
         <Route path="/login" component={SigninPage} />
         <PrivateRoute path="/home" component={HomePage} /> {/* Protect the home route */}
         <PrivateRoute path="/lost-form" component={LostItemForm} /> {/* Protect the home route */}
+        <PrivateRoute path="/lost-catalogue" component={LostCatalogue} /> {/* Protect the catalogue route */}
         {/* Add other routes for different pages as needed */}
       </Switch>
     </Router>

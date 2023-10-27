@@ -17,7 +17,7 @@ const center = [44.653707240893, -63.59127044677735];
 
 
 const customIcon = new Icon({
-    iconUrl: require("./../../Assets/Images/location-pin.png"),
+    iconUrl: require("../Assets/Images/location-pin.png"),
     iconSize: [38, 38]
 }
 )
@@ -28,11 +28,13 @@ function LeafletgeoSearch(props) {
     // const [locations, setLocations] = useState([]);
     const locations = props.locations
     const setLocations = props.setLocationsFun
+    const setLocation = props.setLocationsFun2
 
     const addLocation = (newLocation) => {
         console.log("add point", newLocation)
         console.log("printing locs before", locations);
         setLocations([newLocation]);
+        setLocation([newLocation]);
         console.log("printing locs after", locations);
     };
 
@@ -83,30 +85,61 @@ function LeafletgeoSearch(props) {
 }
 
 
+// class MapWrapper extends React.Component {
 
-function MapWrapper(props) {
+//     render() {
 
-    const locations = props.locations;
-    const setLocations = props.setLocationsFun;
+//         const [locations, setLocations] = useState([]);
+
+//         const addLocation = (newLocation) => {
+//             console.log(newLocation)
+//             setLocations([...locations, newLocation]);
+//         };
+
+//         return (
+//             <div id="mapid">
+//                 <MapContainer
+//                     center={center}
+//                     zoom={13}
+//                     scrollWheelZoom={true}
+//                     style={{ height: '400px', width: '800px' }}
+//                 >
+//                     {/* <TileLayer
+//             attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
+//             url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
+//           /> */}
+//                     <TileLayer
+//                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+//                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+//                     />
+//                     <LeafletgeoSearch />
+//                 </MapContainer>
+//             </div>
+//         );
+//     }
+// }
+function MapWrapper({setLocation}) {
 
 
-    // const [locations, setLocations] = useState([]);
+
+    const [locations, setLocations] = useState([]);
 
     const removeElement = (index) => {
         const updatedList = [...locations];
         updatedList.splice(index, 1);
         setLocations(updatedList);
+        setLocation(updatedList);
     };
 
     return (
         <div>
             <div id="mapid" >
-                <MapContainer center={center} zoom={13} scrollWheelZoom={true} style={{ width: '900px', height: '400px' }}>
+                <MapContainer center={center} zoom={13} scrollWheelZoom={true} style={{ width: '300px', height: '300px' }}>
                     <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     />
-                    <LeafletgeoSearch locations={locations} setLocationsFun={setLocations} />
+                    <LeafletgeoSearch locations={locations} setLocationsFun={setLocations} setLocationsFun2={setLocation}/>
                 </MapContainer>
             </div>
             <div style={{ width: '75%'}}>

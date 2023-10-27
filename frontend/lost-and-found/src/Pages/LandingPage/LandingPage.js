@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Navbar, Card, Col, Container, Row } from 'react-bootstrap'
-import { Box2Fill } from 'react-bootstrap-icons'
+
 
 // Images
 import LandingPageImg from '../../Assets/Images/landing_page_image.jpg'
@@ -9,6 +9,7 @@ import Logo from '../../Assets/Images/LAF-logo.png'
 // Components
 import LoginCard from './LoginCard'
 import SignUpCard from './SignUpCard'
+import FooterComponent from '../../Components/FooterComponent';
 
 // import { Link, Redirect } from 'react-router-dom'
 
@@ -64,35 +65,8 @@ function LandingPage() {
                           </Card>
                     </Col>
                 </Row>
-                <Row className="text-center" style={box1Style}>
-                    <Col >
-                        <Box2Fill style={{ fontSize: '48px' }} />
-                        <h1>Text 1</h1>
-                    </Col>
-                    <Col>
-                        <Box2Fill style={{ fontSize: '48px' }} />
-                        <h1>Text 2</h1>
-                    </Col>
-                    <Col>
-                        <Box2Fill style={{ fontSize: '48px' }} />
-                        <h1>Text 3</h1>
-                    </Col>
-                </Row>
-                <Row className="text-center" style={box2Style}>
-                    <Col>
-                        <Box2Fill style={{ fontSize: '48px' }} />
-                        <h1>Text 1</h1>
-                    </Col>
-                    <Col>
-                        <Box2Fill style={{ fontSize: '48px' }} />
-                        <h1>Text 2</h1>
-                    </Col>
-                    <Col>
-                        <Box2Fill style={{ fontSize: '48px' }} />
-                        <h1>Text 3</h1>
-                    </Col>
-                </Row>
             </Container>
+            <FooterComponent/>
         </div>
     );
 }

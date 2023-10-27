@@ -6,8 +6,8 @@ import "leaflet-geosearch/dist/geosearch.css";
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 
 import { Icon } from 'leaflet'
-import { Button } from "react-bootstrap";
-import { XLg } from 'react-bootstrap-icons'
+import { Button,Card } from "react-bootstrap";
+import { XLg,XCircle,PinFill } from 'react-bootstrap-icons'
 
 
 
@@ -30,17 +30,14 @@ function LeafletgeoSearch(props) {
     const setLocations = props.setLocationsFun
 
     const addLocation = (newLocation) => {
-        console.log("add point", newLocation)
-        console.log("printing locs before", locations);
         setLocations([...locations, newLocation]);
-        console.log("printing locs after", locations);
     };
 
     const map = useMap();
     map.on('geosearch/showlocation', function (event) {
         const { location } = event;
         const { label, x, y } = location;
-        addLocation({ "lat": y, "lng": x, "label": label })
+        addLocation({ "lng": x,"lat": y, "label": label })
 
     });
     useEffect(() => {
@@ -61,14 +58,6 @@ function LeafletgeoSearch(props) {
 
     return (
         <div>
-            {/* <h3>Pinned Locations:</h3>
-            <ul>
-                {loc.map((location, index) => (
-                    <li key={index}>
-                        Latitude: {location[0]}, Longitude: {location[1]}
-                    </li>
-                ))}
-            </ul> */}
             {locations.map((coordinate, index) => (
                 <Marker key={index} position={[coordinate.lat, coordinate.lng]} icon={customIcon}>
                     <Popup key={index}>{coordinate.label}</Popup>
@@ -83,44 +72,12 @@ function LeafletgeoSearch(props) {
 }
 
 
-// class MapWrapper extends React.Component {
+function MapWrapper(props) {
 
-//     render() {
+    const locations = props.locations
+    const setLocations = props.setLocationsFun
 
-//         const [locations, setLocations] = useState([]);
-
-//         const addLocation = (newLocation) => {
-//             console.log(newLocation)
-//             setLocations([...locations, newLocation]);
-//         };
-
-//         return (
-//             <div id="mapid">
-//                 <MapContainer
-//                     center={center}
-//                     zoom={13}
-//                     scrollWheelZoom={true}
-//                     style={{ height: '400px', width: '800px' }}
-//                 >
-//                     {/* <TileLayer
-//             attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
-//             url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
-//           /> */}
-//                     <TileLayer
-//                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-//                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-//                     />
-//                     <LeafletgeoSearch />
-//                 </MapContainer>
-//             </div>
-//         );
-//     }
-// }
-function MapWrapper() {
-
-
-
-    const [locations, setLocations] = useState([]);
+    // const [locations, setLocations] = useState([]);
 
     const removeElement = (index) => {
         const updatedList = [...locations];
@@ -131,7 +88,7 @@ function MapWrapper() {
     return (
         <div>
             <div id="mapid" >
-                <MapContainer center={center} zoom={13} scrollWheelZoom={true} style={{ width: '900px', height: '400px' }}>
+                <MapContainer center={center} zoom={13} scrollWheelZoom={true} style={{ height: '400px' }}>
                     <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -139,16 +96,19 @@ function MapWrapper() {
                     <LeafletgeoSearch locations={locations} setLocationsFun={setLocations} />
                 </MapContainer>
             </div>
-            <div style={{ width: '900px'}}>
-                <h5>Pinned Locations:</h5>
-                <ul style={{ textAlign: center }}>
+            <div>
+                <h6 style={{color:"#333",fontWeight:"bold"}}>Pinned Locations:</h6>
+                <ul>
                     {locations.map((location, index) => (
-                        <li key={index}>
-                            Address: {location.label}
-                            <Button className="ml-2" style={{ backgroundColor: "white" }} onClick={() => removeElement(index)}>
-                                <XLg style={{ color: "black" }} />
-                            </Button>
-                        </li>
+                        <Card className='border shadow p-2'>
+                            <li key={index}>
+                                <PinFill className="mr-2" color="red"/>
+                                {location.label}
+                                <Button className="ml-1" style={{ backgroundColor: "white", height:"10xp",width:"10xp", border: "1px solid white"}} onClick={() => removeElement(index)}>
+                                    <XCircle style={{ color: "black" }} />
+                                </Button>
+                            </li>
+                        </Card>
                     ))}
                 </ul>
             </div>

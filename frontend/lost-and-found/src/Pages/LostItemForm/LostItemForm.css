@@ -1,9 +1,28 @@
+.app {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+}
+
+.section {
+  padding: 20px;
+  box-sizing: border-box;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.section:first-child {
+  border-right: 1px solid #ccc; /* Change the border style as needed */
+}
+
 .lost-item-form {
     display: flex;
+    flex: 1;
     flex-direction: column;
     align-items: center;
   }
   .lost-item-group {
+    width: 100%;
     margin: 10px 0;
   }
   .lost-item-input {
@@ -50,4 +69,43 @@
     opacity: 0;
     transform: scale(0.95);
     transition: opacity 300ms, transform 300ms;
+  }
+
+  li{
+    list-style-type: none;
+  }
+
+  .input-label{
+    color:"#333";
+    font-weight:"bold";
+  }
+
+  .item-card {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    border: 1px solid #ccc;
+    white-space: nowrap; /* Prevent text from wrapping */
+    overflow: hidden; /* Hide overflowing text */
+    /* text-overflow: ellipsis; */
+  }
+
+  .item-detail{
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    flex: 0.75;
+    word-wrap: break-word;
+  }
+  .card-image {
+    padding: 5px;
+    flex: 0.25;
+    height: 100%;
+    width: 100%;
+    
+  }
+  .item-row{
+    word-wrap    : break-word;
+overflow-wrap: break-word;
   }

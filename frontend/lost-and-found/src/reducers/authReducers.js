@@ -1,6 +1,6 @@
 const initialState = {
     user: null,
-    accessToken: null,
+    token: null,
     loginError: null,
     signupError: null, // New property for signup errors
   };
@@ -11,7 +11,7 @@ const initialState = {
         return {
           ...state,
           user: action.payload,
-          error: null,
+          token: action.payload.token,
         };
       case 'LOGIN_FAILURE':
         return {
@@ -28,7 +28,7 @@ const initialState = {
         return {
             ...state,
             user: null,
-            accessToken: null,
+            token: null,
         };
         case 'SIGNUP_SUCCESS':
             return {
