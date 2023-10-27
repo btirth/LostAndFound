@@ -7,7 +7,7 @@ import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 
 import { Icon } from 'leaflet'
 import { Button,Card } from "react-bootstrap";
-import { XLg,XCircle } from 'react-bootstrap-icons'
+import { XLg,XCircle,PinFill } from 'react-bootstrap-icons'
 
 
 
@@ -88,7 +88,7 @@ function MapWrapper(props) {
     return (
         <div>
             <div id="mapid" >
-                <MapContainer center={center} zoom={13} scrollWheelZoom={true} style={{ width: '900px', height: '400px' }}>
+                <MapContainer center={center} zoom={13} scrollWheelZoom={true} style={{ height: '400px' }}>
                     <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -96,13 +96,14 @@ function MapWrapper(props) {
                     <LeafletgeoSearch locations={locations} setLocationsFun={setLocations} />
                 </MapContainer>
             </div>
-            <div style={{ width: '900px'}}>
-                <h5>Pinned Locations:</h5>
-                <ul style={{ textAlign: center }}>
+            <div>
+                <h6 style={{color:"#333",fontWeight:"bold"}}>Pinned Locations:</h6>
+                <ul>
                     {locations.map((location, index) => (
-                        <Card className='border shadow pl-2 pr-2'>
+                        <Card className='border shadow p-2'>
                             <li key={index}>
-                                Address: {location.label}
+                                <PinFill className="mr-2" color="red"/>
+                                {location.label}
                                 <Button className="ml-1" style={{ backgroundColor: "white", height:"10xp",width:"10xp", border: "1px solid white"}} onClick={() => removeElement(index)}>
                                     <XCircle style={{ color: "black" }} />
                                 </Button>
