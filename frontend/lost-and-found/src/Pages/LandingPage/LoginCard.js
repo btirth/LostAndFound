@@ -45,7 +45,7 @@ const LoginCard = () => {
       
             // Store the access token in local storage or a secure storage method
             localStorage.setItem('access_token', accessToken);
-            
+            localStorage.setItem('user_email', email);
             setErrorMessage(null);
           
             window.location = '/home'
