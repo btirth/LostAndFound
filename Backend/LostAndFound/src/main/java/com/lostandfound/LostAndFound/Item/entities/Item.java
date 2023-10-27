@@ -7,11 +7,12 @@ import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
-
-@Document(collection="item")
+@Document(collection = "item")
 public class Item {
+
     @Id
     /**
      * Key of the item that can be uniquely identified
@@ -29,18 +30,15 @@ public class Item {
 
     private boolean isFoundItem;
 
+    private String category;
+
     @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
     private GeoJsonPoint location;
-
-
-
-    public Item() {
-
-    }
 
     /**
      *
      * @return the id from the object
+     *
      */
     public String getId() {
         return id;
@@ -48,6 +46,7 @@ public class Item {
 
     /**
      * Set the id to the object of item
+     *
      * @param id
      */
     public void setId(String id) {
@@ -56,7 +55,10 @@ public class Item {
 
     /**
      * Get the title from the object of the item
+     *
      * @return title of the item
+     *
+     *
      */
     public String getTitle() {
         return title;
@@ -64,6 +66,9 @@ public class Item {
 
     /**
      * set the title to the object of the Item
+     *
+     *
+     *
      * @param title string that describe the item in brief
      */
     public void setTitle(String title) {
@@ -72,22 +77,30 @@ public class Item {
 
     /**
      * set the description to the object of the Item
+     *
+     *
+     *
      * @return Description
      */
     public String getDescription() {
         return description;
     }
 
-    /**
+    /*
+     *
+     *
      * set the description to the object of the Item
+     *
      * @param description that describe the item in detail
      */
     public void setDescription(String description) {
         this.description = description;
     }
 
-    /**
+    /*
+     *
      * set the title to the object of the Item
+     *
      * @return returns the mailId of the user by whom item was created
      */
     public String getCreatedBy() {
@@ -96,6 +109,8 @@ public class Item {
 
     /**
      * set the createdBy to the object of the Item
+     *
+     *
      * @param createdBy that represented it is created by which user
      */
     public void setCreatedBy(String createdBy) {
@@ -103,7 +118,9 @@ public class Item {
     }
 
     /**
+     *
      * Gets the mailId of the person who claimed the item.
+     *
      * @return the email of the person who claimed the item
      */
     public String getClaimedBy() {
@@ -112,6 +129,7 @@ public class Item {
 
     /**
      * set the claimedBy to the object of the Item
+     *
      * @param claimedBy that it has been claimed by user mail id
      */
     public void setClaimedBy(String claimedBy) {
@@ -120,7 +138,9 @@ public class Item {
 
     /**
      * Checks if the item is sensitive.
+     *
      * @return true if the item is sensitive; false otherwise
+     *
      */
     public boolean isSensitive() {
         return isSensitive;
@@ -128,6 +148,9 @@ public class Item {
 
     /**
      * set the description to the object of the Item
+     *
+     *
+     *
      * @param sensitive that describe the item in detail
      */
     public void setSensitive(boolean sensitive) {
@@ -135,7 +158,10 @@ public class Item {
     }
 
     /**
+     *
      * Gets the date when the item was posted.
+     *
+     *
      * @return the date when the item was posted
      */
     public LocalDate getPostedAt() {
@@ -143,23 +169,31 @@ public class Item {
     }
 
     /**
+     *
      * Sets the date when the item was posted.
+     *
      * @param postedAt the date when the item was posted
      */
     public void setPostedAt(LocalDate postedAt) {
+
         this.postedAt = postedAt;
     }
 
-    /**
+    /*
+     *
      * Gets the image associated with the item.
+     *
      * @return the image as a byte array
-     */
+     *
+     **/
     public List<String> getImage() {
         return image;
     }
 
     /**
      * Sets the image associated with the item.
+     *
+     *
      * @param image the image as a byte array
      */
     public void setImage(List<String> image) {
@@ -168,6 +202,7 @@ public class Item {
 
     /**
      * Checks if the item is found.
+     *
      * @return true if the item is found; false otherwise
      */
     public boolean isFoundItem() {
@@ -176,6 +211,7 @@ public class Item {
 
     /**
      * Sets whether the item is found or not.
+     *
      * @param foundItem true if the item is found; false otherwise
      */
     public void setFoundItem(boolean foundItem) {
@@ -184,6 +220,7 @@ public class Item {
 
     /**
      * Get the location of the item
+     *
      * @return
      */
     public GeoJsonPoint getLocation() {
@@ -201,6 +238,7 @@ public class Item {
 
     /**
      * Gets the date when the item was posted.
+     *
      * @return the date when the item was posted
      */
     public LocalDate getLastUpdated() {
@@ -209,10 +247,29 @@ public class Item {
 
     /**
      * Sets the date when the item was posted.
+     *
      * @param lastUpdated the date when the item was posted
      */
     public void setLastUpdated(LocalDate lastUpdated) {
         this.lastUpdated = lastUpdated;
+    }
+
+    /**
+     * Sets the category of the item;
+     *
+     * @param category of the item
+     */
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    /**
+     * Returns the category of the item;
+     *
+     *
+     */
+    public String getCategory() {
+        return this.category;
     }
 
 }

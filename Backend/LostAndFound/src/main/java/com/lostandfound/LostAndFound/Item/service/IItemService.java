@@ -1,9 +1,6 @@
 package com.lostandfound.LostAndFound.Item.service;
 
 import com.lostandfound.LostAndFound.Item.entities.Item;
-import org.springframework.data.geo.Distance;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
