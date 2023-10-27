@@ -6,10 +6,7 @@ import com.lostandfound.LostAndFound.Item.service.IItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,16 +35,8 @@ public class ItemSeviceImpl implements IItemService {
 
     @Override
     public List<Item> getList(boolean isFoundItem, Double longitude, Double latitude,  Double distance) {
-        boolean test;
-        if(longitude != null)
-            test = true;
-        if(latitude!=null)
-            test = false;
-        if(distance!= null)
-            test = true;
         if(longitude != null && latitude != null && distance != null) {
-//        return this.itemRepository.findByLocationWithin(longitude, latitude, distance);
-                return this.itemRepository.findByIsFoundItemAndLocationWithin(isFoundItem, longitude, latitude, distance);
+            return this.itemRepository.findByIsFoundItemAndLocationWithin(isFoundItem, longitude, latitude, distance);
         }
         else {
             return this.itemRepository.filterItems(isFoundItem);
@@ -65,7 +54,9 @@ public class ItemSeviceImpl implements IItemService {
         storedItem.setClaimedBy(item.getClaimedBy());
         storedItem.setFoundItem(item.isFoundItem());
         storedItem.setLocation(item.getLocation());
+        storedItem.setCategory(item.getCategory());
         storedItem.setLastUpdated(LocalDate.now());
+        storedItem.setImage(item.getImage());
 
         this.itemRepository.save(storedItem);
 
