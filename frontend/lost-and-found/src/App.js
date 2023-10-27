@@ -8,7 +8,6 @@ import HomePage from './Pages/HomePage/HomePage';
 import PrivateRoute from './Components/PrivateRoute'; // Import the PrivateRoute component
 import LostItemForm from './Pages/LostItemForm/LostItemForm';
 
-
 const App = () => {
   return (
     <Router>
