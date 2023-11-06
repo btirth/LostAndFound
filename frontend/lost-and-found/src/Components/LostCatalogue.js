@@ -69,14 +69,14 @@ const LostCatalogue = () => {
   };
 
   const itemNameStyle = {
-    color: BaseColor,
-    fontSize: '24px',
+    color: '#333',
+    fontSize: '20px',
     margin: '0',
   };
 
   const itemTextStyle = {
     color: '#333',
-    fontSize: '18px',
+    fontSize: '15px',
     margin: '4px 0',
   };
 
@@ -109,7 +109,7 @@ const LostCatalogue = () => {
     padding: '16px',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    // alignItems: 'center',
   };
 
   const filterHeadingStyle = {
@@ -302,7 +302,9 @@ const LostCatalogue = () => {
         onMouseLeave={() => setHovered(false)}
       >
         <div style={cardContentStyle}>
+          <div style={{textAlign:'center'}}>
           {renderItemImage()}
+          </div>
           <div style={itemInfoStyle}>
             <h3 style={itemNameStyle}>{title}</h3>
             <p style={itemTextStyle}>Posted at: {postedAt}</p>
@@ -467,37 +469,12 @@ const LostCatalogue = () => {
   }
   
     return (
-      <form style={{ textAlign: 'center' }} >
+      <form  >
         <div style={filterContainerStyle}>
-          <label>
-            <input
-              type="checkbox"
-              value="keyword"
-              checked={selectedFilters.includes('keyword')}
-              onChange={handleFilterChange}
-            />
-            Keyword
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              value="date"
-              checked={selectedFilters.includes('date')}
-              onChange={handleFilterChange}
-            />
-            Date
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              value="location"
-              checked={selectedFilters.includes('location')}
-              onChange={handleFilterChange}
-            />
-            Location
-          </label>
-          <label>
+        <label>
             Category:
+            <span style={{fontSize:'16px',marginRight:'6px'}}></span>
+
             <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
               <option value="">All Categories</option>
               <option value="personal">Personal Item</option>
@@ -505,20 +482,53 @@ const LostCatalogue = () => {
               <option value="document">Document</option>
             </select>
           </label>
-          <input
-            type="text"
-            placeholder="Keyword"
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            style={filterOptionsStyle}
-          />
+          <label >
+            <input
+              type="checkbox"
+              value="keyword"
+              checked={selectedFilters.includes('keyword')}
+              onChange={handleFilterChange}
+            />
+            <span style={{fontSize:'16px',marginRight:'4px'}}></span>
+            Keyword
+          </label>
+            <input
+              type="text"
+              placeholder="Keyword"
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              style={filterOptionsStyle}
+            />
+          <label>
+            <input
+              type="checkbox"
+              value="date"
+              checked={selectedFilters.includes('date')}
+              onChange={handleFilterChange}
+            />
+            <span style={{fontSize:'16px',marginRight:'4px'}}></span>
+
+            Date
+          </label>
           <input
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
             style={filterOptionsStyle}
           />
-          <MapWrapper setLocation={setLocation} />
+           
+          <label>
+            <input
+              type="checkbox"
+              value="location"
+              checked={selectedFilters.includes('location')}
+              onChange={handleFilterChange}
+            />
+            <span style={{fontSize:'16px',marginRight:'4px'}}></span>
+
+            Location
+          </label>
+         
           <input
             type="number"
             placeholder="Radius (meters)"
@@ -526,6 +536,8 @@ const LostCatalogue = () => {
             onChange={(e) => setRadius(e.target.value)}
             style={filterOptionsStyle}
           />
+         
+          <MapWrapper setLocation={setLocation} />
   
           <button onClick={handleSubmit} style={filterButtonStyle}>
             Apply Filter
@@ -583,7 +595,7 @@ const LostCatalogue = () => {
         )}
       </div>
       <div style={componentBStyle}>
-      <h1 style={{ textAlign: 'center', fontSize: '40px', color: BaseColor }}>
+      <h1 style={{ textAlign: 'center', fontSize: '40px', color: '#333' }}>
   LOST CATALOGUE:
 </h1>
 

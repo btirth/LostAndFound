@@ -66,15 +66,21 @@ const LostItemForm = () => {
     async function fetchItemsData() {
         try {
             console.log(headers);
-            const lostItemList = await axios.get('http://172.17.0.80:8001/api/v1/item/get-list-by-user', {
-                createdBy: userEmail,
-                isFoundItem: "false",
-                postedAt: "-1",
-            }, { headers }
-            );
+           
+            const lostItemList = await axios.get('http://localhost:8080/api/v1/item/get-list-by-user', {
+  params: {
+    createdBy: userEmail,
+    isFoundItem: false,
+    postedAt: -1,
+  },
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+  },
+});
             console.log("getting list");
-            console.log(lostItemList)
-            setlostItems(...lostItemList);
+            console.log("lostItemList",lostItemList)
+            setlostItems([...lostItemList.data]);
         } catch (e) {
             console.error(e);
         }
@@ -181,17 +187,17 @@ const LostItemForm = () => {
                 <div className="section" style={{ width: '40%', overflowY: 'scroll' }}>
                     <h2 style={{ textAlign: "center", color: '#333', fontWeight: "bold" }}>Your lost items</h2>
                     <div style={{ marginRight: "20px", marginLeft: "20px" }}>
-                        {lostItems.length == 0 ? <h6>You haven't posted any lost item</h6> :
+                        {lostItems.length == 0 ? <h6 style={{textAlign:'center'}}>You haven't posted any lost item</h6> :
                             lostItems.map((lostItem, index) => (
                                 <Card className="border shadow mb-2 p-2 rounded-3" style={{ width: "100%", height: "200px" }} key={index}>
                                     <li className="item-card" style={{ height: "100%" }}>
-                                        <img className="card-image" src={lostItem.imageUrl}></img>
+                                        <img className="card-image" src={lostItem.image[0]}></img>
                                         <div className='item-detail'>
-                                            <h6 className="item-row"><strong>Name: </strong>{lostItem.name}</h6>
-                                            <h6 className="item-row"><strong>Description: </strong>{lostItem.name}</h6>
-                                            <h6 className="item-row"><strong>Category: </strong>{lostItem.name}</h6>
-                                            <h6 className="item-row"><strong>Date: </strong>{lostItem.name}</h6>
-                                            <h6 className="item-row"><strong>Found Status: </strong>{lostItem.name}</h6>
+                                            <h6 className="item-row"><strong>Name: </strong>{lostItem.title}</h6>
+                                            <h6 className="item-row"><strong>Description: </strong>{lostItem.description.slice(0, 12) + '...'}</h6>
+                                            <h6 className="item-row"><strong>Category: </strong>{'Personal Item'}</h6>
+                                            <h6 className="item-row"><strong>Date: </strong>{lostItem.postedAt}</h6>
+                                            <h6 className="item-row"><strong>Found Status: </strong>{lostItem.foundItem ? 'Found' : 'Not Found'}</h6>
                                         </div>
                                     </li>
                                 </Card>

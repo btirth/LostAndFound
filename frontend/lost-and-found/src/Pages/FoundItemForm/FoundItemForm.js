@@ -205,12 +205,13 @@ const FoundItemForm = ({ isOpen, onRequestClose, resetVariable }) => {
                   required
                 />
               </Form.Group>
-              <div className="lost-item-group">
+              <div style={{width:'100%'}}>
+              <div style={{textAlign:'center'}}>
                 <Form.Label>Location Picker</Form.Label>
                 {/* <LocationPicker onLocationChange={addLocation} /> */}
-                <MapWrapper locations={locations} setLocationsFun={setLocations} />
+                <MapWrapper style={{width:'900px'}} locations={locations} setLocationsFun={setLocations} />
               </div>
-
+              </div>
               <Button variant="primary" type="submit" className="found-item-button">
                 Submit
               </Button>
