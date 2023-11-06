@@ -7,10 +7,7 @@ import com.mongodb.client.MongoDatabase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,9 +50,9 @@ public class ItemSeviceImpl implements IItemService {
         return this.itemRepository.findByKeyword(keyword, isFoundItem, postedAt);
     }
 
-
     @Override
-    public List<Item> getListByFilter(Double longitude, Double latitude, Double distance, boolean isFoundItem, String keyword, String date, int postedAt) {
+    public List<Item> getListByFilter(Double longitude, Double latitude, Double distance, boolean isFoundItem,
+            String keyword, String date, int postedAt) {
         List<Item> filteredData = new java.util.ArrayList<Item>();
         List<Item> fetchedData = new java.util.ArrayList<Item>();
         LocalDate localDate = null;
@@ -71,7 +68,7 @@ public class ItemSeviceImpl implements IItemService {
             } else {
                 fetchedData = this.itemRepository.findByKeyword(keyword, isFoundItem, postedAt);
             }
-            if (localDate != null){
+            if (localDate != null) {
                 for (Item item : fetchedData) {
                     if (item.getPostedAt().equals(localDate)) {
                         filteredData.add(item);
@@ -80,9 +77,10 @@ public class ItemSeviceImpl implements IItemService {
                 return filteredData;
             }
         }
-        fetchedData = this.itemRepository.findByLocationWithinAndPostedAt(longitude, latitude, distance, isFoundItem, postedAt);
+        fetchedData = this.itemRepository.findByLocationWithinAndPostedAt(longitude, latitude, distance, isFoundItem,
+                postedAt);
         if (keyword == null || keyword.isEmpty()) {
-            if (localDate != null){
+            if (localDate != null) {
                 for (Item item : fetchedData) {
                     if (item.getPostedAt().equals(localDate)) {
                         filteredData.add(item);
@@ -95,7 +93,7 @@ public class ItemSeviceImpl implements IItemService {
 
         for (Item item : fetchedData) {
             if ((item.getTitle().contains(keyword) || item.getDescription().contains(keyword))) {
-                if (localDate != null){
+                if (localDate != null) {
                     if (item.getPostedAt().equals(localDate)) {
                         filteredData.add(item);
                     }
@@ -118,7 +116,9 @@ public class ItemSeviceImpl implements IItemService {
         storedItem.setClaimedBy(item.getClaimedBy());
         storedItem.setFoundItem(item.isFoundItem());
         storedItem.setLocation(item.getLocation());
+        storedItem.setCategory(item.getCategory());
         storedItem.setLastUpdated(LocalDate.now());
+        storedItem.setImage(item.getImage());
 
         this.itemRepository.save(storedItem);
 
