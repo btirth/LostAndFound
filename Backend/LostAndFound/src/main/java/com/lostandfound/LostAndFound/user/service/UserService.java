@@ -3,17 +3,37 @@ package com.lostandfound.LostAndFound.user.service;
 import com.lostandfound.LostAndFound.user.entities.User;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-
 @Service
 public interface UserService {
-    Optional<User> findByEmail(String email);
 
-    List<User> findAll();
+  /**
+   * This method will check if the user already exists with given email.
+   *
+   * @param email
+   * @return
+   */
+  User findByEmail(String email);
 
-    String insert(User user);
+  /**
+   * This method will create new user in db.
+   *
+   * @param user
+   * @return
+   */
+  User insert(User user);
 
-    String delete(String email);
-    String update(User user);
+  /**
+   * This method will delete the user if exists.
+   *
+   * @param email
+   */
+  void delete(String email);
+
+  /**
+   * This method will update the user if exists.
+   *
+   * @param user
+   * @return
+   */
+  User update(User user);
 }
