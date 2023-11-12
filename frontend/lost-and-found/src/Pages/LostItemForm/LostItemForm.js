@@ -12,6 +12,8 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "./../../firebase-config.js";
 import axios from 'axios';
 import { toast } from 'react-toastify'
+import { ApiRequest } from '../../helpers/api-request.js';
+import { API_URL } from '../../config/api-end-points.js';
 
 
 const LostItemForm = () => {
@@ -21,14 +23,6 @@ const LostItemForm = () => {
         isSensitive: false,
         category:''
     });
-
-    const headers = {
-
-        'Content-Type': 'application/json',
-
-        'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-
-    };
 
     const userEmail = localStorage.getItem('user_email');
     const [errorMessage, setErrorMessage] = useState(null)
@@ -64,26 +58,21 @@ const LostItemForm = () => {
     }, [])
 
     async function fetchItemsData() {
-        try {
-            console.log(headers);
+   
+            ApiRequest.fetch( {method: 'get',
+            url: `${API_URL}/api/v1/item/get-list-by-user`,
+            params: {
+            createdBy: userEmail,
+            isFoundItem: false,
+            postedAt: -1,
+            }})
+            .then((lostItemList) => {
+                setlostItems([...lostItemList.data]);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
            
-            const lostItemList = await axios.get('http://localhost:8080/api/v1/item/get-list-by-user', {
-  params: {
-    createdBy: userEmail,
-    isFoundItem: false,
-    postedAt: -1,
-  },
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-  },
-});
-            console.log("getting list");
-            console.log("lostItemList",lostItemList)
-            setlostItems([...lostItemList.data]);
-        } catch (e) {
-            console.error(e);
-        }
     };
 
     const handleMediaChange = (e) => {
@@ -107,21 +96,31 @@ const LostItemForm = () => {
 
         //submitting form data
         try {
-            const response = await axios.post('http://localhost:8080/api/v1/item', {
+            
 
+            const dataToSend = {
                 title: formData["itemName"],
                 description: formData["itemDescription"],
                 createdBy: userEmail,
                 image: fileLinks,
                 location: {
-                    coordinates: coordinates,
-                    type: "Point"
+                  coordinates: coordinates,
+                  type: "Point"
                 },
                 foundItem: false,
                 sensitive: formData["isSensitive"]
-            }, { headers }
-            );
-
+              };
+            
+              
+              ApiRequest.fetch({method: 'post',
+              url: `${API_URL}/api/v1/item`,
+              data: dataToSend,})
+                .then((response) => {
+                  console.log('Data successfully sent:', response);
+                })
+                .catch((error) => {
+                  console.error('Error:', error);
+                });
             setFormData([]);
             setLocations([]);
             setMediaFiles([]);
