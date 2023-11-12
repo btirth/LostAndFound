@@ -8,10 +8,12 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.5.1",
     "bootstrap-icons": "^1.11.1",
+    "cross-env": "^7.0.3",
     "firebase": "^10.5.0",
     "leaflet": "1.7.1",
     "leaflet-geosearch": "3.2.1",
     "leaflet-search": "^4.0.0",
+    "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-bootstrap": "^2.9.0",
     "react-bootstrap-icons": "^1.10.3",
@@ -29,6 +31,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start:production": "cross-env NODE_ENV=production react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

@@ -6,6 +6,7 @@ import axios from 'axios'
 // Components
 import LoginCard from './LoginCard'
 import SignUpCard from './SignUpCard'
+import { ApiRequest } from '../../helpers/api-request'
 
 function ForgetPasswordCard()  {
 
@@ -15,21 +16,24 @@ function ForgetPasswordCard()  {
     const handlePostResetPassword = async (e) => {
         e.preventDefault()
         
-        try {
-            const response = await axios.post('https://dev-3vtey6tugvrs4132.us.auth0.com/dbconnections/change_password', {
-    client_id: '0UOtlCkeRywKyHbavmcbu6iihiUnwVYI',
-    email: email,
-    connection: 'Username-Password-Authentication',
-  });
-
-  console.log(response.data);
-
-            setDone(true)
-        } catch (e) {
-            toast.error(e.response?.data || e.message)
-        } finally {
-            setEmail('')
-        }
+        ApiRequest.fetch({
+            method: 'post',
+            url: 'https://dev-3vtey6tugvrs4132.us.auth0.com/dbconnections/change_password',
+            data: {
+              client_id: '0UOtlCkeRywKyHbavmcbu6iihiUnwVYI',
+              email: email,
+              connection: 'Username-Password-Authentication',
+            },
+          })
+            .then((response) => {
+              setDone(true);
+            })
+            .catch((error) => {
+              toast.error(error.response?.data || error.message);
+            })
+            .finally(() => {
+              setEmail('');
+            });
     }
 
   

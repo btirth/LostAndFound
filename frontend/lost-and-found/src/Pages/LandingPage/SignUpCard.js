@@ -19,6 +19,7 @@ import { toast } from 'react-toastify'
 
 import validator from 'validator'
 import axios from 'axios'
+import { ApiRequest } from '../../helpers/api-request';
 
 const SignUpCard = () => {
 
@@ -157,20 +158,22 @@ const SignUpCard = () => {
       
             console.log('Signup successful:', response.data);
             if (response.data) {
-                const headers = {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`};
+               
                   const dataToSend = {
               name: `${firstName} ${lastName}`,
               email: email
                   };
-                  axios.post(`${API_URL}/api/v1/user`, dataToSend, { headers })
-                    .then(response => {
-                      console.log('Data successfully sent:', response.data);
-                    })
-                    .catch(error => {
-                      console.error('Error:', error);
-                    });
+                    ApiRequest.fetch({
+                        method: 'post',
+                        url: `${API_URL}/api/v1/user`,
+                        data: dataToSend,
+                      })
+                        .then((response) => {
+                          console.log('Data successfully sent:', response);
+                        })
+                        .catch((error) => {
+                          console.error('Error:', error);
+                        });
                 
             }
       
@@ -183,8 +186,6 @@ const SignUpCard = () => {
 
             // setError('');
           } catch (error) {
-            // Handle errors, e.g., display error messages
-            // setError('Error signing up. Please try again.');
             console.error('Error signing up:', error);
             setError('Something went wrong. Please try again.'); 
           }
