@@ -2,6 +2,8 @@ package com.lostandfound.LostAndFound.Item.entities;
 
 import java.util.Date;
 import java.util.List;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -14,6 +16,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
 @Setter
+@AllArgsConstructor
 @Document(collection = "item")
 public class Item {
   @Id private String id;
@@ -30,4 +33,8 @@ public class Item {
 
   @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
   private GeoJsonPoint location;
+
+  public Item copy() {
+    return new Item(this.id, this.title, this.description, this.createdBy, this.claimedBy, this.sensitive, this.postedAt, this.updatedDate, this.image, this.foundItem, this.category, this.location);
+  }
 }
