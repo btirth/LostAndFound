@@ -23,6 +23,10 @@ const LostCatalogue = () => {
   const componentAStyle = {
     flex: '1',
     padding: '16px',
+    border: '2px solid #000', 
+    boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.3)', 
+    padding: '20px', 
+    borderBottom: 'none',
   };
 
   const componentBStyle = {
@@ -311,7 +315,6 @@ const LostCatalogue = () => {
             {/* <p style={itemTextStyle}>Location: {location}</p> */}
             <p style={itemTextStyle}>Description: {description}</p>
           </div>
-          <button style={buttonStyle}>Claim</button>
         </div>
       </div>
     );
@@ -360,6 +363,9 @@ const LostCatalogue = () => {
   
     const handleSubmit = (event) => {
       event.preventDefault();
+      if (selectedFilters.length === 0) {
+        return
+      }
       if (selectedFilters.includes('category') && selectedCategory === '') {
         toast.error('Please select a category!', {
           position: 'top-right',
@@ -584,9 +590,9 @@ const LostCatalogue = () => {
     <div style={containerFlexStyle}>
       <div style={componentAStyle}>
         <div style={filterLabelContainerStyle}>
-          <div style={filterLabelStyle} className="filter-toggle" onClick={toggleFilter}>
+          {/* <div style={filterLabelStyle} className="filter-toggle" onClick={toggleFilter}>
             {isFilterOpen ? 'Hide Filter Options' : 'Show Filter Options'}
-          </div>
+          </div> */}
         </div>
         {isFilterOpen && (
           <div style={filterOptionsContainerStyle}>
