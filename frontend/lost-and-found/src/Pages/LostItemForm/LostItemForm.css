@@ -12,100 +12,95 @@
   flex-direction: column;
 }
 .section:first-child {
-  border-right: 1px solid #ccc; /* Change the border style as needed */
+  border-right: 1px solid #ccc; 
+}
+.item-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border: 2px solid #75e6a3;
+  border-radius: 10px;
+  background-color: #f0f8f4;
+  transition: background-color 0.3s ease;
+}
+
+.item-card:hover {
+  background-color: #ddf5e2;
+}
+
+.card-image {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 20px;
+}
+
+.item-detail {
+  flex-grow: 1;
 }
 
 .lost-item-form {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    align-items: center;
-  }
-  .lost-item-group {
-    width: 100%;
-    margin: 10px 0;
-  }
-  .lost-item-input {
-    width: 100%;
-    padding: 20px;
-  }
-  .lost-item-textarea {
-    width: 100%;
-    padding: 10px;
-  }
-  .lost-item-checkbox {
-    margin: 10px 0;
-  }
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  margin: 0 auto;
+}
 
-  .lost-item-button {
-    background-color: #75e6a3;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-  }
-  
-  .lost-item-button:hover {
-    background-color: #4CAF50;
-  }
-  /* CSS for fade-in animation */
-.fade-enter {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  
-  .fade-enter-active {
-    opacity: 1;
-    transform: scale(1);
-    transition: opacity 300ms, transform 300ms;
-  }
-  
-  .fade-exit {
-    opacity: 1;
-    transform: scale(1);
-  }
-  
-  .fade-exit-active {
-    opacity: 0;
-    transform: scale(0.95);
-    transition: opacity 300ms, transform 300ms;
-  }
+.lost-item-group {
+  margin-bottom: 25px;
+}
 
-  li{
-    list-style-type: none;
-  }
+.lost-item-checkbox {
+  margin-top: 15px;
+}
 
-  .input-label{
-    color:"#333";
-    font-weight:"bold";
-  }
+/* .lost-item-input,
+.lost-item-textarea,
+.lost-item-select {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #75e6a3;
+  border-radius: 8px;
+  margin-top: 10px;
+  font-size: 16px;
+} */
 
-  .item-card {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    border: 1px solid #ccc;
-    white-space: nowrap; /* Prevent text from wrapping */
-    overflow: hidden; /* Hide overflowing text */
-    /* text-overflow: ellipsis; */
-  }
+.lost-item-button {
+  background-color: #75e6a3;
+  color: #fff;
+  border: none;
+  padding: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 18px;
+  font-weight: bold;
+}
 
-  .item-detail{
-    padding: 5px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    flex: 0.75;
-    word-wrap: break-word;
-  }
-  .card-image {
-    padding: 5px;
-    flex: 0.25;
-    height: 100%;
-    width: 100%;
-    
-  }
-  .item-row{
-    word-wrap    : break-word;
-overflow-wrap: break-word;
-  }
+.lost-item-button:hover {
+  background-color: #4caf50;
+}
+
+.alert {
+  margin-top: 15px;
+}
+
+.save-color-button {
+  background-color: #75e6a3; 
+  border-color: #75e6a3; 
+  color: #fff; 
+}
+
+.save-color-button:hover {
+  background-color: #5ac08e; 
+  border-color: #5ac08e;
+}
+.item-edit-card{
+  display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 200px;
+
+}
