@@ -55,7 +55,6 @@ public class ItemSeviceImpl implements IItemService {
     } catch (Exception e) {
       throw new LostAndFoundException("Error while updating item.");
     }
-
   }
 
   @Override
@@ -78,6 +77,5 @@ public class ItemSeviceImpl implements IItemService {
     } catch (Exception e) {
       throw new LostAndFoundException("Something went wrong.");
     }
-
   }
 }
