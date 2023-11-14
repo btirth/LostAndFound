@@ -2,7 +2,6 @@ package com.lostandfound.LostAndFound.Item.entities;
 
 import java.util.Date;
 import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,6 +34,18 @@ public class Item {
   private GeoJsonPoint location;
 
   public Item copy() {
-    return new Item(this.id, this.title, this.description, this.createdBy, this.claimedBy, this.sensitive, this.postedAt, this.updatedDate, this.image, this.foundItem, this.category, this.location);
+    return new Item(
+        this.id,
+        this.title,
+        this.description,
+        this.createdBy,
+        this.claimedBy,
+        this.sensitive,
+        this.postedAt,
+        this.updatedDate,
+        this.image,
+        this.foundItem,
+        this.category,
+        this.location);
   }
 }
