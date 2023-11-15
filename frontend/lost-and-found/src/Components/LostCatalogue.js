@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios'
 import Navbar from '../Components/Navbar';
+import { ApiRequest } from '../helpers/api-request';
 
 const LostCatalogue = () => {
   const [isFilterOpen, setFilterOpen] = useState(true);
@@ -32,13 +33,6 @@ const LostCatalogue = () => {
   const componentBStyle = {
     flex: '3',
     padding: '16px',
-    // paddingLeft: '5%',
-    // display: 'flex',
-  // justifyContent: 'space-between', 
-  // display: 'flex',
-  // flexDirection: 'column',
-  // justifyContent: 'space-between',
-    
   };
 
   const cardStyle = {
@@ -103,7 +97,6 @@ const LostCatalogue = () => {
 
   const itemContainerStyle = {
     display: 'flex',
-    // justifyContent: 'space-between', 
     flexWrap: 'wrap',
     width: '100%',
   };
@@ -113,13 +106,8 @@ const LostCatalogue = () => {
     padding: '16px',
     display: 'flex',
     flexDirection: 'column',
-    // alignItems: 'center',
   };
 
-  const filterHeadingStyle = {
-    fontSize: '20px',
-    color: BaseColor,
-  };
 
   const filterOptionsStyle = {
     width: '100%',
@@ -174,65 +162,7 @@ const LostCatalogue = () => {
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
-  // const items = [
-  //   {
-  //     name: 'Item 1',
-  //     image: sensitiveImg,
-  //     postedAt: '2023-10-23',
-  //     location: 'Coordinates 1',
-  //     sensitive: true,
-  //     description: 'This is the description for Item 1.',
-  //   },
-  //   {
-  //     name: 'Item 1',
-  //     image: sensitiveImg,
-  //     postedAt: '2023-10-23',
-  //     location: 'Coordinates 1',
-  //     sensitive: true,
-  //     description: 'This is the description for Item 1.',
-  //   },
-  //   {
-  //     name: 'Item 1',
-  //     image: sensitiveImg,
-  //     postedAt: '2023-10-23',
-  //     location: 'Coordinates 1',
-  //     sensitive: true,
-  //     description: 'This is the description for Item 1.',
-  //   },
-  //   {
-  //     name: 'Item 1',
-  //     image: sensitiveImg,
-  //     postedAt: '2023-10-23',
-  //     location: 'Coordinates 1',
-  //     sensitive: true,
-  //     description: 'This is the description for Item 1.',
-  //   },
-  //   {
-  //     name: 'Item 1',
-  //     image: sensitiveImg,
-  //     postedAt: '2023-10-23',
-  //     location: 'Coordinates 1',
-  //     sensitive: true,
-  //     description: 'This is the description for Item 1.',
-  //   },
-  //   {
-  //     name: 'Item 1',
-  //     image: sensitiveImg,
-  //     postedAt: '2023-10-23',
-  //     location: 'Coordinates 1',
-  //     sensitive: true,
-  //     description: 'This is the description for Item 1.',
-  //   },
-  //   {
-  //     name: 'Item 1',
-  //     image: sensitiveImg,
-  //     postedAt: '2023-10-23',
-  //     location: 'Coordinates 1',
-  //     sensitive: true,
-  //     description: 'This is the description for Item 1.',
-  //   },
-  //   // ... (other items)
-  // ];
+ 
 
   const paginatedItems = items.slice(
     (currentPage - 1) * itemsPerPage,
@@ -400,13 +330,7 @@ const LostCatalogue = () => {
           theme: 'dark',
         });
       } else {
-      // Handle form submission with selectedFilters, radius, name, selectedDate, and locationFile
-      console.log('Selected Filters:', selectedFilters);
-      console.log('Radius:', radius);
-      console.log('Date:', selectedDate);
-      console.log('Location:', location);
-      console.log('Keyword:', keyword);
-      console.log('Category:', selectedCategory);
+     
 
       // Check if "Location" filter is checked
   const isLocationFilterChecked = selectedFilters.includes('location');
@@ -451,29 +375,20 @@ const LostCatalogue = () => {
     filterParams.category = selectedCategory;
   }
 
-  // Handle form submission with the filtered parameters
-  console.log('Filter Parameters:', filterParams);
 
-  const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-  };
-
-  
-  axios.get(`${API_URL}/api/v1/item/get-list-by-filter?isFoundItem=true`, {
-    headers,
-    params: filterParams, 
-  })
-    .then(response => {
-      console.log('GET request successful:', response.data);
-      setItems(response.data);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+      ApiRequest.fetch({
+        method: 'get',
+        url: `${API_URL}/api/v1/item/get-list-by-filter?isFoundItem=true`,
+        params: filterParams,
+    }).then((data) => {
+      console.log(process.env);
+      setItems(data);
+    }).catch(e => { })
     };
   }
-  
+
+    
+
     return (
       <form  >
         <div style={filterContainerStyle}>
@@ -562,20 +477,14 @@ const LostCatalogue = () => {
   
 
   useEffect(() => {
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('access_token')}`};
-                  
     
-    axios.get(`${API_URL}/api/v1/item/get-list?isFoundItem=true`, { headers })
-      .then(response => {
-        console.log('GET request successful:', response.data);
-        setItems(response.data)
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-    
+      ApiRequest.fetch({
+        method: 'get',
+        url: `${API_URL}/api/v1/item/get-list?isFoundItem=true`
+    }).then((data) => {
+      console.log(process.env);
+      setItems(data);
+    }).catch(e => { })
  
   }, [])
 
