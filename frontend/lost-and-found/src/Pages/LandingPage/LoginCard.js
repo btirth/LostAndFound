@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from 'react'
-
 import { Alert, Button, Card, Col, Container, Form, InputGroup, Row } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux';
-import { loginSuccess, logout } from '../../actions/authActions';
-import { Link, Redirect } from 'react-router-dom'
-
 import { toast } from 'react-toastify'
-
 import validator from 'validator'
-import axios from 'axios'
+import { ApiRequest } from '../../helpers/api-request';
 
 
 
@@ -33,33 +28,31 @@ const LoginCard = () => {
 
         if (!validator.isEmail(email)) return toast.error('email is not valid')
 
-        if (!password || validator.isEmpty(password)) return toast.error('password is required')
-
-        try {
-            const response = await axios.post('https://dev-3vtey6tugvrs4132.us.auth0.com/oauth/token', {
-                grant_type: 'password',
-                username: email,
-                password: password,
-                client_id: '0UOtlCkeRywKyHbavmcbu6iihiUnwVYI',
-            });
-
-
-            console.log("response:" + response.data);
-            const accessToken = response.data.id_token;
-
-            if (accessToken != null) {
-                const userDataResponse = await axios.get('https://dev-3vtey6tugvrs4132.us.auth0.com/userinfo', {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${response.data.access_token}`,
-                    },
-                });
-                // console.log(userDataResponse.data);
-                // console.log(userDataResponse.data.name);
-                localStorage.setItem('username', userDataResponse.data.name);
-            }
+        if (!password || validator.isEmpty(password)) return toast.error('password is required')            
+           
 
             // Store the access token in local storage or a secure storage method
+                ApiRequest.fetch({
+                    method: 'post',
+                    url: `https://dev-3vtey6tugvrs4132.us.auth0.com/oauth/token`,
+                   data : {grant_type: 'password',
+                    username: email,
+                    password: password,
+                    client_id: '0UOtlCkeRywKyHbavmcbu6iihiUnwVYI',}
+                }).then((response) => {
+                    console.log("response",response);
+            const accessToken = response.id_token;
+            
+            if (accessToken != null) {
+
+                ApiRequest.fetch({
+                    method:'get',
+                    url:`https://dev-3vtey6tugvrs4132.us.auth0.com/userinfo`
+                }).then((userDataResponse)=>{
+                    localStorage.setItem('username', userDataResponse.data.name);
+                })
+
+            }
             localStorage.setItem('access_token', accessToken);
             localStorage.setItem('user_email', email);
             setErrorMessage(null);
@@ -67,29 +60,12 @@ const LoginCard = () => {
             window.location = '/home'
 
 
-        } catch (error) {
-            // Handle login errors
-            setErrorMessage(error.response?.data?.error_description || 'An error occurred during login');
+        }).catch(error => {  setErrorMessage(error.response?.data?.error_description || 'An error occurred during login');
+    })
 
-
-        }
 
     }
 
-
-
-
-    const handleLoginFailed = ({ errorMessages }) => {
-
-        if (errorMessages === "Invalid password") {
-            setPasswordHelper(errorMessages)
-        }
-
-        if (errorMessages === 'Admin user not found') {
-            setEmailHelper(errorMessages)
-        }
-
-    }
 
     return (
 
@@ -99,25 +75,11 @@ const LoginCard = () => {
                 <Form.Group className="text-left">
                     <Form.Label>Email</Form.Label>
                     <Form.Control value={email} onChange={(evt) => setEmail(evt.currentTarget.value)} required type='email' placeholder='name@email.com' />
-                    {/* {
-
-                        emailHelper
-                        //  &&
-                        // <FailedAlert text={emailHelper} />
-
-                    } */}
-
+        
                 </Form.Group>
                 <Form.Group className="text-left">
                     <Form.Label>Password</Form.Label>
                     <Form.Control value={password} onChange={(evt) => setPassword(evt.currentTarget.value)} required id='password' type='password' />
-                    {/* {
-
-                        passwordHelper 
-                        // &&
-                        // <FailedAlert text={passwordHelper} />
-
-                    } */}
                 </Form.Group>
                 <div style={{ marginTop: '10px' }}>
                     <Button type='submit' className='w-100' style={btStyle} >Sign In</Button>
