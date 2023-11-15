@@ -4,9 +4,9 @@ services:
   - docker:dind
 
 stages:
-  - issue
   - build
   - deploy
+  - issue
 
 variables:
   DOCKERHUB_IMAGE_PREFIX: "lostandfound12/lost-and-found"
@@ -97,7 +97,7 @@ build-dev:
   only:
     - dev
   needs:
-    - issue-job
+    - maven-build
   script:
     - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io
     - docker build -t $DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA -f ./Backend/LostAndFound/Dockerfile ./Backend/LostAndFound
