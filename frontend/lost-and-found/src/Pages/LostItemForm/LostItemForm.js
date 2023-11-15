@@ -12,6 +12,8 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "./../../firebase-config.js";
 import axios from 'axios';
 import { toast } from 'react-toastify'
+import { ApiRequest } from '../../helpers/api-request.js';
+import { API_URL } from '../../config/api-end-points.js';
 
 
 const LostItemForm = () => {
@@ -21,14 +23,6 @@ const LostItemForm = () => {
         isSensitive: false,
         category:''
     });
-
-    const headers = {
-
-        'Content-Type': 'application/json',
-
-        'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-
-    };
 
     const userEmail = localStorage.getItem('user_email');
     const [errorMessage, setErrorMessage] = useState(null)
@@ -64,20 +58,21 @@ const LostItemForm = () => {
     }, [])
 
     async function fetchItemsData() {
-        try {
-            console.log(headers);
-            const lostItemList = await axios.get('http://172.17.0.80:8001/api/v1/item/get-list-by-user', {
-                createdBy: userEmail,
-                isFoundItem: "false",
-                postedAt: "-1",
-            }, { headers }
-            );
-            console.log("getting list");
-            console.log(lostItemList)
-            setlostItems(...lostItemList);
-        } catch (e) {
-            console.error(e);
-        }
+   
+            ApiRequest.fetch( {method: 'get',
+            url: `${API_URL}/api/v1/item/get-list-by-user`,
+            params: {
+            createdBy: userEmail,
+            isFoundItem: false,
+            postedAt: -1,
+            }})
+            .then((lostItemList) => {
+                setlostItems([...lostItemList.data]);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+           
     };
 
     const handleMediaChange = (e) => {
@@ -101,21 +96,31 @@ const LostItemForm = () => {
 
         //submitting form data
         try {
-            const response = await axios.post('http://localhost:8080/api/v1/item', {
+            
 
+            const dataToSend = {
                 title: formData["itemName"],
                 description: formData["itemDescription"],
                 createdBy: userEmail,
                 image: fileLinks,
                 location: {
-                    coordinates: coordinates,
-                    type: "Point"
+                  coordinates: coordinates,
+                  type: "Point"
                 },
                 foundItem: false,
                 sensitive: formData["isSensitive"]
-            }, { headers }
-            );
-
+              };
+            
+              
+              ApiRequest.fetch({method: 'post',
+              url: `${API_URL}/api/v1/item`,
+              data: dataToSend,})
+                .then((response) => {
+                  console.log('Data successfully sent:', response);
+                })
+                .catch((error) => {
+                  console.error('Error:', error);
+                });
             setFormData([]);
             setLocations([]);
             setMediaFiles([]);
@@ -181,17 +186,17 @@ const LostItemForm = () => {
                 <div className="section" style={{ width: '40%', overflowY: 'scroll' }}>
                     <h2 style={{ textAlign: "center", color: '#333', fontWeight: "bold" }}>Your lost items</h2>
                     <div style={{ marginRight: "20px", marginLeft: "20px" }}>
-                        {lostItems.length == 0 ? <h6>You haven't posted any lost item</h6> :
+                        {lostItems.length == 0 ? <h6 style={{textAlign:'center'}}>You haven't posted any lost item</h6> :
                             lostItems.map((lostItem, index) => (
                                 <Card className="border shadow mb-2 p-2 rounded-3" style={{ width: "100%", height: "200px" }} key={index}>
                                     <li className="item-card" style={{ height: "100%" }}>
-                                        <img className="card-image" src={lostItem.imageUrl}></img>
+                                        <img className="card-image" src={lostItem.image[0]}></img>
                                         <div className='item-detail'>
-                                            <h6 className="item-row"><strong>Name: </strong>{lostItem.name}</h6>
-                                            <h6 className="item-row"><strong>Description: </strong>{lostItem.name}</h6>
-                                            <h6 className="item-row"><strong>Category: </strong>{lostItem.name}</h6>
-                                            <h6 className="item-row"><strong>Date: </strong>{lostItem.name}</h6>
-                                            <h6 className="item-row"><strong>Found Status: </strong>{lostItem.name}</h6>
+                                            <h6 className="item-row"><strong>Name: </strong>{lostItem.title}</h6>
+                                            <h6 className="item-row"><strong>Description: </strong>{lostItem.description.slice(0, 12) + '...'}</h6>
+                                            <h6 className="item-row"><strong>Category: </strong>{'Personal Item'}</h6>
+                                            <h6 className="item-row"><strong>Date: </strong>{lostItem.postedAt}</h6>
+                                            <h6 className="item-row"><strong>Found Status: </strong>{lostItem.foundItem ? 'Found' : 'Not Found'}</h6>
                                         </div>
                                     </li>
                                 </Card>

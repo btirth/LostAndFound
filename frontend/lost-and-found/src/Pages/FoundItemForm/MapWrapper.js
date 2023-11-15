@@ -101,7 +101,7 @@ function MapWrapper(props) {
     return (
         <div>
             <div id="mapid" >
-                <MapContainer center={center} zoom={13} scrollWheelZoom={true} style={{ width: '900px', height: '400px' }}>
+                <MapContainer center={center} zoom={13} scrollWheelZoom={true} style={{  height: '400px' }}>
                     <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -109,8 +109,8 @@ function MapWrapper(props) {
                     <LeafletgeoSearch locations={locations} setLocationsFun={setLocations} />
                 </MapContainer>
             </div>
-            <div style={{ width: '75%'}}>
-                <h5>Selected Location:</h5>
+            <div style={{ width: '100%',textAlign:'center'}} >
+                <h5 style={{textAlign:'center'}}>Selected Location:</h5>
                 <ul style={{ textAlign: center }}>
                     {locations.map((location, index) => (
                         <li key={index}>

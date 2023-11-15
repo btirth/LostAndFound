@@ -9,20 +9,24 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    @Value("${auth0.audience}")
-    private String audience;
+  @Value("${auth0.audience}")
+  private String audience;
 
-    @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
-    private String issuer;
+  @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
+  private String issuer;
 
-    @Override
-    protected void configure(final HttpSecurity http) throws Exception {
-        JwtWebSecurityConfigurer.forRS256(this.audience, this.issuer)
-                .configure(http)
-                .authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS, "/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated();
-    }
+  @Override
+  protected void configure(final HttpSecurity http) throws Exception {
+    JwtWebSecurityConfigurer.forRS256(this.audience, this.issuer)
+        .configure(http)
+        .authorizeRequests()
+        .antMatchers(HttpMethod.OPTIONS, "/**")
+        .permitAll()
+        .antMatchers(HttpMethod.POST, "/user")
+        .permitAll()
+        .antMatchers(HttpMethod.GET, "/user")
+        .permitAll()
+        .anyRequest()
+        .authenticated();
+  }
 }

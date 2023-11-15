@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios'
 import Navbar from '../Components/Navbar';
+import { ApiRequest } from '../helpers/api-request';
 
 const LostCatalogue = () => {
   const [isFilterOpen, setFilterOpen] = useState(true);
@@ -28,13 +29,6 @@ const LostCatalogue = () => {
   const componentBStyle = {
     flex: '3',
     padding: '16px',
-    // paddingLeft: '5%',
-    // display: 'flex',
-  // justifyContent: 'space-between', 
-  // display: 'flex',
-  // flexDirection: 'column',
-  // justifyContent: 'space-between',
-    
   };
 
   const cardStyle = {
@@ -69,14 +63,14 @@ const LostCatalogue = () => {
   };
 
   const itemNameStyle = {
-    color: BaseColor,
-    fontSize: '24px',
+    color: '#333',
+    fontSize: '20px',
     margin: '0',
   };
 
   const itemTextStyle = {
     color: '#333',
-    fontSize: '18px',
+    fontSize: '15px',
     margin: '4px 0',
   };
 
@@ -99,7 +93,6 @@ const LostCatalogue = () => {
 
   const itemContainerStyle = {
     display: 'flex',
-    // justifyContent: 'space-between', 
     flexWrap: 'wrap',
     width: '100%',
   };
@@ -109,13 +102,8 @@ const LostCatalogue = () => {
     padding: '16px',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
   };
 
-  const filterHeadingStyle = {
-    fontSize: '20px',
-    color: BaseColor,
-  };
 
   const filterOptionsStyle = {
     width: '100%',
@@ -170,65 +158,7 @@ const LostCatalogue = () => {
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
-  // const items = [
-  //   {
-  //     name: 'Item 1',
-  //     image: sensitiveImg,
-  //     postedAt: '2023-10-23',
-  //     location: 'Coordinates 1',
-  //     sensitive: true,
-  //     description: 'This is the description for Item 1.',
-  //   },
-  //   {
-  //     name: 'Item 1',
-  //     image: sensitiveImg,
-  //     postedAt: '2023-10-23',
-  //     location: 'Coordinates 1',
-  //     sensitive: true,
-  //     description: 'This is the description for Item 1.',
-  //   },
-  //   {
-  //     name: 'Item 1',
-  //     image: sensitiveImg,
-  //     postedAt: '2023-10-23',
-  //     location: 'Coordinates 1',
-  //     sensitive: true,
-  //     description: 'This is the description for Item 1.',
-  //   },
-  //   {
-  //     name: 'Item 1',
-  //     image: sensitiveImg,
-  //     postedAt: '2023-10-23',
-  //     location: 'Coordinates 1',
-  //     sensitive: true,
-  //     description: 'This is the description for Item 1.',
-  //   },
-  //   {
-  //     name: 'Item 1',
-  //     image: sensitiveImg,
-  //     postedAt: '2023-10-23',
-  //     location: 'Coordinates 1',
-  //     sensitive: true,
-  //     description: 'This is the description for Item 1.',
-  //   },
-  //   {
-  //     name: 'Item 1',
-  //     image: sensitiveImg,
-  //     postedAt: '2023-10-23',
-  //     location: 'Coordinates 1',
-  //     sensitive: true,
-  //     description: 'This is the description for Item 1.',
-  //   },
-  //   {
-  //     name: 'Item 1',
-  //     image: sensitiveImg,
-  //     postedAt: '2023-10-23',
-  //     location: 'Coordinates 1',
-  //     sensitive: true,
-  //     description: 'This is the description for Item 1.',
-  //   },
-  //   // ... (other items)
-  // ];
+ 
 
   const paginatedItems = items.slice(
     (currentPage - 1) * itemsPerPage,
@@ -302,7 +232,9 @@ const LostCatalogue = () => {
         onMouseLeave={() => setHovered(false)}
       >
         <div style={cardContentStyle}>
+          <div style={{textAlign:'center'}}>
           {renderItemImage()}
+          </div>
           <div style={itemInfoStyle}>
             <h3 style={itemNameStyle}>{title}</h3>
             <p style={itemTextStyle}>Posted at: {postedAt}</p>
@@ -392,13 +324,7 @@ const LostCatalogue = () => {
           theme: 'dark',
         });
       } else {
-      // Handle form submission with selectedFilters, radius, name, selectedDate, and locationFile
-      console.log('Selected Filters:', selectedFilters);
-      console.log('Radius:', radius);
-      console.log('Date:', selectedDate);
-      console.log('Location:', location);
-      console.log('Keyword:', keyword);
-      console.log('Category:', selectedCategory);
+     
 
       // Check if "Location" filter is checked
   const isLocationFilterChecked = selectedFilters.includes('location');
@@ -443,61 +369,27 @@ const LostCatalogue = () => {
     filterParams.category = selectedCategory;
   }
 
-  // Handle form submission with the filtered parameters
-  console.log('Filter Parameters:', filterParams);
 
-  const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-  };
-
-  
-  axios.get(`${API_URL}/api/v1/item/get-list-by-filter?isFoundItem=true`, {
-    headers,
-    params: filterParams, 
-  })
-    .then(response => {
-      console.log('GET request successful:', response.data);
-      setItems(response.data);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+      ApiRequest.fetch({
+        method: 'get',
+        url: `${API_URL}/api/v1/item/get-list-by-filter?isFoundItem=true`,
+        params: filterParams,
+    }).then((data) => {
+      console.log(process.env);
+      setItems(data);
+    }).catch(e => { })
     };
   }
-  
+
+    
+
     return (
-      <form style={{ textAlign: 'center' }} >
+      <form  >
         <div style={filterContainerStyle}>
-          <label>
-            <input
-              type="checkbox"
-              value="keyword"
-              checked={selectedFilters.includes('keyword')}
-              onChange={handleFilterChange}
-            />
-            Keyword
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              value="date"
-              checked={selectedFilters.includes('date')}
-              onChange={handleFilterChange}
-            />
-            Date
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              value="location"
-              checked={selectedFilters.includes('location')}
-              onChange={handleFilterChange}
-            />
-            Location
-          </label>
-          <label>
+        <label>
             Category:
+            <span style={{fontSize:'16px',marginRight:'6px'}}></span>
+
             <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
               <option value="">All Categories</option>
               <option value="personal">Personal Item</option>
@@ -505,20 +397,53 @@ const LostCatalogue = () => {
               <option value="document">Document</option>
             </select>
           </label>
-          <input
-            type="text"
-            placeholder="Keyword"
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            style={filterOptionsStyle}
-          />
+          <label >
+            <input
+              type="checkbox"
+              value="keyword"
+              checked={selectedFilters.includes('keyword')}
+              onChange={handleFilterChange}
+            />
+            <span style={{fontSize:'16px',marginRight:'4px'}}></span>
+            Keyword
+          </label>
+            <input
+              type="text"
+              placeholder="Keyword"
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              style={filterOptionsStyle}
+            />
+          <label>
+            <input
+              type="checkbox"
+              value="date"
+              checked={selectedFilters.includes('date')}
+              onChange={handleFilterChange}
+            />
+            <span style={{fontSize:'16px',marginRight:'4px'}}></span>
+
+            Date
+          </label>
           <input
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
             style={filterOptionsStyle}
           />
-          <MapWrapper setLocation={setLocation} />
+           
+          <label>
+            <input
+              type="checkbox"
+              value="location"
+              checked={selectedFilters.includes('location')}
+              onChange={handleFilterChange}
+            />
+            <span style={{fontSize:'16px',marginRight:'4px'}}></span>
+
+            Location
+          </label>
+         
           <input
             type="number"
             placeholder="Radius (meters)"
@@ -526,6 +451,8 @@ const LostCatalogue = () => {
             onChange={(e) => setRadius(e.target.value)}
             style={filterOptionsStyle}
           />
+         
+          <MapWrapper setLocation={setLocation} />
   
           <button onClick={handleSubmit} style={filterButtonStyle}>
             Apply Filter
@@ -544,20 +471,14 @@ const LostCatalogue = () => {
   
 
   useEffect(() => {
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('access_token')}`};
-                  
     
-    axios.get(`${API_URL}/api/v1/item/get-list?isFoundItem=true`, { headers })
-      .then(response => {
-        console.log('GET request successful:', response.data);
-        setItems(response.data)
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-    
+      ApiRequest.fetch({
+        method: 'get',
+        url: `${API_URL}/api/v1/item/get-list?isFoundItem=true`
+    }).then((data) => {
+      console.log(process.env);
+      setItems(data);
+    }).catch(e => { })
  
   }, [])
 
@@ -583,7 +504,7 @@ const LostCatalogue = () => {
         )}
       </div>
       <div style={componentBStyle}>
-      <h1 style={{ textAlign: 'center', fontSize: '40px', color: BaseColor }}>
+      <h1 style={{ textAlign: 'center', fontSize: '40px', color: '#333' }}>
   LOST CATALOGUE:
 </h1>
 
