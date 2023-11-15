@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import { Alert, Form, Button, Card , Modal,Container, Row, Col, Image } from 'react-bootstrap';
+import { BsImage } from 'react-icons/bs';
 // import { CSSTransition } from 'react-transition-group';
 // import LocationPicker from './LocationPicker';
 // import 'leaflet/dist/leaflet.css';
@@ -23,7 +24,7 @@ const LostItemForm = () => {
         isSensitive: false,
         category:''
     });
-
+    const fileInputRef = useRef(null);
     const userEmail = localStorage.getItem('user_email');
     const [errorMessage, setErrorMessage] = useState(null)
     const [alertType, setAlertType] = useState(true);
@@ -32,6 +33,7 @@ const LostItemForm = () => {
     const [editedLostItem, setEditedLostItem] = useState(null);
     const [lostItems, setlostItems] = useState([]);
     const [locations, setLocations] = useState([]);
+    const [refreshMap, setRefreshMap] = useState(true)
 
     const [mediaFiles, setMediaFiles] = useState([]);
     
@@ -40,6 +42,7 @@ const LostItemForm = () => {
     
     const selectedFileNames = new Set();
     const handleEdit = (lostItem) => {
+        setLocations([])
         setSelectedLostItem(lostItem);
         setEditedLostItem({ ...lostItem }); 
         setShowModal(true);
@@ -53,6 +56,38 @@ const LostItemForm = () => {
       const handleSaveChanges = async() => {
         const newfileLinks = await uploadImages(newImages);
         editedLostItem.image = [...editedLostItem.image, ...newfileLinks];
+        if (locations.length > 0) {
+            
+            editedLostItem.location.x = locations[0].lng
+            editedLostItem.location.y = locations[0].lat
+            editedLostItem.location.coordinates = [locations[0].lng,locations[0].lat]
+        }
+
+          ApiRequest.fetch({method: 'put',
+          url: `${API_URL}/api/v1/items/${editedLostItem.id}`,
+          data: editedLostItem,})
+            .then((response) => {
+                toast.success('Item Updated Successfully!', {
+                    position: 'top-right',
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: 'dark',
+                });
+            })
+            .catch((error) => {
+              console.error('Error:', error);
+            })
+            .finally(() => {
+                setRefreshMap(false)
+                setRefreshMap(true)
+        fetchItemsData();
+
+            });
+
         setShowModal(false);
         setSelectedLostItem(null);
       };
@@ -92,33 +127,40 @@ const LostItemForm = () => {
     };
 
     useEffect(() => {
-        // for getting list of lost items
-        // setlostItems([{ name: "Iphone 15", imageUrl: "https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/lostnfound%2FspaceWalk.jpg-850-0?alt=media&token=20b1177a-98c9-4812-bd19-29426783a736" }
-        //     , { name: "Iphone 15", imageUrl: "https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/lostnfound%2FspaceWalk.jpg-850-0?alt=media&token=20b1177a-98c9-4812-bd19-29426783a736" }
-        //     , { name: "Iphone 15", imageUrl: "https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/lostnfound%2FspaceWalk.jpg-850-0?alt=media&token=20b1177a-98c9-4812-bd19-29426783a736" }
-        //     , { name: "Iphone 15", imageUrl: "https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/lostnfound%2FspaceWalk.jpg-850-0?alt=media&token=20b1177a-98c9-4812-bd19-29426783a736" }
-        //     , { name: "Iphone 15", imageUrl: "https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/lostnfound%2FspaceWalk.jpg-850-0?alt=media&token=20b1177a-98c9-4812-bd19-29426783a736" }
-        //     , { name: "Iphone 15", imageUrl: "https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/lostnfound%2FspaceWalk.jpg-850-0?alt=media&token=20b1177a-98c9-4812-bd19-29426783a736" }
-        //     , { name: "Iphone 15", imageUrl: "https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/lostnfound%2FspaceWalk.jpg-850-0?alt=media&token=20b1177a-98c9-4812-bd19-29426783a736" }
-        //     , { name: "Iphone 15", imageUrl: "https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/lostnfound%2FspaceWalk.jpg-850-0?alt=media&token=20b1177a-98c9-4812-bd19-29426783a736" }
-        // ]);
         fetchItemsData();
     }, [])
 
     async function fetchItemsData() {
    
-            ApiRequest.fetch( {method: 'get',
-            url: `${API_URL}/api/v1/item/get-list-by-user`,
-            params: {
-            createdBy: userEmail,
-            isFoundItem: false,
-            postedAt: -1,
-            }})
+        const filters = {
+            createdBy: {
+              value: userEmail,
+              mode: "equals",
+            },
+            foundItem: {
+              value: false,
+              mode: "equals",
+            },
+          };
+          
+          const requestBody = {
+            filters,
+            page: 0,
+            size: 20,
+            sortField: "postedAt",
+            sortDirection: "DESC",
+          };
+          
+          ApiRequest.fetch({
+            method: 'post',
+            url: `${API_URL}/api/v1/items/search`,
+            data: requestBody,
+          })
             .then((lostItemList) => {
-                setlostItems([...lostItemList]);
+              setlostItems([...lostItemList.content]);
             })
             .catch((error) => {
-                console.error('Error:', error);
+              console.error('Error:', error);
             });
            
     };
@@ -134,11 +176,37 @@ const LostItemForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!locations) {
+            toast.error('Please select a location', {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: 'dark',
+            });
+            return
+        }
+        if (!formData["category"]) {
+            toast.error('Please select a category', {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: 'dark',
+            });
+            return
 
+        }
         //uploading images
         const fileLinks = await uploadImages(mediaFiles);
+        console.log("formData",formData);
         const coordinates = [locations[0].lng, locations[0].lat];
-
         //submitting form data
         try {
             
@@ -153,26 +221,56 @@ const LostItemForm = () => {
                   type: "Point"
                 },
                 foundItem: false,
-                sensitive: formData["isSensitive"]
+                sensitive: formData["isSensitive"],
+                category : formData["category"]
               };
-            
+            console.log("dataToSend",dataToSend);
               
               ApiRequest.fetch({method: 'post',
-              url: `${API_URL}/api/v1/item`,
+              url: `${API_URL}/api/v1/items`,
               data: dataToSend,})
                 .then((response) => {
-                  console.log('Data successfully sent:', response);
+                  toast.success('Lost Item Reported!!', {
+                    position: 'top-right',
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: 'dark',
+                });
                 })
                 .catch((error) => {
-                  console.error('Error:', error);
+                    toast.error('Item not reported, Try Again!', {
+                        position: 'top-right',
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: 'dark',
+                    });
+
+                })
+                .finally(() => {
+                    setRefreshMap(false)
+                setRefreshMap(true)
                 });
-            setFormData([]);
+            setFormData({
+                itemName: '',
+                itemDescription: '',
+                isSensitive: false,
+                category:''
+            });
             setLocations([]);
             setMediaFiles([]);
-            setErrorMessage("Lost Item Reported!!");
-            // toast.success('Lost Item Reported!!');
+            // setErrorMessage("Lost Item Reported!!");
             // window.location = '/home'
-
+            if (fileInputRef.current) {
+                fileInputRef.current.value = null;
+            }
             fetchItemsData();
 
         } catch (error) {
@@ -225,7 +323,7 @@ const LostItemForm = () => {
             <Navbar></Navbar>
             <div className='app'>
                 <div className="section" style={{ width: '40%', overflowY: 'scroll', paddingBottom:'120px'}}>
-                    <h2 style={{ textAlign: "center", color: '#333', fontWeight: "bold" }}>Your lost items</h2>
+                    <h2 style={{ textAlign: "center", color: '#333', fontWeight: "bold" }}>Your Recent lost items</h2>
                     <div style={{ marginRight: "20px", marginLeft: "20px" }}>
                         {lostItems.length == 0 ? <h6 style={{textAlign:'center'}}>You haven't posted any lost item</h6> :
                             lostItems.map((lostItem, index) => (
@@ -238,8 +336,8 @@ const LostItemForm = () => {
                                     <div className='item-detail'>
                                     <h6 className="item-row"><strong>Name: </strong>{lostItem.title}</h6>
                                     <h6 className="item-row"><strong>Description: </strong>{lostItem.description.slice(0, 12) + '...'}</h6>
-                                    <h6 className="item-row"><strong>Category: </strong>{'Personal Item'}</h6>
-                                    <h6 className="item-row"><strong>Date: </strong>{lostItem.postedAt}</h6>
+                                    <h6 className="item-row"><strong>Category: </strong>{lostItem.category}</h6>
+                                    <h6 className="item-row"><strong>Date: </strong>{new Date(lostItem.postedAt).toLocaleDateString("en-CA")}</h6>
                                     <h6 className="item-row"><strong>Found Status: </strong>{lostItem.foundItem ? 'Found' : 'Not Found'}</h6>
                                     </div>
                                 </li>
@@ -275,7 +373,7 @@ const LostItemForm = () => {
                         <Form.Group className="lost-item-group">
                             <Form.Label style={{ color: "#333",marginRight:"5px", fontWeight: "bold" }}>Item Category</Form.Label>
                             <Form.Select style={{width:"100%",height:"40px",}} aria-label="personal"
-                            onChange={handleInputChange} name='category'>
+                            onChange={handleInputChange} name='category'  value={formData.category}>
                                 <option>Select Category</option>
                                 <option value="personal">Personal Item</option>
                                 <option value="electronics">Electronics</option>
@@ -295,6 +393,7 @@ const LostItemForm = () => {
                         <Form.Group className="lost-item-group">
                             <Form.Label style={{ color: "#333", fontWeight: "bold" }}>Upload Images or Videos</Form.Label>
                             <Form.Control
+                                ref={fileInputRef}
                                 style={{ height: 'fit-content' }}
                                 type="file"
                                 accept="image/*,video/*"
@@ -327,7 +426,7 @@ const LostItemForm = () => {
                         <div className="lost-item-group">
                             <Form.Label style={{ color: "#333", fontWeight: "bold" }}>Location Picker</Form.Label>
                             {/* <LocationPicker onLocationChange={addLocation} /> */}
-                            <MapWrapper locations={locations} setLocationsFun={setLocations} />
+                            {(refreshMap) && <MapWrapper locations={locations} setLocationsFun={setLocations} />}
                         </div>
 
                         <Button variant="primary" type="submit" className="lost-item-button">
@@ -342,7 +441,7 @@ const LostItemForm = () => {
                 </div>
                 <Modal show={showModal} onHide={handleCloseModal} dialogClassName="custom-modal" size='lg'>
             <Modal.Header closeButton>
-                <Modal.Title>{'Edit Lost Item'}</Modal.Title>
+                <Modal.Title style={{color:'#75e6a3'}}>{'Edit Lost Item'}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>
@@ -422,7 +521,7 @@ const LostItemForm = () => {
                 
                         </Row>
                     </Container>
-                    <Form.Group controlId="formImages">
+                    {/* <Form.Group controlId="formImages">
                     
                             <Form.Control
                                 style={{ marginTop: '10px' }}
@@ -432,12 +531,36 @@ const LostItemForm = () => {
                                 onChange={handleNewImagesChange}
                                 className="lost-item-input"
                             />
+                    </Form.Group> */}
 
-                    </Form.Group>
-                    <div className="lost-item-group">
+<Row className="mb-3 align-items-center">
+  <Col xs={6} md={4} className="d-flex">
+    <Form.Label style={{ fontWeight: 'bold' }}>
+      Add New Images:
+    </Form.Label>
+  </Col>
+  <Col xs={6} md={8} className="d-flex align-items-center">
+    <label htmlFor="fileInput" style={{ cursor: 'pointer', color: '#007bff', display: 'flex', alignItems: 'center' }}>
+      <BsImage style={{ marginRight: '5px' }} />
+      Choose Images
+    </label>
+    <Form.Control
+      style={{ display: 'none' }}
+      type="file"
+      accept="image/*"
+      multiple
+      onChange={handleNewImagesChange}
+      className="lost-item-input"
+      id="fileInput"
+    />
+  </Col>
+</Row>
+
+
+
+                    <div className="lost-item-group  mt-3">
                             <Form.Label style={{ color: "#333", fontWeight: "bold" }}>Location Picker</Form.Label>
-                            {/* <LocationPicker onLocationChange={addLocation} /> */}
-                            <MapWrapper locations={locations} setLocationsFun={setLocations} />
+                           <MapWrapper locations={locations.length>0 ? locations : [{lat:editedLostItem?.location?.y,lng:editedLostItem?.location?.x}]} setLocationsFun={setLocations} isEdit = {true}/>
                         </div>
                 </Form>
             </Modal.Body>

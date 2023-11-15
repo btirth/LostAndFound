@@ -44,7 +44,7 @@
 .lost-item-form {
   display: flex;
   flex-direction: column;
-  max-width: 500px;
+  width: 90%;
   margin: 0 auto;
 }
 
