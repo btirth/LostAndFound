@@ -29,7 +29,6 @@ maven-build:
     paths:
       - Backend/LostAndFound/target/*.jar
 
-
 build-temp:
   stage: build
   tags:
