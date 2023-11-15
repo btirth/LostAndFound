@@ -13,7 +13,7 @@ import { XLg } from 'react-bootstrap-icons'
 
 
 // Cordinates of Halifax
-const center = [44.653707240893, -63.59127044677735];
+const center =  [44.653707240893, -63.59127044677735];
 
 
 const customIcon = new Icon({
@@ -37,6 +37,16 @@ function LeafletgeoSearch(props) {
     };
 
     const map = useMap();
+    useEffect(() => {
+        if (locations.length === 1) {
+            // If there's only one marker, set the map center to that marker's coordinates
+            map.setView([locations[0].lat, locations[0].lng], map.getZoom());
+        } else {
+            // If no markers or more than one marker, use Halifax's center
+            map.setView(center, map.getZoom());
+        }
+    }, [locations, map]);
+
     map.on('geosearch/showlocation', function (event) {
         const { location } = event;
         const { label, x, y } = location;
@@ -88,6 +98,7 @@ function MapWrapper(props) {
 
     const locations = props.locations;
     const setLocations = props.setLocationsFun;
+    const isEdit = props.isEdit || false
 
 
     // const [locations, setLocations] = useState([]);
@@ -110,9 +121,9 @@ function MapWrapper(props) {
                 </MapContainer>
             </div>
             <div style={{ width: '100%',textAlign:'center'}} >
-                <h5 style={{textAlign:'center'}}>Selected Location:</h5>
+                <h5 style={{textAlign:'center'}}>{isEdit ? 'Updated Location:' : 'Selected Location:'}</h5>
                 <ul style={{ textAlign: center }}>
-                    {locations.map((location, index) => (
+                    {locations[0]?.label && locations.map((location, index) => (
                         <li key={index}>
                             Address: {location.label}
                             <Button className="ml-2" style={{ backgroundColor: "white" }} onClick={() => removeElement(index)}>
