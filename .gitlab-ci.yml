@@ -19,7 +19,7 @@ maven-build:
   only:
     - dev
     - main
-    - 20-backend-cicd
+    - 72-fix-cors-error
   tags:
     - deployment
   script:
@@ -35,7 +35,7 @@ build-temp:
   tags:
     - deployment
   only:
-    - 20-backend-cicd
+    - 72-fix-cors-error
   needs:
     - maven-build
   script:
@@ -47,7 +47,7 @@ deploy-temp:
   image: alpine:latest
   stage: deploy
   only:
-    - 20-backend-cicd
+    - 72-fix-cors-error
   needs:
     - build-temp
   tags:
