@@ -27,6 +27,7 @@ const Navbar = () => {
     display: 'flex',
     margin: '0',
     padding: '0',
+    alignItems: "center",
   };
 
   const navItemStyle = {
@@ -73,6 +74,28 @@ const Navbar = () => {
             onMouseLeave={() => setIsHovered(null)}
           >
             Lost Catalogue
+          </Link>
+        </li>
+
+        <li style={navItemStyle}>
+          <Link
+            to="/lost-form"
+            style={isHovered === 'lost-form' ? { ...navLinkStyle, ...highlightStyle } : navLinkStyle}
+            onMouseEnter={() => setIsHovered('lost-catalogue')}
+            onMouseLeave={() => setIsHovered(null)}
+          >
+            Report Lost Item
+          </Link>
+        </li>
+
+        <li style={navItemStyle}>
+          <Link
+            to="/found-form"
+            style={isHovered === 'lost-form' ? { ...navLinkStyle, ...highlightStyle } : navLinkStyle}
+            onMouseEnter={() => setIsHovered('lost-catalogue')}
+            onMouseLeave={() => setIsHovered(null)}
+          >
+            Report Found Item
           </Link>
         </li>
       </ul>

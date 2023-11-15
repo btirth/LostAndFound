@@ -79,10 +79,11 @@ const FoundItemForm = ({ isOpen, onRequestClose, resetVariable }) => {
 
     //submitting form data
     try {
+      const currentLoggedinUser = localStorage.getItem("user_email");
       const response = await axios.post('http://localhost:8080/api/v1/item', {
         title: formData["itemName"],
         description: formData["itemDescription"],
-        createdBy: "test@gmail.com",
+        createdBy: currentLoggedinUser,
         image: fileLinks,
         location: {
           coordinates: coordinates,

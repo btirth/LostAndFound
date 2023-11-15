@@ -568,7 +568,7 @@ const LostCatalogue = () => {
 
   return (
     <div>
-      <Navbar></Navbar>
+      {/* <Navbar></Navbar> */}
     <div style={containerFlexStyle}>
       <div style={componentAStyle}>
         <div style={filterLabelContainerStyle}>
