@@ -19,7 +19,7 @@ const LostItemForm = () => {
         itemName: '',
         itemDescription: '',
         isSensitive: false,
-        category:''
+        category: ''
     });
 
     const headers = {
@@ -66,20 +66,20 @@ const LostItemForm = () => {
     async function fetchItemsData() {
         try {
             console.log(headers);
-           
+
             const lostItemList = await axios.get('http://localhost:8080/api/v1/item/get-list-by-user', {
-  params: {
-    createdBy: userEmail,
-    isFoundItem: false,
-    postedAt: -1,
-  },
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-  },
-});
+                params: {
+                    createdBy: userEmail,
+                    isFoundItem: false,
+                    postedAt: -1,
+                },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                },
+            });
             console.log("getting list");
-            console.log("lostItemList",lostItemList)
+            console.log("lostItemList", lostItemList)
             setlostItems([...lostItemList.data]);
         } catch (e) {
             console.error(e);
@@ -187,7 +187,7 @@ const LostItemForm = () => {
                 <div className="section" style={{ width: '40%', overflowY: 'scroll' }}>
                     <h2 style={{ textAlign: "center", color: '#333', fontWeight: "bold" }}>Your lost items</h2>
                     <div style={{ marginRight: "20px", marginLeft: "20px" }}>
-                        {lostItems.length == 0 ? <h6 style={{textAlign:'center'}}>You haven't posted any lost item</h6> :
+                        {lostItems.length == 0 ? <h6 style={{ textAlign: 'center' }}>You haven't posted any lost item</h6> :
                             lostItems.map((lostItem, index) => (
                                 <Card className="border shadow mb-2 p-2 rounded-3" style={{ width: "100%", height: "200px" }} key={index}>
                                     <li className="item-card" style={{ height: "100%" }}>
@@ -230,9 +230,9 @@ const LostItemForm = () => {
                             />
                         </Form.Group>
                         <Form.Group className="lost-item-group">
-                            <Form.Label style={{ color: "#333",marginRight:"5px", fontWeight: "bold" }}>Item Category</Form.Label>
-                            <Form.Select style={{width:"100%",height:"40px",}} aria-label="personal"
-                            onChange={handleInputChange} name='category'>
+                            <Form.Label style={{ color: "#333", marginRight: "5px", fontWeight: "bold" }}>Item Category</Form.Label>
+                            <Form.Select style={{ width: "100%", height: "40px", }} aria-label="personal"
+                                onChange={handleInputChange} name='category'>
                                 <option>Select Category</option>
                                 <option value="personal">Personal Item</option>
                                 <option value="electronics">Electronics</option>

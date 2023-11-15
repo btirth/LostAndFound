@@ -22,9 +22,9 @@ const LoginCard = () => {
     const [emailHelper, setEmailHelper] = useState(null)
     const [passwordHelper, setPasswordHelper] = useState(null)
 
-    const btStyle={backgroundColor:'#75e6a3',color:'black'};
+    const btStyle = { backgroundColor: '#75e6a3', color: 'black' };
 
-    const handleSubmitLogin = async(e) => {
+    const handleSubmitLogin = async (e) => {
         e.preventDefault()
         setPasswordHelper(null)
         setEmailHelper(null)
@@ -37,28 +37,42 @@ const LoginCard = () => {
 
         try {
             const response = await axios.post('https://dev-3vtey6tugvrs4132.us.auth0.com/oauth/token', {
-              grant_type: 'password',
-              username: email,
-              password: password,
-              client_id: '0UOtlCkeRywKyHbavmcbu6iihiUnwVYI',
+                grant_type: 'password',
+                username: email,
+                password: password,
+                client_id: '0UOtlCkeRywKyHbavmcbu6iihiUnwVYI',
             });
-      
+
+
+            console.log("response:" + response.data);
             const accessToken = response.data.id_token;
-      
+
+            if (accessToken != null) {
+                const userDataResponse = await axios.get('https://dev-3vtey6tugvrs4132.us.auth0.com/userinfo', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${response.data.access_token}`,
+                    },
+                });
+                // console.log(userDataResponse.data);
+                // console.log(userDataResponse.data.name);
+                localStorage.setItem('username', userDataResponse.data.name);
+            }
+
             // Store the access token in local storage or a secure storage method
             localStorage.setItem('access_token', accessToken);
             localStorage.setItem('user_email', email);
             setErrorMessage(null);
-          
+
             window.location = '/home'
 
-    
-          } catch (error) {
+
+        } catch (error) {
             // Handle login errors
             setErrorMessage(error.response?.data?.error_description || 'An error occurred during login');
-    
-          
-          }
+
+
+        }
 
     }
 
@@ -108,12 +122,12 @@ const LoginCard = () => {
                 <div style={{ marginTop: '10px' }}>
                     <Button type='submit' className='w-100' style={btStyle} >Sign In</Button>
                     {errorMessage && (
-            <Alert variant="danger" style={{ marginTop: '10px' }}>
-              {errorMessage}
-            </Alert>)}
+                        <Alert variant="danger" style={{ marginTop: '10px' }}>
+                            {errorMessage}
+                        </Alert>)}
                 </div>
             </Form>
-            
+
         </Card.Body>
 
     )
