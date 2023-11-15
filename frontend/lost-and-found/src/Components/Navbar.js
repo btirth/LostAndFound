@@ -51,9 +51,9 @@ const Navbar = () => {
 
   const navLinkStyle = {
     textDecoration: 'none',
-    color: '#fff', 
+    color: '#fff',
     fontWeight: 'bold',
-    cursor:'pointer'
+    cursor: 'pointer'
   };
 
   const logoutButtonStyle = {
@@ -61,20 +61,20 @@ const Navbar = () => {
     padding: '10px 20px',
     borderRadius: '5px',
     cursor: 'pointer',
-    backgroundColor:'#75e6a3'
+    backgroundColor: '#75e6a3'
   };
 
   const highlightStyle = {
     color: '#75e6a3',
     transition: 'color 0.3s ease-in-out',
-    cursor:'pointer'
+    cursor: 'pointer'
 
   };
   const logoutHighlightStyle = {
-  
+
     color: '#333',
     transition: 'color 0.3s ease-in-out',
-    cursor:'pointer'
+    cursor: 'pointer'
 
   };
 
@@ -114,14 +114,24 @@ const Navbar = () => {
         </li>
         <li style={navItemStyle}>
           <p
-           onClick={openForm}
-            
+            onClick={openForm}
+
             style={isHovered === 'found-form' ? { ...navLinkStyle, ...highlightStyle } : navLinkStyle}
             onMouseEnter={() => setIsHovered('found-form')}
             onMouseLeave={() => setIsHovered(null)}
           >
             Report Found Item
           </p>
+        </li>
+        <li style={navItemStyle}>
+          <Link
+            to="/chat"
+            style={isHovered === 'chat' ? { ...navLinkStyle, ...highlightStyle } : navLinkStyle}
+            onMouseEnter={() => setIsHovered('chat')}
+            onMouseLeave={() => setIsHovered(null)}
+          >
+            Chat
+          </Link>
         </li>
       </ul>
 
@@ -133,7 +143,7 @@ const Navbar = () => {
       >
         Logout
       </button>
-      <FoundItemForm isOpen={isFormOpen} onRequestClose={closeForm} resetVariable ={resetVariable} />
+      <FoundItemForm isOpen={isFormOpen} onRequestClose={closeForm} resetVariable={resetVariable} />
 
     </nav>
   );
