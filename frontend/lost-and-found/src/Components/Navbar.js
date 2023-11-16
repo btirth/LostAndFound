@@ -43,10 +43,12 @@ const Navbar = () => {
     display: 'flex',
     margin: '0',
     padding: '0',
+    alignItems: "center",
   };
 
   const navItemStyle = {
     marginRight: '20px',
+    height: '24px'
   };
 
   const navLinkStyle = {

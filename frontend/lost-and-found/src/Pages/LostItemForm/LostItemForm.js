@@ -181,7 +181,6 @@ const LostItemForm = () => {
 
     return (
         <>
-            <Navbar></Navbar>
             <div className='app'>
                 <div className="section" style={{ width: '40%', overflowY: 'scroll' }}>
                     <h2 style={{ textAlign: "center", color: '#333', fontWeight: "bold" }}>Your lost items</h2>

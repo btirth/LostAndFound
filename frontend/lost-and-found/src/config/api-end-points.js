@@ -4,7 +4,6 @@ export const API_URL = NODE_ENV === 'development' ?   'http://localhost:8080' : 
 
 const API_END_POINTS = {
   USER_ADD: `${API_URL}/api/v1/user`,
- 
 };
 
-export default API_END_POINTS
+export default API_END_POINTS;
