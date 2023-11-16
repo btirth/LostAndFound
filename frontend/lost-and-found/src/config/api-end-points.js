@@ -3,7 +3,6 @@ export const API_URL = REACT_APP_ENV === 'production' || NODE_ENV === 'productio
 
 const API_END_POINTS = {
   USER_ADD: `${API_URL}/api/v1/user`,
- 
 };
 
-export default API_END_POINTS
+export default API_END_POINTS;
