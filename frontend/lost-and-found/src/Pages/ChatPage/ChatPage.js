@@ -15,7 +15,6 @@ const ChatPage = () => {
 
     return (
         <div style={{height:"100vh",display:"flex",flexDirection:"column",backgroundColor:"#75e6a3"}}>
-            <Navbar />
             <div className='chathome'>
                 
                     <div className='chat-container'>

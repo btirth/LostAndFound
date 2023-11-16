@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React from "react";
 import "../src/css/bootstrap.min.css";
 import "./App.css";
@@ -15,19 +14,7 @@ import PrivateRoute from "./Components/PrivateRoute"; // Import the PrivateRoute
 import LostItemForm from "./Pages/LostItemForm/LostItemForm";
 import LostCatalogue from "./Components/LostCatalogue";
 import Layout from "./Components/Layout";
-=======
-import React from 'react';
-import '../src/css/bootstrap.min.css';
-import './App.css';
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
-import SignupPage from './Pages/LandingPage/LandingPage'; // Import your SignupPage component
-import SigninPage from './Pages/LandingPage/LoginMainPage'; // Import your SigninPage component
-import HomePage from './Pages/HomePage/HomePage';
-import PrivateRoute from './Components/PrivateRoute'; // Import the PrivateRoute component
-import LostItemForm from './Pages/LostItemForm/LostItemForm';
-import LostCatalogue from './Components/LostCatalogue';
 import ChatPage from './Pages/ChatPage/ChatPage';
->>>>>>> dev
 
 const App = () => {
   return (
