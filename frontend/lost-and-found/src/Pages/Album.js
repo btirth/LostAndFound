@@ -11,22 +11,9 @@ import axios from "axios";
 import { API_URL } from "../config/api-end-points";
 import sensitiveImg from "../Assets/Images/sensitive.jpg";
 import Button from "@mui/material/Button";
+import DashboardOptions from "../constants/DashboardOptions";
+import { ApiRequest } from "../helpers/api-request";
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center">
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-
-// TODO remove, this demo shouldn't need to reset the theme.
-// const defaultTheme = createTheme();
 const Album = (props) => {
   const [revokeRequest, setRevokeRequest] = useState({
     // Your data or state
@@ -34,6 +21,25 @@ const Album = (props) => {
     userId: localStorage.getItem("user_email"),
     // Add other parameters as needed
   });
+
+  const cardStyle = {
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    boxShadow: 3,
+    transition: "transform 0.3s, boxShadow 0.3s, border 0.3s", // Add transitions for a smoother hover effect
+    outline: "0.5px solid black",
+    "&:hover": {
+      transform: "scale(1.05)",
+      boxShadow: 5,
+      outline: "2px solid #75E6A3", // Adjust the border color and size on hover
+    },
+  };
+
+  const noDataStyler = {
+    display: "flex",
+    justifyContent: "center"
+  }
 
   const [searchFilter, setSearchFilter] = useState({
     filters: {
@@ -46,23 +52,6 @@ const Album = (props) => {
   });
   // const { value } = props;
   console.log("value:", props.value);
-  let keywordValue = "";
-  // if (Array.isArray(props.filterParams)) {
-  //   // Assuming props.filterParams is an array of filters
-  //   // props.filterParams.forEach((filter) => {
-  //   //   if(filter == "keyword")
-  //   //   // Assuming each filter has a name, value, and mode
-  //   //   // updatedFilter.filters[filter.name] = { value: filter.value, mode: filter.mode };
-  //   //   keywordValue = filter.key
-  //   // });
-  // }
-  // if(props.filterParams != null) {
-  //   props.filterParams.forEach(item => {
-  //     if(item.keyword != null) {
-  //       keywordValue = item.keyword;
-  //     }
-  //   })
-  // }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -95,18 +84,22 @@ const Album = (props) => {
     }));
 
     try {
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-      };
-      const response = await axios.put(
-        `${API_URL}items/claims/revoke?itemId=${event}&userId=${revokeRequest.userId}`,
-        "",
-        { headers }
-      );
+      await ApiRequest.fetch({
+        method: "put",
+        url: `${API_URL}/api/v1/items/claims/revoke?itemId=${event}&userId=${revokeRequest.userId}`,
+      });
+      // console.log("GET request successful:", response.content);
+      // setItems(response.content);
       await getResult(props, setItems, searchFilter);
-      console.log("GET request successful:", response.data.content);
-      setItems(response.data.content);
+
+      // });
+      // const response = await axios.put(
+      //   `${API_URL}items/claims/revoke?itemId=${event}&userId=${revokeRequest.userId}`,
+      //   "",
+      //   { headers }
+      // );
+      // console.log("GET request successful:", response.data.content);
+      // setItems(response.data.content);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -129,11 +122,15 @@ const Album = (props) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("access_token")}`,
       };
-      const response = await axios.put(
-        `${API_URL}items/claims/accept?itemId=${itemId}&userId=${revokeRequest.userId}&claimRequestUserId=${claimRequestUserId}`,
-        "",
-        { headers }
-      );
+      // const response = await axios.put(
+      //   `${API_URL}items/claims/accept?itemId=${itemId}&userId=${revokeRequest.userId}&claimRequestUserId=${claimRequestUserId}`,
+      //   "",
+      //   { headers }
+      // );
+      await ApiRequest.fetch({
+        method: "put",
+        url: `${API_URL}/api/v1/items/claims/accept?itemId=${itemId}&userId=${revokeRequest.userId}&claimRequestUserId=${claimRequestUserId}`,
+      });
       await getResult(props, setItems, searchFilter);
       // console.log("GET request successful:", response.data.content);
       // setItems(response.data.content);
@@ -155,11 +152,7 @@ const Album = (props) => {
               {items.map((item) => (
                 <Grid item key={item.id} xs={12} sm={6} md={4} lg={3}>
                   <Card
-                    sx={{
-                      height: "100%",
-                      display: "flex",
-                      flexDirection: "column",
-                    }}
+                    sx={cardStyle}
                   >
                     <CardMedia
                       component="div"
@@ -172,10 +165,10 @@ const Album = (props) => {
                       image={item.image ? item.image[0] : ""}
                     />
                     <CardContent sx={{ flexGrow: 1 }}>
-                      <Typography gutterBottom variant="h5" component="h2">
+                      <Typography>
                         {item.title}
                       </Typography>
-                      <Typography>{item.description}</Typography>
+                      <Typography sx={{ color: "grey" }}>{item.description}</Typography>
                     </CardContent>
                     <CardActions>
                       {props.value === 1 ? (
@@ -204,11 +197,7 @@ const Album = (props) => {
                 item.claimRequested.map((requestMail, index) => (
                   <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
                     <Card
-                      sx={{
-                        height: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                      }}
+                      sx={cardStyle}
                     >
                       <CardMedia
                         component="div"
@@ -221,27 +210,25 @@ const Album = (props) => {
                         image={item.image ? item.image[0] : ""}
                       />
                       <CardContent sx={{ flexGrow: 1 }}>
-                        <Typography gutterBottom variant="h5" component="h2">
-                          {item.title}
+                        <Typography gutterBottom>{item.title}</Typography>
+                        <Typography sx={{ color: "grey" }}>
+                          {item.description}
                         </Typography>
-                        <Typography>{item.description}</Typography>
-                        <Typography gutterBottom variant="h6" component="h2">
-                          User:{requestMail}
-                        </Typography>
+                        <br />
+                        <Typography gutterBottom>User:{requestMail}</Typography>
                       </CardContent>
                       <CardActions>
-                        
-                          <Button
-                            onClick={() => handleApprove(item.id, requestMail)}
-                            size="large"
-                            style={{
-                              backgroundColor: "green",
-                              width: "100%",
-                              color: "white",
-                            }}
-                          >
-                            Approve
-                          </Button>
+                        <Button
+                          onClick={() => handleApprove(item.id, requestMail)}
+                          size="large"
+                          style={{
+                            backgroundColor: "green",
+                            width: "100%",
+                            color: "white",
+                          }}
+                        >
+                          Approve
+                        </Button>
                       </CardActions>
                     </Card>
                   </Grid>
@@ -251,7 +238,7 @@ const Album = (props) => {
           )}
         </Container>
       ) : (
-        "No Data"
+        <div style={noDataStyler}>No Data</div>
       )}
     </main>
 
@@ -264,10 +251,6 @@ export default Album;
 async function getResult(props, setItems, searchFilter) {
   console.log("filter props", props.filterParams);
   setItems([]);
-  const headers = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-  };
 
   // Assuming `value` is defined somewhere in your component
   if (props.value === 0) {
@@ -281,6 +264,7 @@ async function getResult(props, setItems, searchFilter) {
     if (typeof props.filterParams === "object" && props.filterParams !== null) {
       // Iterate over key-value pairs in props.filterParams and add filters
       Object.entries(props.filterParams).forEach(([key, value]) => {
+        // if (value != "") {
         if (key === "keyword")
           updatedFilter.filters[key] = {
             value: value,
@@ -288,7 +272,22 @@ async function getResult(props, setItems, searchFilter) {
           };
         // You can customize the mode if needed
         else if (key === "category")
-          updatedFilter.filters[key] = { value: value, mode: "equals" }; // You can customize the mode if needed
+          updatedFilter.filters[key] = { value: value, mode: "equals" };
+        else if (key === "location")
+          updatedFilter.filters[key] = { value: value, mode: "geo" };
+        else if (key === "date") {
+          const endDate = `${value}T23:59:59.000Z `;
+          updatedFilter.filters.postedAt = {
+            value: `${value}, 00:00:00 AM`,
+            mode: "gte",
+          };
+          updatedFilter.filters.postedAt = {
+            value: new Date(endDate).toISOString(),
+            mode: "lte",
+          };
+        }
+        // }
+        // You can customize the mode if needed
       });
     }
     // if (keywordValue != "") {
@@ -298,17 +297,7 @@ async function getResult(props, setItems, searchFilter) {
     //   };
     // }
     const currentLoggedinUser = localStorage.getItem("user_email");
-    try {
-      const response = await axios.post(
-        `${API_URL}items/search`,
-        updatedFilter,
-        { headers }
-      );
-      console.log("GET request successful:", response.data.content);
-      setItems(response.data.content);
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    getFilteredData(updatedFilter, setItems);
   } else if (props.value === 1) {
     const currentLoggedinUser = localStorage.getItem("user_email");
 
@@ -340,17 +329,27 @@ async function getResult(props, setItems, searchFilter) {
     //     mode: "contains",
     //   };
     // }
-    try {
-      const response = await axios.post(
-        `${API_URL}items/search`,
-        updatedFilter,
-        { headers }
-      );
-      console.log("GET request successful:", response.data.content);
-      setItems(response.data.content);
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    getFilteredData(updatedFilter, setItems);
+    // try {
+    //   ApiRequest.fetch({
+    //     method: "post",
+    //     url: `${API_URL}/api/v1/items/search`,
+    //     data: updatedFilter,
+    //   }).then((response) => {
+    //     console.log("GET request successful:", response.content);
+    //     setItems(response.content);
+    //   });
+
+    //   // const response = await axios.post(
+    //   //   `${API_URL}items/search`,
+    //   //   updatedFilter,
+    //   //   { headers }
+    //   // );
+    //   // console.log("GET request successful:", response.data.content);
+    //   // setItems(response.data.content);
+    // } catch (error) {
+    //   console.error("Error:", error);
+    // }
   } else {
     console.log("in else");
     const currentLoggedinUser = localStorage.getItem("user_email");
@@ -362,20 +361,51 @@ async function getResult(props, setItems, searchFilter) {
         createdBy: { value: currentLoggedinUser, mode: "contains" },
       },
     };
-    try {
-      const response = await axios.post(
-        `${API_URL}items/search`,
-        updatedFilter,
-        { headers }
-      );
-      console.log(
-        "GET request successful in claim request received:",
-        response.data.content
-      );
-      setItems(response.data.content);
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    // try {
+    //   ApiRequest.fetch({
+    //     method: "post",
+    //     url: `${API_URL}/api/v1/items/search`,
+    //     data: updatedFilter,
+    //   }).then((response) => {
+    //     console.log("GET request successful:", response.content);
+    //     setItems(response.content);
+    //   });
+    //   // const response = await axios.post(
+    //   //   `${API_URL}items/search`,
+    //   //   updatedFilter,
+    //   //   { headers }
+    //   // );
+    //   // console.log(
+    //   //   "GET request successful in claim request received:",
+    //   //   response.data.content
+    //   // );
+    //   // setItems(response.data.content);
+    // } catch (error) {
+    //   console.error("Error:", error);
+    // }
+    getFilteredData(updatedFilter, setItems);
+  }
+}
+
+function getFilteredData(updatedFilter, setItems) {
+  try {
+    ApiRequest.fetch({
+      method: "post",
+      url: `${API_URL}/api/v1/items/search`,
+      data: updatedFilter,
+    }).then((response) => {
+      console.log("GET request successful:", response.content);
+      setItems(response.content);
+    });
+    // const response = await axios.post(
+    //   `${API_URL}items/search`,
+    //   updatedFilter,
+    //   { headers }
+    // );
+    // console.log("GET request successful:", response.data.content);
+    // setItems(response.data.content);
+  } catch (error) {
+    console.error("Error:", error);
   }
 }
 // export default function Album(props) {

@@ -48,6 +48,7 @@ const Navbar = () => {
 
   const navItemStyle = {
     marginRight: '20px',
+    height: '24px'
   };
 
   const navLinkStyle = {

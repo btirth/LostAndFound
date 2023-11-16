@@ -11,18 +11,16 @@ import Stack from "@mui/material/Stack";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import "./HomePage.css"; // Import the CSS file
-import FilterPanel from "../../Components/FilterPanel";
 import { ToastContainer, toast } from "react-toastify";
 import MapWrapper from "../../Components/MapWrapper";
 import { API_URL } from "../../config/api-end-points";
 import axios from "axios";
+import Typography from "@mui/material/Typography";
 
 const HomePage = () => {
   const [value, setValue] = React.useState(0);
   const [isFilterOpen, setFilterOpen] = useState(true);
   const toggleFilter = () => setFilterOpen(!isFilterOpen);
-
-  
 
   const BaseColor = "#75e6a3";
 
@@ -36,7 +34,7 @@ const HomePage = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [resetVariable, setResetVariable] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [filterParams, setFilterParams] = React.useState({keyword: "", date: "", location: ""});
+  const [filterParams, setFilterParams] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -216,8 +214,8 @@ const HomePage = () => {
 
   const [items, setItems] = useState([]);
 
-  const FilterOptions = ({filterParams}) => {
-    const { filterParamKeyword } = filterParams;
+  const FilterOptions = ({ filterParams }) => {
+    // const { filterParamKeyword } = filterParams;
     const [selectedFilters, setSelectedFilters] = useState([]);
     const [location, setLocation] = useState("");
     const [radius, setRadius] = useState("");
@@ -225,27 +223,29 @@ const HomePage = () => {
     const [selectedDate, setSelectedDate] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
 
-    const [formData, setFormData] = useState({
-    keyword: filterParams.keyword || '',
-    date: filterParams.date || '',
-    category: filterParams.category || '',
-    latitude: filterParams.latitude || '',
-    longitude: filterParams.longitude || '',
-    distance: filterParams.distance || '',
-  });
+    //   const [formData, setFormData] = useState({
+    //   keyword: filterParams.keyword || '',
+    //   date: filterParams.date || '',
+    //   category: filterParams.category || '',
+    //   latitude: filterParams.latitude || '',
+    //   longitude: filterParams.longitude || '',
+    //   distance: filterParams.distance || '',
+    // });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+    // const handleChange = (e) => {
+    //   const { name, value } = e.target;
+    //   setFormData({ ...formData, [name]: value });
+    // };
 
-    useEffect(() => {
-      setKeyword(filterParamKeyword);
-    }, [filterParamKeyword]);
+    // useEffect(() => {
+    //   setKeyword(filterParamKeyword);
+    // }, [filterParamKeyword]);
     const handleFilterChange = (event) => {
       const value = event.target.value;
       if (selectedFilters.includes(value)) {
-        setSelectedFilters(selectedFilters.filter((filter) => filter !== value));
+        setSelectedFilters(
+          selectedFilters.filter((filter) => filter !== value)
+        );
       } else {
         setSelectedFilters([...selectedFilters, value]);
       }
@@ -337,9 +337,14 @@ const HomePage = () => {
         if (selectedFilters.includes("location") && location && radius) {
           let selectedLong = location[0]?.lng ? location[0]?.lng : "";
           let selectedLat = location[0]?.lat ? location[0]?.lat : "";
-          filterParams.longitude = selectedLong;
-          filterParams.latitude = selectedLat;
-          filterParams.distance = radius;
+          filterParams.location = {
+            x: selectedLong,
+            y: selectedLat,
+            radius: radius,
+          };
+          // filterParams.longitude = selectedLong;
+          // filterParams.latitude = selectedLat;
+          // filterParams.distance = radius;
         }
 
         // Check if "Category" filter is selected
@@ -371,11 +376,9 @@ const HomePage = () => {
     };
 
     const setFilterParamKeyword = (event) => {
-
       console.log("event captured", event);
-      filterParams.keyword = event
-
-    }
+      filterParams.keyword = event;
+    };
 
     return (
       <form style={{ textAlign: "center" }}>
@@ -527,32 +530,63 @@ const HomePage = () => {
             aria-label="disabled tabs example"
             centered
           >
-            <Tab label="Item Posted" />
-            <Tab label="Claim Request Raised" />
-            <Tab label="Claim Request Received" />
+            <Tab
+              label={
+                <Typography
+                  variant="body1"
+                  fontWeight={value === 0 ? "bold" : "normal"}
+                >
+                  Item Posted
+                </Typography>
+              }
+            />
+            <Tab
+              label={
+                <Typography
+                  variant="body1"
+                  fontWeight={value === 1 ? "bold" : "normal"}
+                >
+                  Claim Request Raised
+                </Typography>
+              }
+            />
+            <Tab
+              label={
+                <Typography
+                  variant="body1"
+                  fontWeight={value === 2 ? "bold" : "normal"}
+                >
+                  Claim Request Received
+                </Typography>
+              }
+            />
           </Tabs>
         </Box>
       </div>
       {/* </div> */}
       <div className="flex">
-        { value === 0 ? (<div>
-          <div style={componentAStyle} className="filter-container">
-            <div style={filterLabelContainerStyle}>
-              <div
-                style={filterLabelStyle}
-                className="filter-toggle "
-                onClick={toggleFilter}
-              >
-                {isFilterOpen ? "Hide Filter Options" : "Show Filter Options"}
+        {value === 0 ? (
+          <div>
+            <div style={componentAStyle} className="filter-container">
+              <div style={filterLabelContainerStyle}>
+                <div
+                  style={filterLabelStyle}
+                  className="filter-toggle "
+                  onClick={toggleFilter}
+                >
+                  {isFilterOpen ? "Hide Filter Options" : "Show Filter Options"}
+                </div>
               </div>
+              {isFilterOpen && (
+                <div style={filterOptionsContainerStyle}>
+                  <FilterOptions filterParams={filterParams} />
+                </div>
+              )}
             </div>
-            {isFilterOpen && (
-              <div style={filterOptionsContainerStyle}>
-                <FilterOptions filterParams={filterParams}/>
-              </div>
-            )}
           </div>
-        </div>) : ''}
+        ) : (
+          ""
+        )}
         <div style={albumContainer}>
           <Album value={value} filterParams={filterParams}></Album>
         </div>
