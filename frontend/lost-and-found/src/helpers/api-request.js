@@ -11,17 +11,28 @@ class ApiRequest {
 
   static async error(message, status, silentErrorToast) {
     if (silentErrorToast) return null
-    return toast.error(message)
+    return toast.error(message, {
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'dark',
+  });
+
+
   }
 
-  static async fetch(options, silentErrorToast = false) {
+  static async fetch(options, silentErrorToast = true) {
     options.headers = _.merge(this.headers(), options.headers);
 
     try {
       const response = await axios(options);
       return response.data;
     } catch (error) {
-      const errorMessages = error.response && error.response.data && error.response.data.message;
+      const errorMessages = error.response && error.response.data ;
       const errorCode = error.response && error.response.status;
 
       this.error(errorMessages, errorCode, silentErrorToast);

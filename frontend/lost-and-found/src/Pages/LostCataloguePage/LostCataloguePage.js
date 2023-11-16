@@ -156,6 +156,33 @@ const LostCatalogue = () => {
     justifyContent: 'center',
     alignItems: 'center',
   };
+  const userEmail = localStorage.getItem('user_email');
+  const handleClaimRequest = (itemId) =>{
+    ApiRequest.fetch({
+      method: 'put',
+      url: `${API_URL}/api/v1/items/claims/request`,
+      params: {
+        itemId: itemId,
+        userId: userEmail,
+      },   
+    }, false)
+      .then((data) => {
+        toast.success('Claim Request Raised Successfully!', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'dark',
+      });
+
+      })
+      .catch((e) => {
+        console.log("error",e);
+      });
+  }
 
   const itemsPerPage = 6;
   const [currentPage, setCurrentPage] = useState(1);
@@ -198,6 +225,8 @@ const LostCatalogue = () => {
 
       return buttons;
     };
+
+
 
     return (
       <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -247,7 +276,7 @@ const LostCatalogue = () => {
   };
 
   const ItemCard = ({ item }) => {
-    const { title, image, postedAt, location, sensitive, description } = item;
+    const { title, image, postedAt, location, sensitive, description,id } = item;
 
     const renderItemImage = () => {
       if (sensitive) {
@@ -287,6 +316,7 @@ const LostCatalogue = () => {
             <p style={itemTextStyle}>Posted at: {new Date(postedAt).toLocaleDateString("en-CA")}</p>
             <p style={itemTextStyle}>Description: {description}</p>
           </div>
+          <button onClick={() => {handleClaimRequest(id)}} style={buttonStyle}>Claim</button>
         </div>
       </div>
     );
