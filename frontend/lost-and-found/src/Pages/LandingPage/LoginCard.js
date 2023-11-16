@@ -17,9 +17,9 @@ const LoginCard = () => {
     const [emailHelper, setEmailHelper] = useState(null)
     const [passwordHelper, setPasswordHelper] = useState(null)
 
-    const btStyle={backgroundColor:'#75e6a3',color:'black'};
+    const btStyle = { backgroundColor: '#75e6a3', color: 'black' };
 
-    const handleSubmitLogin = async(e) => {
+    const handleSubmitLogin = async (e) => {
         e.preventDefault()
         setPasswordHelper(null)
         setEmailHelper(null)
@@ -28,7 +28,10 @@ const LoginCard = () => {
 
         if (!validator.isEmail(email)) return toast.error('email is not valid')
 
-        if (!password || validator.isEmpty(password)) return toast.error('password is required')
+        if (!password || validator.isEmpty(password)) return toast.error('password is required')            
+           
+
+            // Store the access token in local storage or a secure storage method
                 ApiRequest.fetch({
                     method: 'post',
                     url: `https://dev-3vtey6tugvrs4132.us.auth0.com/oauth/token`,
@@ -39,15 +42,28 @@ const LoginCard = () => {
                 }).then((response) => {
                     console.log("response",response);
             const accessToken = response.id_token;
-    
+            
+            if (accessToken != null) {
+
+                ApiRequest.fetch({
+                    method:'get',
+                    url:`https://dev-3vtey6tugvrs4132.us.auth0.com/userinfo`
+                }).then((userDataResponse)=>{
+                    localStorage.setItem('username', userDataResponse.data.name);
+                })
+
+            }
             localStorage.setItem('access_token', accessToken);
             localStorage.setItem('user_email', email);
             setErrorMessage(null);
-          
+
             window.location = '/home'
 
-          }).catch(error => {  setErrorMessage(error.response?.data?.error_description || 'An error occurred during login');
-        })
+
+        }).catch(error => {  setErrorMessage(error.response?.data?.error_description || 'An error occurred during login');
+    })
+
+
     }
 
 
@@ -68,12 +84,12 @@ const LoginCard = () => {
                 <div style={{ marginTop: '10px' }}>
                     <Button type='submit' className='w-100' style={btStyle} >Sign In</Button>
                     {errorMessage && (
-            <Alert variant="danger" style={{ marginTop: '10px' }}>
-              {errorMessage}
-            </Alert>)}
+                        <Alert variant="danger" style={{ marginTop: '10px' }}>
+                            {errorMessage}
+                        </Alert>)}
                 </div>
             </Form>
-            
+
         </Card.Body>
 
     )

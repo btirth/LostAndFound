@@ -1,7 +1,11 @@
 package com.lostandfound.LostAndFound;
 
+import java.io.IOException;
+import javax.servlet.*;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 
 @SpringBootApplication
@@ -9,5 +13,35 @@ import org.springframework.data.mongodb.config.EnableMongoAuditing;
 public class LostAndFoundApplication {
   public static void main(String[] args) {
     SpringApplication.run(LostAndFoundApplication.class, args);
+  }
+
+  @Bean
+  public Filter corsFilter() {
+
+    return new Filter() {
+
+      @Override
+      public void init(FilterConfig filterConfig) {}
+
+      @Override
+      public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
+          throws IOException, ServletException {
+
+        HttpServletResponse response = (HttpServletResponse) res;
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT,PATCH");
+        response.setHeader("Access-Control-Max-Age", "3600");
+        response.setHeader(
+            "Access-Control-Allow-Headers",
+            "Origin, Content-Type, Accept, X-Requested-With, remember-me, Authorization, Content-Encoding,x_tenant, x_tenant_skip");
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+
+        chain.doFilter(req, res);
+      }
+
+      @Override
+      public void destroy() {}
+    };
   }
 }
