@@ -286,7 +286,8 @@ const FoundItemForm = ({ isOpen, onRequestClose, resetVariable }) => {
                   required
                 />
               </Form.Group>
-              <div className="lost-item-group">
+              <div style={{textAlign:'left', width:'100%', padding:'15px'}}>
+                
                             <h6 style={{ color: "#333", fontWeight: "bold" }}>Selected Files</h6>
                             <ul>
                                 {mediaFiles.map((mediaFile, index) => (

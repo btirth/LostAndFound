@@ -87,7 +87,7 @@ const LostCatalogue = () => {
   };
 
   const buttonStyle = {
-    backgroundColor: BaseColor,
+    backgroundColor: '#35ac65',
     color: '#fff',
     border: 'none',
     borderRadius: '4px',
@@ -276,7 +276,7 @@ const LostCatalogue = () => {
   };
 
   const ItemCard = ({ item }) => {
-    const { title, image, postedAt, location, sensitive, description,id } = item;
+    const { title, image, postedAt, location, sensitive, description,id,claimRequested } = item;
 
     const renderItemImage = () => {
       if (sensitive) {
@@ -316,7 +316,7 @@ const LostCatalogue = () => {
             <p style={itemTextStyle}>Posted at: {new Date(postedAt).toLocaleDateString("en-CA")}</p>
             <p style={itemTextStyle}>Description: {description}</p>
           </div>
-          <button onClick={() => {handleClaimRequest(id)}} style={buttonStyle}>Claim</button>
+          {<button onClick={() => {handleClaimRequest(id)}} style={buttonStyle}>Claim</button>}
         </div>
       </div>
     );
@@ -376,7 +376,6 @@ const LostCatalogue = () => {
 
   return (
     <div>
-      <Navbar />
       <div style={containerFlexStyle}>
         <div style={componentAStyle}>
           <div style={filterLabelContainerStyle}>

@@ -274,6 +274,8 @@ const LostItemForm = () => {
         .finally(() => {
           setRefreshMap(false);
           setRefreshMap(true);
+      fetchItemsData();
+
         });
       setFormData({
         itemName: "",
@@ -288,7 +290,6 @@ const LostItemForm = () => {
       if (fileInputRef.current) {
         fileInputRef.current.value = null;
       }
-      fetchItemsData();
     } catch (error) {
       // Handle login errors
       setErrorMessage(
@@ -336,7 +337,6 @@ const LostItemForm = () => {
 
   return (
     <div style={{ height: "100vh", overflow: "hidden" }}>
-      <Navbar></Navbar>
       <div className="app">
         <div
           className="section"
@@ -497,7 +497,7 @@ const LostItemForm = () => {
             </Form.Group>
             <div className="lost-item-group">
               <h6 style={{ color: "#333", fontWeight: "bold" }}>
-                Select Files
+                Selected Files
               </h6>
               <ul>
                 {mediaFiles.map((mediaFile, index) => (
@@ -542,7 +542,6 @@ const LostItemForm = () => {
             </div>
 
             <Button
-              variant="primary"
               type="submit"
               className="lost-item-button">
               Submit

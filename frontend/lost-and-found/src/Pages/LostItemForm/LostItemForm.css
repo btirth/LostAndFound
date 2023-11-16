@@ -68,8 +68,8 @@
 } */
 
 .lost-item-button {
-  background-color: #75e6a3;
-  color: #fff;
+  background-color: #75e6a3 !important;
+  color: #fff !important;
   border: none;
   padding: 15px;
   border-radius: 8px;
@@ -79,9 +79,6 @@
   font-weight: bold;
 }
 
-.lost-item-button:hover {
-  background-color: #4caf50;
-}
 
 .alert {
   margin-top: 15px;
@@ -104,3 +101,8 @@
       height: 200px;
 
 }
+
+li{
+  list-style-type: none;
+}
+

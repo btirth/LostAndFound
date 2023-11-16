@@ -12,24 +12,24 @@ import SigninPage from "./Pages/LandingPage/LoginMainPage";
 import HomePage from "./Pages/HomePage/HomePage";
 import PrivateRoute from "./Components/PrivateRoute"; 
 import LostItemForm from "./Pages/LostItemForm/LostItemForm";
-import LostCatalogue from "./Components/LostCatalogue";
+import LostCatalogue from "./Pages/LostCataloguePage/LostCataloguePage";
 import Layout from "./Components/Layout";
 import ChatPage from './Pages/ChatPage/ChatPage';
 
 const App = () => {
   return (
     <Router>
-      <Layout style="position:'fixed';">
-        <Switch>
-          <Route exact path="/" component={SignupPage} />
-          <Route path="/signup" component={SignupPage} />
-          <Route path="/login" component={SigninPage} />
+      <Switch>
+        <Route exact path="/" component={SignupPage} />
+        <Route path="/signup" component={SignupPage} />
+        <Route path="/login" component={SigninPage} />
+        <Layout style="position:'fixed';">
           <PrivateRoute path="/home" component={HomePage} />
           <PrivateRoute path="/lost-form" component={LostItemForm} />
           <PrivateRoute path="/lost-catalogue" component={LostCatalogue} />
           <PrivateRoute path="/chat" component={ChatPage} />
-        </Switch>
-      </Layout>
+        </Layout>
+      </Switch>
     </Router>
   );
 };

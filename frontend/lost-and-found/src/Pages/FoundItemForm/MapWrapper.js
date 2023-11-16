@@ -6,8 +6,8 @@ import "leaflet-geosearch/dist/geosearch.css";
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 
 import { Icon } from 'leaflet'
-import { Button } from "react-bootstrap";
-import { XLg } from 'react-bootstrap-icons'
+import { Button, Card } from "react-bootstrap";
+import { XLg, PinFill, XCircle } from 'react-bootstrap-icons'
 
 
 
@@ -124,12 +124,23 @@ function MapWrapper(props) {
                 <h5 style={{textAlign:'center'}}>{isEdit ? 'Updated Location:' : 'Selected Location:'}</h5>
                 <ul style={{ textAlign: center }}>
                     {locations[0]?.label && locations.map((location, index) => (
-                        <li key={index}>
-                            Address: {location.label}
-                            <Button className="ml-2" style={{ backgroundColor: "white" }} onClick={() => removeElement(index)}>
-                                <XLg style={{ color: "black" }} />
+                          <Card className="border shadow p-2">
+                          <li key={index}>
+                            <PinFill className="mr-2" color="red" />
+                            {location.label}
+                            <Button
+                              className="ml-1"
+                              style={{
+                                backgroundColor: "white",
+                                height: "10xp",
+                                width: "10xp",
+                                border: "1px solid white",
+                              }}
+                              onClick={() => removeElement(index)}>
+                              <XCircle style={{ color: "black" }} />
                             </Button>
-                        </li>
+                          </li>
+                        </Card>
                     ))}
                 </ul>
             </div>
