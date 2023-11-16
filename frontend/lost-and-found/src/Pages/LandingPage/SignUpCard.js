@@ -161,7 +161,8 @@ const SignUpCard = () => {
                
                   const dataToSend = {
               name: `${firstName} ${lastName}`,
-              email: email
+              email: email,
+              profilePicUrl: '',
                   };
                     ApiRequest.fetch({
                         method: 'post',
