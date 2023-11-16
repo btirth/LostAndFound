@@ -21,7 +21,7 @@ const LostItemForm = () => {
         itemName: '',
         itemDescription: '',
         isSensitive: false,
-        category:''
+        category: ''
     });
 
     const userEmail = localStorage.getItem('user_email');
@@ -185,7 +185,7 @@ const LostItemForm = () => {
                 <div className="section" style={{ width: '40%', overflowY: 'scroll' }}>
                     <h2 style={{ textAlign: "center", color: '#333', fontWeight: "bold" }}>Your lost items</h2>
                     <div style={{ marginRight: "20px", marginLeft: "20px" }}>
-                        {lostItems.length == 0 ? <h6 style={{textAlign:'center'}}>You haven't posted any lost item</h6> :
+                        {lostItems.length == 0 ? <h6 style={{ textAlign: 'center' }}>You haven't posted any lost item</h6> :
                             lostItems.map((lostItem, index) => (
                                 <Card className="border shadow mb-2 p-2 rounded-3" style={{ width: "100%", height: "200px" }} key={index}>
                                     <li className="item-card" style={{ height: "100%" }}>
@@ -228,9 +228,9 @@ const LostItemForm = () => {
                             />
                         </Form.Group>
                         <Form.Group className="lost-item-group">
-                            <Form.Label style={{ color: "#333",marginRight:"5px", fontWeight: "bold" }}>Item Category</Form.Label>
-                            <Form.Select style={{width:"100%",height:"40px",}} aria-label="personal"
-                            onChange={handleInputChange} name='category'>
+                            <Form.Label style={{ color: "#333", marginRight: "5px", fontWeight: "bold" }}>Item Category</Form.Label>
+                            <Form.Select style={{ width: "100%", height: "40px", }} aria-label="personal"
+                                onChange={handleInputChange} name='category'>
                                 <option>Select Category</option>
                                 <option value="personal">Personal Item</option>
                                 <option value="electronics">Electronics</option>
