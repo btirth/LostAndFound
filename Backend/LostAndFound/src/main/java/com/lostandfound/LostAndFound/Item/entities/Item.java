@@ -32,20 +32,18 @@ public class Item {
 
   @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
   private GeoJsonPoint location;
-
-  public Item copy() {
-    return new Item(
-        this.id,
-        this.title,
-        this.description,
-        this.createdBy,
-        this.claimedBy,
-        this.sensitive,
-        this.postedAt,
-        this.updatedDate,
-        this.image,
-        this.foundItem,
-        this.category,
-        this.location);
+  public Item(Item item) {
+    this.id = item.id;
+    this.title = item.title;
+    this.description = item.description;
+    this.createdBy = item.createdBy;
+    this.claimedBy = item.claimedBy;
+    this.sensitive = item.sensitive;
+    this.postedAt = item.postedAt;
+    this.updatedDate = item.updatedDate;
+    this.image = item.image;
+    this.foundItem = item.foundItem;
+    this.category = item.category;
+    this.location = item.location;
   }
 }
