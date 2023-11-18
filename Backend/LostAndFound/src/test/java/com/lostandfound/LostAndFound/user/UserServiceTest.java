@@ -49,7 +49,7 @@ class UserServiceTest {
   @Test
   void testInsertUser() {
     // arrange
-    User userNotExists = user.copy();
+    User userNotExists = new User(user);
     userNotExists.setEmail("copy@email.com");
     Mockito.when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
     Mockito.when(userRepository.existsByEmail(userNotExists.getEmail())).thenReturn(false);
@@ -71,7 +71,7 @@ class UserServiceTest {
   @Test
   void testUpdateUser() {
     // arrange
-    User userNotExists = user.copy();
+    User userNotExists = new User(user);
     userNotExists.setEmail("copy@email.com");
     Mockito.when(userRepository.existsByEmail(userNotExists.getEmail())).thenReturn(false);
     Mockito.when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
@@ -98,7 +98,7 @@ class UserServiceTest {
   void testDeleteUser() {
     // arrange
     String notExistsUserEmail = "copy@email.com";
-    User notExistsUser = user.copy();
+    User notExistsUser = new User(user);
     notExistsUser.setEmail(notExistsUserEmail);
     Mockito.when(userRepository.existsByEmail(notExistsUser.getEmail())).thenReturn(false);
     Mockito.when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
