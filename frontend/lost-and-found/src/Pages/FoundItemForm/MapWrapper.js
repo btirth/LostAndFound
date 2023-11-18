@@ -6,14 +6,14 @@ import "leaflet-geosearch/dist/geosearch.css";
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 
 import { Icon } from 'leaflet'
-import { Button } from "react-bootstrap";
-import { XLg } from 'react-bootstrap-icons'
+import { Button, Card } from "react-bootstrap";
+import { XLg, PinFill, XCircle } from 'react-bootstrap-icons'
 
 
 
 
 // Cordinates of Halifax
-const center = [44.653707240893, -63.59127044677735];
+const center =  [44.653707240893, -63.59127044677735];
 
 
 const customIcon = new Icon({
@@ -37,6 +37,16 @@ function LeafletgeoSearch(props) {
     };
 
     const map = useMap();
+    useEffect(() => {
+        if (locations.length === 1) {
+            // If there's only one marker, set the map center to that marker's coordinates
+            map.setView([locations[0].lat, locations[0].lng], map.getZoom());
+        } else {
+            // If no markers or more than one marker, use Halifax's center
+            map.setView(center, map.getZoom());
+        }
+    }, [locations, map]);
+
     map.on('geosearch/showlocation', function (event) {
         const { location } = event;
         const { label, x, y } = location;
@@ -88,6 +98,7 @@ function MapWrapper(props) {
 
     const locations = props.locations;
     const setLocations = props.setLocationsFun;
+    const isEdit = props.isEdit || false
 
 
     // const [locations, setLocations] = useState([]);
@@ -110,15 +121,26 @@ function MapWrapper(props) {
                 </MapContainer>
             </div>
             <div style={{ width: '100%',textAlign:'center'}} >
-                <h5 style={{textAlign:'center'}}>Selected Location:</h5>
+                <h5 style={{textAlign:'center'}}>{isEdit ? 'Updated Location:' : 'Selected Location:'}</h5>
                 <ul style={{ textAlign: center }}>
-                    {locations.map((location, index) => (
-                        <li key={index}>
-                            Address: {location.label}
-                            <Button className="ml-2" style={{ backgroundColor: "white" }} onClick={() => removeElement(index)}>
-                                <XLg style={{ color: "black" }} />
+                    {locations[0]?.label && locations.map((location, index) => (
+                          <Card className="border shadow p-2">
+                          <li key={index}>
+                            <PinFill className="mr-2" color="red" />
+                            {location.label}
+                            <Button
+                              className="ml-1"
+                              style={{
+                                backgroundColor: "white",
+                                height: "10xp",
+                                width: "10xp",
+                                border: "1px solid white",
+                              }}
+                              onClick={() => removeElement(index)}>
+                              <XCircle style={{ color: "black" }} />
                             </Button>
-                        </li>
+                          </li>
+                        </Card>
                     ))}
                 </ul>
             </div>

@@ -1,10 +1,7 @@
 package com.lostandfound.LostAndFound.Item.entities;
 
-import java.util.Date;
-import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import java.util.*;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -16,6 +13,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Document(collection = "item")
 public class Item {
   @Id private String id;
@@ -30,22 +29,24 @@ public class Item {
   private Boolean foundItem;
   private String category;
 
+  @Builder.Default private Map<String, String> claimRequested = new HashMap<String, String>();
+  @Builder.Default private Map<String, String> claimRequestAccepted = new HashMap<String, String>();
+  @Builder.Default private Map<String, String> claimRejected = new HashMap<String, String>();
+
   @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
   private GeoJsonPoint location;
-
-  public Item copy() {
-    return new Item(
-        this.id,
-        this.title,
-        this.description,
-        this.createdBy,
-        this.claimedBy,
-        this.sensitive,
-        this.postedAt,
-        this.updatedDate,
-        this.image,
-        this.foundItem,
-        this.category,
-        this.location);
+  public Item(Item item) {
+    this.id = item.id;
+    this.title = item.title;
+    this.description = item.description;
+    this.createdBy = item.createdBy;
+    this.claimedBy = item.claimedBy;
+    this.sensitive = item.sensitive;
+    this.postedAt = item.postedAt;
+    this.updatedDate = item.updatedDate;
+    this.image = item.image;
+    this.foundItem = item.foundItem;
+    this.category = item.category;
+    this.location = item.location;
   }
 }

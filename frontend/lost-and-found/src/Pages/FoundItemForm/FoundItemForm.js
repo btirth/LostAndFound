@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Button, Alert } from 'react-bootstrap';
+import { Modal, Form, Button, Alert, Col,Row, Card } from 'react-bootstrap';
 import { CSSTransition } from 'react-transition-group';
 import './FoundItemForm.css';
 import MapWrapper from './MapWrapper';
 import axios from 'axios';
 
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "./../../firebase-config.js";
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from './../../firebase-config.js';
+import { ApiRequest } from '../../helpers/api-request.js';
+import { API_URL } from '../../config/api-end-points.js';
+import { toast } from 'react-toastify';
+import { XLg, X, XCircle, FileArrowUpFill, Eye, PencilSquare } from 'react-bootstrap-icons'
+
 
 const FoundItemForm = ({ isOpen, onRequestClose, resetVariable }) => {
   const [formData, setFormData] = useState({
@@ -15,8 +20,10 @@ const FoundItemForm = ({ isOpen, onRequestClose, resetVariable }) => {
     isSensitive: false,
   });
 
-  const [errorMessage, setErrorMessage] = useState(null);
+  const userEmail = localStorage.getItem('user_email');
 
+  const [errorMessage, setErrorMessage] = useState(null);
+  const selectedFileNames = new Set();
   useEffect(() => {
     if (resetVariable) {
       setIsSubmitted(false);
@@ -24,14 +31,11 @@ const FoundItemForm = ({ isOpen, onRequestClose, resetVariable }) => {
         itemName: '',
         itemDescription: '',
         isSensitive: false,
-      })
+      });
     }
 
-    return () => {
-
-    }
-  }, [resetVariable])
-
+    return () => {};
+  }, [resetVariable]);
 
   const onHideHandle = () => {
     setIsSubmitted(false);
@@ -39,20 +43,16 @@ const FoundItemForm = ({ isOpen, onRequestClose, resetVariable }) => {
       itemName: '',
       itemDescription: '',
       isSensitive: false,
-    })
-
-  }
+    });
+  };
 
   const [mediaFiles, setMediaFiles] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [locations, setLocations] = useState([]);
 
   const headers = {
-
     'Content-Type': 'application/json',
-
-    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-
+    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
   };
 
   const handleInputChange = (e) => {
@@ -65,46 +65,95 @@ const FoundItemForm = ({ isOpen, onRequestClose, resetVariable }) => {
 
   const handleMediaChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
-    setMediaFiles(selectedFiles);
+        const newFiles = selectedFiles.filter((file) => !selectedFileNames.has(file.name));
+        setMediaFiles([...mediaFiles, ...newFiles]);
+        newFiles.forEach((file) => selectedFileNames.add(file.name));
+
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitted(true);
 
-    //uploading images
+    if (!locations) {
+      toast.error('Please select a location', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'dark',
+      });
+      return
+  }
+  if (!formData["category"]) {
+      toast.error('Please select a category', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'dark',
+      });
+      return
+
+  }
+
+
+    // Uploading images
     const fileLinks = await uploadImages(mediaFiles);
-    console.log(locations);
     const coordinates = [locations[0].lng, locations[0].lat];
+      const dataToSend = {
+        title: formData['itemName'],
+          description: formData['itemDescription'],
+          createdBy: userEmail,
+          image: fileLinks,
+          location: {
+            coordinates: coordinates,
+            type: 'Point',
+          },
+          foundItem: true,
+          sensitive: formData['isSensitive'],
+          category : formData["category"]
+      };
+      
+      ApiRequest.fetch({method: 'post',
+      url: `${API_URL}/api/v1/items`,
+      data: dataToSend,})
+        .then((response) => {
+          toast.success('Found Item Reported!!', {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'dark',
+        });
+        setIsSubmitted(true);
+        })
+        .catch((error) => {
+            toast.error('Found not reported, Try Again!', {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: 'dark',
+            });
 
-    //submitting form data
-    try {
-      const currentLoggedinUser = localStorage.getItem("user_email");
-      const response = await axios.post('http://localhost:8080/api/v1/item', {
-        title: formData["itemName"],
-        description: formData["itemDescription"],
-        createdBy: currentLoggedinUser,
-        image: fileLinks,
-        location: {
-          coordinates: coordinates,
-          type: "Point"
-        },
-        foundItem: true,
-        sensitive: formData["isSensitive"]
-      }, { headers });
-
-
-      setErrorMessage(null);
-
-      window.location = '/home'
-
-
-    } catch (error) {
-      // Handle login errors
-      setErrorMessage(error.response?.data?.error_description || 'An error occurred during form submission');
-
-
-    }
+        })
+        .finally(() => {
+          setMediaFiles([])
+          setLocations([])
+        // window.location = '/home';
+        })
   };
 
   async function uploadImages(files) {
@@ -114,7 +163,10 @@ const FoundItemForm = ({ isOpen, onRequestClose, resetVariable }) => {
       for (let index = 0; index < files.length; index++) {
         const file = files[index];
         let todayDate = new Date().getUTCMilliseconds().toString();
-        const fileRef = ref(storage, `lostnfound/${file.name}-${todayDate}-${index}`);
+        const fileRef = ref(
+          storage,
+          `lostnfound/${file.name}-${todayDate}-${index}`
+        );
 
         try {
           const snapshot = await uploadBytes(fileRef, file);
@@ -134,6 +186,15 @@ const FoundItemForm = ({ isOpen, onRequestClose, resetVariable }) => {
     }
   }
 
+  const removeFile = (index) => {
+    const updatedMediaList = [...mediaFiles];
+    const filename = updatedMediaList[index].name
+    updatedMediaList.splice(index, 1);
+    setMediaFiles(updatedMediaList);
+    selectedFileNames.delete(filename);
+};
+
+
   return (
     <CSSTransition
       in={isOpen}
@@ -141,79 +202,128 @@ const FoundItemForm = ({ isOpen, onRequestClose, resetVariable }) => {
       classNames="fade"
       unmountOnExit
     >
-      <Modal show={isOpen} onHide={onRequestClose} size={'xl'} >
+      <Modal show={isOpen} onHide={onRequestClose} size={'lg'}>
         <Modal.Header closeButton>
-          <Modal.Title>Report Found Item</Modal.Title>
+          <Modal.Title style={{ color: '#75e6a3' }}>Report Found Item</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {isSubmitted ? (
-            <Alert variant="success">
-              Thank you for your submission!
-            </Alert>
+            <Alert variant="success">Thank you for your submission!</Alert>
           ) : (
             <Form onSubmit={handleSubmit} className="found-item-form">
-              <Form.Group className="found-item-group">
-                <Form.Label>Item Name</Form.Label>
+              <Form.Group as={Col} controlId="formItemName">
+                <Form.Label style={{ fontWeight: 'bold' }}>Item Name</Form.Label>
                 <Form.Control
                   type="text"
                   name="itemName"
                   value={formData.itemName}
                   onChange={handleInputChange}
-                  className="found-item-input"
                   required
                 />
               </Form.Group>
-              <Form.Group className="found-item-group">
-                <Form.Label>Item Description</Form.Label>
+              <Form.Group as={Col} controlId="formItemDescription">
+                <Form.Label style={{ fontWeight: 'bold' }}>
+                  Item Description
+                </Form.Label>
                 <Form.Control
                   as="textarea"
                   name="itemDescription"
                   value={formData.itemDescription}
                   onChange={handleInputChange}
-                  className="found-item-textarea"
                   required
                 />
               </Form.Group>
-              <Form.Group className="found-item-group">
-                <Form.Check
+             
+              <Row className="mb-3 mt-4" style={{width:'100%'}}>
+              <Col xs={5} md={5} className="d-flex">
+              <Form.Check
                   type="checkbox"
-                  label="Is this item sensitive?"
+                  label={
+                    <span style={{ fontWeight: 'bold' }}>
+                      Is item sensitive?
+                    </span>
+                  }
                   name="isSensitive"
                   checked={formData.isSensitive}
                   onChange={handleInputChange}
-                  className="found-item-checkbox"
-
+                  style={{ fontSize: '1rem' }}
                 />
-              </Form.Group>
-              <Form.Group className="lost-item-group" style={{textAlign:'center'}}>
-                {/* <Form.Label style={{ color: "#333", marginRight: "5px", fontWeight: "bold" }}>Item Category</Form.Label> */}
-                <Form.Select style={{ width: "50%", height: "40px", }} aria-label="personal"
-                  onChange={handleInputChange} name='category'>
-                  <option>Select Category</option>
-                  <option value="personal">Personal Item</option>
-                  <option value="electronics">Electronics</option>
-                  <option value="document">Document</option>
-                </Form.Select>
-              </Form.Group>
-              <Form.Group className="found-item-group">
-                <Form.Label>Upload Images or Videos</Form.Label>
+                </Col>
+                <Col xs={7} md={7} className="d-flex">
+                  <Form.Label style={{ fontWeight: 'bold' ,marginRight:'15px',marginTop:'5px'}}>
+                    Item Category:
+                  </Form.Label>
+                {/* </Col>
+                <Col xs={4} md={4}> */}
+                  <Form.Select
+                    style={{
+                      height: '40px',
+                      borderRadius: '0'
+                    }}
+                    aria-label="category"
+                    onChange={handleInputChange}
+                    name="category"
+                  >
+                    <option>Select Category</option>
+                    <option value="personal">Personal Item</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="document">Document</option>
+                  </Form.Select>
+                </Col>
+              </Row>
+
+
+
+              <Form.Group as={Col} controlId="formMedia" className='mt-2'>
+                <Form.Label style={{ fontWeight: 'bold' }}>
+                  Upload Images or Videos
+                </Form.Label>
                 <Form.Control
                   type="file"
                   accept="image/*,video/*"
                   multiple
                   onChange={handleMediaChange}
-                  className="found-item-input"
                   required
                 />
               </Form.Group>
-              <div style={{width:'100%'}}>
-              <div style={{textAlign:'center'}}>
-                <Form.Label>Location Picker</Form.Label>
-                {/* <LocationPicker onLocationChange={addLocation} /> */}
-                <MapWrapper style={{width:'900px'}} locations={locations} setLocationsFun={setLocations} />
-              </div>
-              </div>
-              <Button variant="primary" type="submit" className="found-item-button">
+              <div style={{textAlign:'left', width:'100%', padding:'15px'}}>
+                
+                            <h6 style={{ color: "#333", fontWeight: "bold" }}>Selected Files</h6>
+                            <ul>
+                                {mediaFiles.map((mediaFile, index) => (
+                                    <Card key={index}>
+                                        <li className='border shadow p-2' style={{ display: "flex", justifyContent: "space-between" }}>
+                                            <div style={{ overflow: "hidden" }}>
+                                                <FileArrowUpFill className='mr-2' />
+                                                {mediaFile.name}
+                                            </div>
+                                            <Button className="ml-1"
+                                                style={{ backgroundColor: "white", height: "10xp", width: "10xp", border: "1px solid white" }}
+                                                onClick={() => removeFile(index)}>
+                                                <XCircle style={{ color: "red" }} />
+                                            </Button>
+                                        </li>
+                                    </Card>
+                                ))}
+                            </ul>
+                        </div>
+
+              <Form.Group as={Col} controlId="formLocation" className='mt-2'>
+                <Form.Label style={{ fontWeight: 'bold' }}>
+                  Location Picker
+                </Form.Label>
+                <MapWrapper
+                  style={{ width: '900px' }}
+                  locations={locations}
+                  setLocationsFun={setLocations}
+                />
+              </Form.Group>
+              <Button
+                variant="primary"
+                type="submit"
+                className="found-item-button"
+                style={{ backgroundColor: '#75e6a3', borderColor: '#75e6a3' }}
+              >
                 Submit
               </Button>
             </Form>
