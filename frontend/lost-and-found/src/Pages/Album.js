@@ -22,6 +22,11 @@ const Album = (props) => {
     // Add other parameters as needed
   });
 
+  const [currentLoggedinUser, setcurrentLoggedinUser] = useState(
+    localStorage.getItem("user_email")
+  );
+  const [filterClaimStatus, setfilterClaimStatus] = useState(1);
+
   const cardStyle = {
     height: "100%",
     display: "flex",
@@ -38,8 +43,8 @@ const Album = (props) => {
 
   const noDataStyler = {
     display: "flex",
-    justifyContent: "center"
-  }
+    justifyContent: "center",
+  };
 
   const [searchFilter, setSearchFilter] = useState({
     filters: {
@@ -62,6 +67,8 @@ const Album = (props) => {
   }, [props.value, props.filterParams, searchFilter]);
 
   const [items, setItems] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
 
   const addFilter = (attributeName, value, mode) => {
     setSearchFilter((prevFilter) => ({
@@ -140,20 +147,218 @@ const Album = (props) => {
     // }
     // fetchData();
   };
+
+  const renderClaims = (item) => {
+    const getValueArray = () => {
+      switch (filterClaimStatus) {
+        case 1:
+          return item.claimRequested;
+        case 2:
+          return item.claimApproved;
+        case 3:
+          return item.claimReject;
+        default:
+          return null;
+      }
+    };
+    const selectedArray = getValueArray();
+
+    return selectedArray ? (
+      <Grid container spacing={4}>
+        {selectedArray.map((mail, index) => (
+          <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
+            <Card sx={cardStyle}>
+              <CardMedia
+                component="div"
+                sx={{
+                  pt: "70%",
+                  backgroundSize: "contain",
+                  backgroundPosition: "center",
+                }}
+                image={item.image ? item.image[0] : ""}
+              />
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Typography gutterBottom>{item.title}</Typography>
+                <Typography sx={{ color: "grey" }}>
+                  {item.description}
+                </Typography>
+                <br />
+                <Typography style={{ wordWrap: "break-word" }} gutterBottom>
+                  User: {mail}
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button
+                  onClick={() => handleApprove(item.id, mail)}
+                  size="large"
+                  style={{
+                    backgroundColor: "green",
+                    width: "100%",
+                    color: "white",
+                  }}
+                >
+                  Approve
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    ) : null;
+  };
+
+  async function getResult(props, setItems, searchFilter) {
+    const currentLoggedinUser = localStorage.getItem("user_email");
+
+    console.log("filter props", props.filterParams);
+    setItems([]);
+
+    // Assuming `value` is defined somewhere in your component
+    if (props.value === 0) {
+      const updatedFilter = {
+        ...searchFilter,
+        filters: {
+          ...searchFilter.filters,
+          foundItem: { value: true, mode: "equals" },
+          createdBy: { value: currentLoggedinUser, mode: "contains" },
+        },
+      };
+      if (
+        typeof props.filterParams === "object" &&
+        props.filterParams !== null
+      ) {
+        // Iterate over key-value pairs in props.filterParams and add filters
+        Object.entries(props.filterParams).forEach(([key, value]) => {
+          // if (value != "") {
+          if (key === "keyword")
+            updatedFilter.filters[key] = {
+              value: value,
+              mode: "contains",
+            };
+          // You can customize the mode if needed
+          else if (key === "category")
+            updatedFilter.filters[key] = { value: value, mode: "equals" };
+          else if (key === "location")
+            updatedFilter.filters[key] = { value: value, mode: "geo" };
+          else if (key === "date") {
+            const endDate = `${value}T23:59:59.000Z `;
+            updatedFilter.filters.postedAt = {
+              value: `${value}, 00:00:00 AM`,
+              mode: "gte",
+            };
+            updatedFilter.filters.postedAt = {
+              value: new Date(endDate).toISOString(),
+              mode: "lte",
+            };
+          }
+          // }
+          // You can customize the mode if needed
+        });
+      }
+      // if (keywordValue != "") {
+      //   updatedFilter.filters.keyword = {
+      //     value: keywordValue,
+      //     mode: "contains",
+      //   };
+      // }
+      getFilteredData(updatedFilter, setItems);
+    } else if (props.value === 1) {
+      const updatedFilter = {
+        ...searchFilter,
+        filters: {
+          ...searchFilter.filters,
+          claimRequested: { value: currentLoggedinUser, mode: "contains" },
+        },
+      };
+      getFilteredData(updatedFilter, setItems);
+    } else {
+      console.log("in else");
+      // const currentLoggedinUser = localStorage.getItem("user_email");
+
+      const updatedFilter = {
+        ...searchFilter,
+        filters: {
+          ...searchFilter.filters,
+          createdBy: { value: currentLoggedinUser, mode: "contains" },
+        },
+      };
+      getFilteredData(updatedFilter, setItems);
+    }
+  }
+
+  function getFilteredData(updatedFilter, setItems) {
+    try {
+      ApiRequest.fetch({
+        method: "post",
+        url: `${API_URL}/api/v1/items/search`,
+        data: updatedFilter,
+      }).then((response) => {
+        console.log("GET request successful:", response.content);
+        setItems(response.content);
+        setTotalPages(response.totalPages);
+      });
+      // const response = await axios.post(
+      //   `${API_URL}items/search`,
+      //   updatedFilter,
+      //   { headers }
+      // );
+      // console.log("GET request successful:", response.data.content);
+      // setItems(response.data.content);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
+  const Pagination = () => {
+    // const totalPages = Math.ceil(totalItems / itemsPerPage);
+    // const [currentPage, setCurrentPage] = useState(1);
+
+    const handleNextPage = () => {
+      setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
+    };
+
+    const handlePrevPage = () => {
+      setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+    };
+
+    return (
+      <div>
+        <div>
+          <button onClick={handlePrevPage} disabled={currentPage === 0}>
+            Previous
+          </button>
+          <span>
+            {" "}
+            Page {currentPage + 1} of {totalPages+1}{" "}
+          </span>
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage+1 === totalPages+1}
+          >
+            Next
+          </button>
+        </div>
+        {/* Render your content for the current page */}
+        <div>
+          <h2>Page {currentPage + 1} Content</h2>
+          {/* Your content goes here */}
+        </div>
+      </div>
+    );
+  };
+
   return (
     // <ThemeProvider theme={defaultTheme}>
     <main>
       {/* Hero unit */}
-      {items !== undefined && items.length !== 0 ? (
+      {items !== undefined && items !== null && items.length !== 0 ? (
         <Container sx={{ py: 3 }}>
           {/* End hero unit */}
           {props.value !== 2 ? (
             <Grid container spacing={4}>
               {items.map((item) => (
                 <Grid item key={item.id} xs={12} sm={6} md={4} lg={3}>
-                  <Card
-                    sx={cardStyle}
-                  >
+                  <Card sx={cardStyle}>
                     <CardMedia
                       component="div"
                       sx={{
@@ -165,10 +370,10 @@ const Album = (props) => {
                       image={item.image ? item.image[0] : ""}
                     />
                     <CardContent sx={{ flexGrow: 1 }}>
-                      <Typography>
-                        {item.title}
+                      <Typography>{item.title}</Typography>
+                      <Typography sx={{ color: "grey" }}>
+                        {item.description}
                       </Typography>
-                      <Typography sx={{ color: "grey" }}>{item.description}</Typography>
                     </CardContent>
                     <CardActions>
                       {props.value === 1 ? (
@@ -193,53 +398,22 @@ const Album = (props) => {
             </Grid>
           ) : (
             <Grid container spacing={4}>
-              {items.map((item) =>
-                item.claimRequested.map((requestMail, index) => (
-                  <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
-                    <Card
-                      sx={cardStyle}
-                    >
-                      <CardMedia
-                        component="div"
-                        sx={{
-                          // 16:9
-                          pt: "70%",
-                          backgroundSize: "contain",
-                          backgroundPosition: "center",
-                        }}
-                        image={item.image ? item.image[0] : ""}
-                      />
-                      <CardContent sx={{ flexGrow: 1 }}>
-                        <Typography gutterBottom>{item.title}</Typography>
-                        <Typography sx={{ color: "grey" }}>
-                          {item.description}
-                        </Typography>
-                        <br />
-                        <Typography gutterBottom>User:{requestMail}</Typography>
-                      </CardContent>
-                      <CardActions>
-                        <Button
-                          onClick={() => handleApprove(item.id, requestMail)}
-                          size="large"
-                          style={{
-                            backgroundColor: "green",
-                            width: "100%",
-                            color: "white",
-                          }}
-                        >
-                          Approve
-                        </Button>
-                      </CardActions>
-                    </Card>
-                  </Grid>
-                ))
-              )}
+              {items.map((item) => (
+                <React.Fragment key={item.id}>
+                  {renderClaims(item)}
+                </React.Fragment>
+              ))}
             </Grid>
           )}
         </Container>
       ) : (
         <div style={noDataStyler}>No Data</div>
       )}
+
+      <div>
+        <h1>Pagination Example</h1>
+        <Pagination />
+      </div>
     </main>
 
     // </ThemeProvider>
@@ -247,236 +421,3 @@ const Album = (props) => {
 };
 
 export default Album;
-
-async function getResult(props, setItems, searchFilter) {
-  console.log("filter props", props.filterParams);
-  setItems([]);
-
-  // Assuming `value` is defined somewhere in your component
-  if (props.value === 0) {
-    const updatedFilter = {
-      ...searchFilter,
-      filters: {
-        ...searchFilter.filters,
-        foundItem: { value: true, mode: "equals" },
-      },
-    };
-    if (typeof props.filterParams === "object" && props.filterParams !== null) {
-      // Iterate over key-value pairs in props.filterParams and add filters
-      Object.entries(props.filterParams).forEach(([key, value]) => {
-        // if (value != "") {
-        if (key === "keyword")
-          updatedFilter.filters[key] = {
-            value: value,
-            mode: "contains",
-          };
-        // You can customize the mode if needed
-        else if (key === "category")
-          updatedFilter.filters[key] = { value: value, mode: "equals" };
-        else if (key === "location")
-          updatedFilter.filters[key] = { value: value, mode: "geo" };
-        else if (key === "date") {
-          const endDate = `${value}T23:59:59.000Z `;
-          updatedFilter.filters.postedAt = {
-            value: `${value}, 00:00:00 AM`,
-            mode: "gte",
-          };
-          updatedFilter.filters.postedAt = {
-            value: new Date(endDate).toISOString(),
-            mode: "lte",
-          };
-        }
-        // }
-        // You can customize the mode if needed
-      });
-    }
-    // if (keywordValue != "") {
-    //   updatedFilter.filters.keyword = {
-    //     value: keywordValue,
-    //     mode: "contains",
-    //   };
-    // }
-    const currentLoggedinUser = localStorage.getItem("user_email");
-    getFilteredData(updatedFilter, setItems);
-  } else if (props.value === 1) {
-    const currentLoggedinUser = localStorage.getItem("user_email");
-
-    const updatedFilter = {
-      ...searchFilter,
-      filters: {
-        ...searchFilter.filters,
-        claimRequested: { value: currentLoggedinUser, mode: "contains" },
-      },
-    };
-    // if (
-    //   typeof props.filterParams === "object" &&
-    //   props.filterParams !== null
-    // ) {
-    //   // Iterate over key-value pairs in props.filterParams and add filters
-    //   Object.entries(props.filterParams).forEach(([key, value]) => {
-    //     if (key === "keyword")
-    //       updatedFilter.filters[key] = {
-    //         value: value,
-    //         mode: "contains",
-    //       }; // You can customize the mode if needed
-    //     else if (key === "category")
-    //       updatedFilter.filters[key] = { value: value, mode: "equals" }; // You can customize the mode if needed
-    //   });
-    // }
-    // if (keywordValue != "") {
-    //   updatedFilter.filters.keyword = {
-    //     value: keywordValue,
-    //     mode: "contains",
-    //   };
-    // }
-    getFilteredData(updatedFilter, setItems);
-    // try {
-    //   ApiRequest.fetch({
-    //     method: "post",
-    //     url: `${API_URL}/api/v1/items/search`,
-    //     data: updatedFilter,
-    //   }).then((response) => {
-    //     console.log("GET request successful:", response.content);
-    //     setItems(response.content);
-    //   });
-
-    //   // const response = await axios.post(
-    //   //   `${API_URL}items/search`,
-    //   //   updatedFilter,
-    //   //   { headers }
-    //   // );
-    //   // console.log("GET request successful:", response.data.content);
-    //   // setItems(response.data.content);
-    // } catch (error) {
-    //   console.error("Error:", error);
-    // }
-  } else {
-    console.log("in else");
-    const currentLoggedinUser = localStorage.getItem("user_email");
-
-    const updatedFilter = {
-      ...searchFilter,
-      filters: {
-        ...searchFilter.filters,
-        createdBy: { value: currentLoggedinUser, mode: "contains" },
-      },
-    };
-    // try {
-    //   ApiRequest.fetch({
-    //     method: "post",
-    //     url: `${API_URL}/api/v1/items/search`,
-    //     data: updatedFilter,
-    //   }).then((response) => {
-    //     console.log("GET request successful:", response.content);
-    //     setItems(response.content);
-    //   });
-    //   // const response = await axios.post(
-    //   //   `${API_URL}items/search`,
-    //   //   updatedFilter,
-    //   //   { headers }
-    //   // );
-    //   // console.log(
-    //   //   "GET request successful in claim request received:",
-    //   //   response.data.content
-    //   // );
-    //   // setItems(response.data.content);
-    // } catch (error) {
-    //   console.error("Error:", error);
-    // }
-    getFilteredData(updatedFilter, setItems);
-  }
-}
-
-function getFilteredData(updatedFilter, setItems) {
-  try {
-    ApiRequest.fetch({
-      method: "post",
-      url: `${API_URL}/api/v1/items/search`,
-      data: updatedFilter,
-    }).then((response) => {
-      console.log("GET request successful:", response.content);
-      setItems(response.content);
-    });
-    // const response = await axios.post(
-    //   `${API_URL}items/search`,
-    //   updatedFilter,
-    //   { headers }
-    // );
-    // console.log("GET request successful:", response.data.content);
-    // setItems(response.data.content);
-  } catch (error) {
-    console.error("Error:", error);
-  }
-}
-// export default function Album(props) {
-//   const { value } = props;
-//   console.log("value:", value);
-
-//   useEffect(() => {
-//     const headers = {
-//       "Content-Type": "application/json",
-//       Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-//     };
-//     if (value == 0) {
-//       axios
-//         .get(`${API_URL}item/get-list?isFoundItem=true`, { headers })
-//         .then((response) => {
-//           console.log("GET request successful:", response.data);
-//           setItems(response.data);
-//         })
-//         .catch((error) => {
-//           console.error("Error:", error);
-//         });
-//     }
-//   }, []);
-
-//   const [items, setItems] = useState([]);
-//   return (
-//     // <ThemeProvider theme={defaultTheme}>
-
-//     <main>
-//       {/* Hero unit */}
-
-//       <Container sx={{ py: 1 }}>
-//         {/* End hero unit */}
-//         <Grid container spacing={4}>
-//           {items.map((item) => (
-//             <Grid item key={item.id} xs={6} sm={6} md={3}>
-//               <Card
-//                 sx={{
-//                   height: "100%",
-//                   display: "flex",
-//                   flexDirection: "column",
-//                 }}
-//               >
-//                 <CardMedia
-//                   component="div"
-//                   sx={{
-//                     // 16:9
-//                     pt: "70.25%",
-//                     backgroundSize: "contain",
-//                     backgroundPosition: "center",
-//                     backgroundImage: `url(${item.image[0]})`,
-//                   }}
-//                   image={item.image[0]}
-//                 />
-//                 <CardContent sx={{ flexGrow: 1 }}>
-//                   <Typography gutterBottom variant="h5" component="h2">
-//                     {item.title}
-//                   </Typography>
-//                   <Typography>{item.description}</Typography>
-//                 </CardContent>
-//                 {/* <CardActions>
-//                   <Button size="small">View</Button>
-//                   <Button size="small">Edit</Button>
-//                 </CardActions> */}
-//               </Card>
-//             </Grid>
-//           ))}
-//         </Grid>
-//       </Container>
-//     </main>
-
-//     // </ThemeProvider>
-//   );
-// }
