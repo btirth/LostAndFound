@@ -28,7 +28,7 @@ class UserServiceTest {
   }
 
   @Test
-  void testFindUserByEmail() {
+  void testFindUserByEmailSuccess() {
     // arrange
     Mockito.when(userRepository.findByEmail("test@email.com"))
         .thenReturn(Optional.ofNullable(user));
@@ -38,82 +38,157 @@ class UserServiceTest {
 
     // assert
     Assertions.assertEquals(user, foundUser);
+  }
+
+  @Test
+  void testFindUserByEmailFailure() {
+    // arrange
+    Mockito.when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.empty());
+
+    // act + assert
     Assertions.assertThrows(
         LostAndFoundNotFoundException.class,
         () -> {
-          userService.findByEmail("gmail@gmail.com");
+          userService.findByEmail("test@email.com");
         },
         "User not found");
   }
 
   @Test
-  void testInsertUser() {
+  void testInsertUserSuccess() {
     // arrange
-    User userNotExists = new User(user);
-    userNotExists.setEmail("copy@email.com");
-    Mockito.when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
-    Mockito.when(userRepository.existsByEmail(userNotExists.getEmail())).thenReturn(false);
-    Mockito.when(userRepository.insert(userNotExists)).thenReturn(userNotExists);
+    Mockito.when(userRepository.existsByEmail(user.getEmail())).thenReturn(false);
+    Mockito.when(userRepository.insert(user)).thenReturn(user);
 
     // act
-    User insertedUser = userService.insert(userNotExists);
+    User insertedUser = userService.insert(user);
 
     // assert
+    Assertions.assertEquals(user, insertedUser);
+  }
+
+  @Test
+  void testInsertUserAlreadyExists() {
+    // arrange
+    Mockito.when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
+
+    // act + assert
     Assertions.assertThrows(
         LostAndFoundValidationException.class,
         () -> {
           userService.insert(user);
         },
         "User already exists with email id: " + user.getEmail());
-    Assertions.assertEquals(userNotExists, insertedUser);
   }
 
   @Test
-  void testUpdateUser() {
+  void testUpdateUserUpdateName() {
     // arrange
-    User userNotExists = new User(user);
-    userNotExists.setEmail("copy@email.com");
-    Mockito.when(userRepository.existsByEmail(userNotExists.getEmail())).thenReturn(false);
     Mockito.when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
     Mockito.when(userRepository.save(user)).thenReturn(user);
+    user.setName("newName");
 
     // act
     User updatedUser = userService.update(user);
 
     // assert
+    Assertions.assertEquals(user.getName(), updatedUser.getName());
+  }
+
+  @Test
+  void testUpdateUserNotExists() {
+    // arrange
+    Mockito.when(userRepository.existsByEmail(user.getEmail())).thenReturn(false);
+    // act + assert
     Assertions.assertThrows(
         LostAndFoundNotFoundException.class,
         () -> {
-          userService.update(userNotExists);
+          userService.update(user);
         },
         "User does not exist.");
-    Assertions.assertEquals(user.getEmail(), updatedUser.getEmail());
-    Assertions.assertEquals(user.getName(), updatedUser.getName());
+  }
+
+  @Test
+  void testUpdateUserUpdateEmail() {
+    // arrange
+    Mockito.when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
+    Mockito.when(userRepository.save(user)).thenReturn(user);
+    user.setEmail("newemail@gmail.com");
+
+    // act + assert
+    Assertions.assertThrows(
+        Exception.class,
+        () -> {
+          userService.update(user);
+        });
+  }
+
+  @Test
+  void testUpdateUserUpdateCreatedDate() {
+    // arrange
+    Mockito.when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
+    Mockito.when(userRepository.save(user)).thenReturn(user);
+    user.setCreatedDate(new Date());
+
+    // act
+    User updatedUser = userService.update(user);
+
+    // assert
     Assertions.assertEquals(user.getCreatedDate(), updatedUser.getCreatedDate());
+  }
+
+  @Test
+  void testUpdateUserUpdateUpdatedDate() {
+    // arrange
+    Mockito.when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
+    Mockito.when(userRepository.save(user)).thenReturn(user);
+    user.setUpdatedDate(new Date());
+
+    // act
+    User updatedUser = userService.update(user);
+
+    // assert
     Assertions.assertEquals(user.getUpdatedDate(), updatedUser.getUpdatedDate());
+  }
+
+  @Test
+  void testUpdateUserUpdateProfilePicUrl() {
+    // arrange
+    Mockito.when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
+    Mockito.when(userRepository.save(user)).thenReturn(user);
+    user.setProfilePicUrl("new-pic.com");
+
+    // act
+    User updatedUser = userService.update(user);
+
+    // assert
     Assertions.assertEquals(user.getProfilePicUrl(), updatedUser.getProfilePicUrl());
   }
 
   @Test
-  void testDeleteUser() {
+  void testDeleteUserSuccess() {
     // arrange
-    String notExistsUserEmail = "copy@email.com";
-    User notExistsUser = new User(user);
-    notExistsUser.setEmail(notExistsUserEmail);
-    Mockito.when(userRepository.existsByEmail(notExistsUser.getEmail())).thenReturn(false);
     Mockito.when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
 
     // act
     userService.delete(user.getEmail());
 
     // assert
+    Mockito.verify(userRepository, Mockito.times(1)).deleteByEmail(user.getEmail());
+  }
+
+  @Test
+  void testDeleteUserNotExists() {
+    // arrange
+    Mockito.when(userRepository.existsByEmail(user.getEmail())).thenReturn(false);
+
+    // act + assert
     Assertions.assertThrows(
         LostAndFoundNotFoundException.class,
         () -> {
-          userService.delete(notExistsUserEmail);
+          userService.delete(user.getEmail());
         },
         "User does not exist.");
-    Mockito.verify(userRepository, Mockito.never()).deleteByEmail(notExistsUser.getEmail());
-    Mockito.verify(userRepository, Mockito.times(1)).deleteByEmail(user.getEmail());
+    Mockito.verify(userRepository, Mockito.never()).deleteByEmail(user.getEmail());
   }
 }
