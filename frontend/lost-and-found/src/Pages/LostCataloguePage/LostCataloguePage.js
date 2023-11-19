@@ -8,12 +8,18 @@ import axios from 'axios';
 import Navbar from '../../Components/Navbar';
 import { ApiRequest } from '../../helpers/api-request';
 import FilterOptions from '../../Components/FilterOptions';
+import { Modal, Button, Form, Dropdown } from 'react-bootstrap';
 
 const LostCatalogue = () => {
   const [isFilterOpen, setFilterOpen] = useState(true);
   const [items, setItems] = useState([]);
+  const [lostItems, setlostItems] = useState([]);
   const toggleFilter = () => setFilterOpen(!isFilterOpen);
   const BaseColor = '#75e6a3';
+
+  const [showClaimModal, setShowClaimModal] = useState(false);
+  const [selectedLinkItem, setSelectedLinkItem] = useState(null);
+  const [currentClaimItem, setCurrentClaimItem] = useState(null);
 
   const containerFlexStyle = {
     display: 'flex',
@@ -95,6 +101,16 @@ const LostCatalogue = () => {
     cursor: 'pointer',
   };
 
+  const lightButtonStyle = {
+    backgroundColor: BaseColor, 
+    color: '#fff', 
+    border: 'none',
+    borderRadius: '4px',
+    padding: '8px 16px',
+    cursor: 'pointer',
+    pointerEvents: 'none', 
+  }
+
   const itemContainerStyle = {
     display: 'flex',
     flexWrap: 'wrap',
@@ -157,13 +173,71 @@ const LostCatalogue = () => {
     alignItems: 'center',
   };
   const userEmail = localStorage.getItem('user_email');
-  const handleClaimRequest = (itemId) =>{
+  const fetchItemsData = async () => {
+    const filters = {
+      createdBy: {
+        value: userEmail,
+        mode: "equals",
+      },
+      foundItem: {
+        value: false,
+        mode: "equals",
+      },
+    };
+
+    const requestBody = {
+      filters,
+      page: 0,
+      size: 500,
+      sortField: "postedAt",
+      sortDirection: "DESC",
+    };
+
+    ApiRequest.fetch({
+      method: "post",
+      url: `${API_URL}/api/v1/items/search`,
+      data: requestBody,
+    })
+      .then((lostItemList) => {
+        setlostItems([...lostItemList.content]);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
+  const openClaimModal = () => {
+    fetchItemsData(); 
+    setShowClaimModal(true);
+  };
+
+
+  const closeClaimModal = () => {
+    setShowClaimModal(false);
+  };
+
+
+  const submitClaim = (itemId) =>{
+    if (!selectedLinkItem) {
+      toast.error('Link your lost item to proceed!', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark',
+    });
+    return
+    }
     ApiRequest.fetch({
       method: 'put',
       url: `${API_URL}/api/v1/items/claims/request`,
       params: {
-        itemId: itemId,
+        itemId: currentClaimItem,
         userId: userEmail,
+        lostItemId: selectedLinkItem.id
       },   
     }, false)
       .then((data) => {
@@ -181,9 +255,21 @@ const LostCatalogue = () => {
       })
       .catch((e) => {
         console.log("error",e);
+      })
+      .finally(() => {
+        setShowClaimModal(false);
+        setSelectedLinkItem(null);
+        setCurrentClaimItem(null);
+        fetchData()
       });
   }
 
+
+  const handleClaimModal = (id) =>{
+
+    setCurrentClaimItem(id)
+    openClaimModal()
+  }
   const itemsPerPage = 6;
   const [currentPage, setCurrentPage] = useState(1);
   const [paginatedItems, setPaginatedItems] = useState([]);
@@ -303,20 +389,40 @@ const LostCatalogue = () => {
       <div
         style={{
           ...cardStyle,
-          width: 'calc(33.33% - 2.5%)',
-          margin: '1.25%',
+          width: "calc(33.33% - 2.5%)",
+          margin: "1.25%",
           ...(isHovered && cardHoverStyle),
         }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}>
         <div style={cardContentStyle}>
-          <div style={{ textAlign: 'center' }}>{renderItemImage()}</div>
+          <div style={{ textAlign: "center" }}>{renderItemImage()}</div>
           <div style={itemInfoStyle}>
             <h3 style={itemNameStyle}>{title}</h3>
-            <p style={itemTextStyle}>Posted at: {new Date(postedAt).toLocaleDateString("en-CA")}</p>
+            <p style={itemTextStyle}>
+              Posted at: {new Date(postedAt).toLocaleDateString("en-CA")}
+            </p>
             <p style={itemTextStyle}>Description: {description}</p>
           </div>
-          {<button onClick={() => {handleClaimRequest(id)}} style={buttonStyle}>Claim</button>}
+          {Object.values(claimRequested).some(
+            (filter) => filter === userEmail
+          ) ? (
+            <button
+              onClick={() => {
+                handleClaimModal(id);
+              }}
+              style={lightButtonStyle}>
+              Claim Requested
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                handleClaimModal(id);
+              }}
+              style={buttonStyle}>
+              Claim
+            </button>
+          )}
         </div>
       </div>
     );
@@ -374,6 +480,10 @@ const LostCatalogue = () => {
     fetchData(1, filterParams);
   };
 
+  const openLostItemPage = () => {
+    window.location = '/lost-form'
+  }
+
   return (
     <div>
       <div style={containerFlexStyle}>
@@ -383,7 +493,7 @@ const LostCatalogue = () => {
               style={filterLabelStyle}
               className="filter-toggle"
               onClick={toggleFilter}>
-              {isFilterOpen ? 'Hide Filter Options' : 'Show Filter Options'}
+              {isFilterOpen ? "Hide Filter Options" : "Show Filter Options"}
             </div>
           </div>
           {isFilterOpen && (
@@ -393,15 +503,66 @@ const LostCatalogue = () => {
           )}
         </div>
         <div style={componentBStyle}>
-          <h1 style={{ textAlign: 'center', fontSize: '40px', color: '#333' }}>
+          <h1 style={{ textAlign: "center", fontSize: "40px", color: "#333" }}>
             LOST CATALOGUE:
           </h1>
           {MemoizedItemList}
           {renderPagination()}
         </div>
       </div>
+      {showClaimModal && (
+        <Modal show={showClaimModal} onHide={closeClaimModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>
+              <h5 className="mb-0">Select Lost Item to Link</h5>
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body className='mb-5 pb-5'>
+            <Form className='mb-5'>
+              <Form.Group controlId="lostItemLink">
+                <div className="d-flex flex-row">
+                <Form.Label>Select Lost Item:</Form.Label>
+                <Dropdown>
+                  <Dropdown.Toggle variant="light" id="dropdown-basic"  style={{ width: "250px", marginLeft: "30px" }}>
+                    {selectedLinkItem
+                      ? selectedLinkItem.title
+                      : "No Option Selected"}
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    {lostItems?.map((item) => (
+                      <Dropdown.Item
+                        key={item.id}
+                        style={{ width: "250px", marginRight: "10px" }}
+                        onClick={() => setSelectedLinkItem(item)}>
+                        <img
+                          src={item.image[0]}
+                          alt={item.title}
+                          style={{ width: "50px", marginRight: "10px" }}
+                        />
+                        {item.title}
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown.Menu>
+                </Dropdown>
+                </div>
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            
+          <Button variant="info" onClick={openLostItemPage}>Report New Lost Item</Button>
+            <Button variant="secondary" onClick={closeClaimModal}>
+              Close
+            </Button>
+            <Button variant="success" onClick={submitClaim}>
+              Submit Claim
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
     </div>
   );
 };
 
 export default LostCatalogue;
+
