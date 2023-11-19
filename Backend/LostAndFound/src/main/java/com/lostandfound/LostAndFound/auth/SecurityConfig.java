@@ -19,14 +19,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(final HttpSecurity http) throws Exception {
     JwtWebSecurityConfigurer.forRS256(this.audience, this.issuer)
         .configure(http)
-          .authorizeRequests()
-            .antMatchers(HttpMethod.OPTIONS, "/**")
-            .permitAll()
-            .antMatchers(HttpMethod.POST, "/user")
-            .permitAll()
-            .antMatchers(HttpMethod.GET, "/user")
-            .permitAll()
-            .anyRequest()
-            .authenticated();
+        .authorizeRequests()
+        .antMatchers(HttpMethod.OPTIONS, "/**")
+        .permitAll()
+        .antMatchers(HttpMethod.POST, "/user")
+        .permitAll()
+        .antMatchers(HttpMethod.GET, "/user")
+        .permitAll()
+        .anyRequest()
+        .authenticated();
   }
 }
