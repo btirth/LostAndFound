@@ -1,0 +1,17 @@
+package com.lostandfound.LostAndFound.reward.rest;
+
+import com.lostandfound.LostAndFound.reward.entities.RewardData;
+import com.lostandfound.LostAndFound.reward.service.RewardDataService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/reward/data")
+public class RewardDataController {
+  @Autowired private RewardDataService rewardDataService;
+
+  @PostMapping("/create")
+  public RewardData create(@RequestBody RewardData rewardData) {
+    return this.rewardDataService.create(rewardData);
+  }
+}
