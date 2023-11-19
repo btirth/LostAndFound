@@ -1,7 +1,7 @@
 package com.lostandfound.LostAndFound.Item.service;
 
 import com.lostandfound.LostAndFound.Item.entities.Item;
-import com.lostandfound.LostAndFound.core.bo.SearchFilter;
+import com.lostandfound.LostAndFound.core.utils.SearchFilter;
 import org.springframework.data.domain.Page;
 
 public interface IItemService {

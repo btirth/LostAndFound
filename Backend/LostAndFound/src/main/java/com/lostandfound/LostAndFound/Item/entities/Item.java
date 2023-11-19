@@ -35,6 +35,7 @@ public class Item {
 
   @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
   private GeoJsonPoint location;
+
   public Item(Item item) {
     this.id = item.id;
     this.title = item.title;
