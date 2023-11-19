@@ -1,6 +1,7 @@
 package com.lostandfound.LostAndFound.reward.service.Impl;
 
 import com.lostandfound.LostAndFound.core.exception.LostAndFoundException;
+import com.lostandfound.LostAndFound.core.exception.LostAndFoundNotFoundException;
 import com.lostandfound.LostAndFound.reward.entities.RewardData;
 import com.lostandfound.LostAndFound.reward.repo.RewardDataRepository;
 import com.lostandfound.LostAndFound.reward.service.RewardDataService;
@@ -26,5 +27,19 @@ public class RewardDataServiceImpl implements RewardDataService {
     } catch (Exception e) {
       throw new LostAndFoundException("Error while creating reward data");
     }
+  }
+
+  /**
+   * Get a reward data by its id
+   *
+   * @param id id of the reward data
+   * @return the reward data
+   * @throws LostAndFoundNotFoundException if the reward data does not exist
+   */
+  @Override
+  public RewardData findById(String id) {
+    return this.rewardDataRepository
+            .findById(id)
+            .orElseThrow(() -> new LostAndFoundNotFoundException("Reward data not found"));
   }
 }

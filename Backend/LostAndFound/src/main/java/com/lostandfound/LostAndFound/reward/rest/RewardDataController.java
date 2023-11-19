@@ -14,4 +14,9 @@ public class RewardDataController {
   public RewardData create(@RequestBody RewardData rewardData) {
     return this.rewardDataService.create(rewardData);
   }
+
+  @GetMapping("/{id}")
+  public RewardData findById(@PathVariable String id) {
+    return this.rewardDataService.findById(id);
+  }
 }

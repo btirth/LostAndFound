@@ -4,5 +4,15 @@ import com.lostandfound.LostAndFound.reward.entities.RewardData;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
-public interface RewardDataRepository extends MongoRepository<RewardData, String> {}
+public interface RewardDataRepository extends MongoRepository<RewardData, String> {
+    /**
+     * Find a reward data by its id
+     *
+     * @param id id of the reward data
+     * @return Optional<RewardData> reward data
+     */
+    Optional<RewardData> findById(String id);
+}

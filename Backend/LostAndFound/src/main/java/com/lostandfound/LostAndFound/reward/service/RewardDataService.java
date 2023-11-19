@@ -1,6 +1,7 @@
 package com.lostandfound.LostAndFound.reward.service;
 
 import com.lostandfound.LostAndFound.reward.entities.RewardData;
+import com.lostandfound.LostAndFound.core.exception.LostAndFoundNotFoundException;
 
 public interface RewardDataService {
   /**
@@ -10,4 +11,12 @@ public interface RewardDataService {
    * @return the created reward data
    */
   RewardData create(RewardData rewardData);
+
+    /**
+     * Get a reward data by its id
+     * @param id id of the reward data
+     * @return the reward data
+     * @throws LostAndFoundNotFoundException if the reward data does not exist
+     */
+    RewardData findById(String id);
 }

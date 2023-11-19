@@ -3,6 +3,7 @@ package com.lostandfound.LostAndFound.reward;
 import static org.mockito.Mockito.when;
 
 import com.lostandfound.LostAndFound.core.exception.LostAndFoundException;
+import com.lostandfound.LostAndFound.core.exception.LostAndFoundNotFoundException;
 import com.lostandfound.LostAndFound.reward.entities.RewardData;
 import com.lostandfound.LostAndFound.reward.repo.RewardDataRepository;
 import com.lostandfound.LostAndFound.reward.service.Impl.RewardDataServiceImpl;
@@ -70,4 +71,22 @@ public class RewardDataServiceTest {
     Assertions.assertEquals(rewardData.getTitle(), foundRewardData.getTitle());
     Assertions.assertEquals(rewardData.getDescription(), foundRewardData.getDescription());
   }
+
+  @Test
+  void testFindRewardDataByIdNotFoundException() {
+    String otherRewardId = "100";
+    when(rewardDataRepository.findById(otherRewardId)).thenReturn(Optional.empty());
+
+    RewardData otherRewardData = rewardData.copy();
+    otherRewardData.setId(otherRewardId);
+    // act + assert
+    Assertions.assertThrows(
+            LostAndFoundNotFoundException.class, () -> rewardDataService.findById(otherRewardData.getId()));
+    Assertions.assertEquals(
+        "Reward data not found",
+        Assertions.assertThrows(
+                        LostAndFoundNotFoundException.class, () -> rewardDataService.findById(otherRewardData.getId()))
+            .getMessage());
+  }
+
 }
