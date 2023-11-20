@@ -8,6 +8,7 @@ import com.lostandfound.LostAndFound.reward.repo.RewardRepository;
 import com.lostandfound.LostAndFound.reward.service.Impl.RewardServiceImpl;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,5 +44,12 @@ public class RewardServiceTest {
     Reward expectedReward = rewardService.create(reward);
 
     Assertions.assertEquals(expectedReward, reward);
+  }
+
+  @Test
+  public void testFindAllByWinnerId() {
+    List<Reward> expectedReward = rewardService.findAllByWinnerId(reward.getWinnerId());
+
+    Assertions.assertEquals(expectedReward, List.of());
   }
 }
