@@ -7,6 +7,8 @@ import com.lostandfound.LostAndFound.core.exception.LostAndFoundNotFoundExceptio
 import com.lostandfound.LostAndFound.reward.entities.RewardData;
 import com.lostandfound.LostAndFound.reward.repo.RewardDataRepository;
 import com.lostandfound.LostAndFound.reward.service.Impl.RewardDataServiceImpl;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,12 +17,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
-
 @ExtendWith(MockitoExtension.class)
 public class RewardDataServiceTest {
   RewardData rewardData;
-
+  String otherRewardId = "100";
   @Mock private RewardDataRepository rewardDataRepository;
   @InjectMocks private RewardDataServiceImpl rewardDataService;
 
@@ -74,19 +74,34 @@ public class RewardDataServiceTest {
 
   @Test
   void testFindRewardDataByIdNotFoundException() {
-    String otherRewardId = "100";
     when(rewardDataRepository.findById(otherRewardId)).thenReturn(Optional.empty());
 
     RewardData otherRewardData = rewardData.copy();
     otherRewardData.setId(otherRewardId);
     // act + assert
     Assertions.assertThrows(
-            LostAndFoundNotFoundException.class, () -> rewardDataService.findById(otherRewardData.getId()));
+        LostAndFoundNotFoundException.class,
+        () -> rewardDataService.findById(otherRewardData.getId()));
     Assertions.assertEquals(
         "Reward data not found",
         Assertions.assertThrows(
-                        LostAndFoundNotFoundException.class, () -> rewardDataService.findById(otherRewardData.getId()))
+                LostAndFoundNotFoundException.class,
+                () -> rewardDataService.findById(otherRewardData.getId()))
             .getMessage());
   }
 
+  @Test
+  void testGetAllIds() {
+    RewardData otherReward = rewardData.copy();
+    otherReward.setId(otherRewardId);
+    // arrange
+    when(rewardDataRepository.findAll()).thenReturn(List.of(rewardData, otherReward));
+
+    // act
+    List<String> foundRewardDataList = rewardDataService.getAllIds();
+
+    // assert
+    Assertions.assertEquals(rewardData.getId(), foundRewardDataList.get(0));
+    Assertions.assertEquals(otherReward.getId(), foundRewardDataList.get(1));
+  }
 }
