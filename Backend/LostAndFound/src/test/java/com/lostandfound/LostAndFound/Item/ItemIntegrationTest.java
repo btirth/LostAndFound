@@ -178,7 +178,7 @@ public class ItemIntegrationTest {
                 .header("Authorization", "Bearer " + bearerToken))
         .andExpect(status().isOk());
     Optional<Item> item = itemRepository.findById(foundItem.getId());
-    assertEquals(foundItem.getTitle(), item.get().getId());
+    assertEquals(foundItem.getTitle(), item.get().getTitle());
   }
 
   @Test
@@ -205,7 +205,7 @@ public class ItemIntegrationTest {
                 .header("Authorization", "Bearer " + bearerToken))
         .andExpect(status().isOk())
         .andExpect(MockMvcResultMatchers.jsonPath("$.content").isArray())
-        .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].title").value(foundItem.getTitle()))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].id").value(foundItem.getId()))
         .andExpect(MockMvcResultMatchers.jsonPath("$.totalElements").value(1));
   }
 }
