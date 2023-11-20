@@ -47,4 +47,15 @@ public class RewardServiceImpl implements RewardService {
 
     return this.rewardRepository.save(reward);
   }
+
+  /**
+   * Get a reward by winner id
+   *
+   * @param winnerId id of the winner
+   * @return the reward list
+   */
+  @Override
+  public List<Reward> findAllByWinnerId(String winnerId) {
+    return List.of();
+  }
 }
