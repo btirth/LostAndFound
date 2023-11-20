@@ -155,7 +155,7 @@ const MessagePanel = (props) => {
                     <Form onSubmit={handleSubmit}>
                         <div className='messageInput'>
                             <input type='text' placeholder='Type something...' onChange={handleChange} value={inputMessage} style={{ width: "100%", border: "none", outline: "none", fontSize: "18px" }}></input>
-                            <button type='submit' style={{ backgroundColor: "#75e6a3", border: "none", height: "40px", width: "40px" }}><Send /></button>
+                            <button type='submit' style={{ backgroundColor: "#35ac65", border: "none", height: "40px", width: "40px" }}><Send /></button>
                         </div>
                     </Form>
                 </div>

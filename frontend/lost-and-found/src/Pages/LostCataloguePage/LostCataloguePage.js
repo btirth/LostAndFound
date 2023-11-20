@@ -13,7 +13,7 @@ const LostCatalogue = () => {
   const [isFilterOpen, setFilterOpen] = useState(true);
   const [items, setItems] = useState([]);
   const toggleFilter = () => setFilterOpen(!isFilterOpen);
-  const BaseColor = '#75e6a3';
+  const BaseColor = '#35ac65';
 
   const containerFlexStyle = {
     display: 'flex',

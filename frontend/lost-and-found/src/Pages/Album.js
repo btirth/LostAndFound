@@ -32,7 +32,7 @@ const Album = (props) => {
     "&:hover": {
       transform: "scale(1.05)",
       boxShadow: 5,
-      outline: "2px solid #75E6A3", // Adjust the border color and size on hover
+      outline: "2px solid #35ac65", // Adjust the border color and size on hover
     },
   };
 
@@ -194,7 +194,7 @@ const Album = (props) => {
           ) : (
             <Grid container spacing={4}>
               {items.map((item) =>
-                item.claimRequested.map((requestMail, index) => (
+                item.claimRequested?.map((requestMail, index) => (
                   <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
                     <Card
                       sx={cardStyle}

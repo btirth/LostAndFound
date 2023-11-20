@@ -23,11 +23,11 @@ const App = () => {
         <Route exact path="/" component={SignupPage} />
         <Route path="/signup" component={SignupPage} />
         <Route path="/login" component={SigninPage} />
+        <PrivateRoute path="/chat" component={ChatPage} />
         <Layout style="position:'fixed';">
           <PrivateRoute path="/home" component={HomePage} />
           <PrivateRoute path="/lost-form" component={LostItemForm} />
           <PrivateRoute path="/lost-catalogue" component={LostCatalogue} />
-          <PrivateRoute path="/chat" component={ChatPage} />
         </Layout>
       </Switch>
     </Router>

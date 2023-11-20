@@ -204,7 +204,7 @@ const FoundItemForm = ({ isOpen, onRequestClose, resetVariable }) => {
     >
       <Modal show={isOpen} onHide={onRequestClose} size={'lg'}>
         <Modal.Header closeButton>
-          <Modal.Title style={{ color: '#75e6a3' }}>Report Found Item</Modal.Title>
+          <Modal.Title style={{ color: '#35ac65' }}>Report Found Item</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {isSubmitted ? (
@@ -322,7 +322,7 @@ const FoundItemForm = ({ isOpen, onRequestClose, resetVariable }) => {
                 variant="primary"
                 type="submit"
                 className="found-item-button"
-                style={{ backgroundColor: '#75e6a3', borderColor: '#75e6a3' }}
+                style={{ backgroundColor: '#35ac65', borderColor: '#35ac65' }}
               >
                 Submit
               </Button>

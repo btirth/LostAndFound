@@ -17,8 +17,8 @@ import FooterComponent from '../../Components/FooterComponent';
 
 function LandingPage() {
     const imgvar = LandingPageImg;
-    const box1Style = { backgroundColor: '#75e6a3', color: '#333333', padding: '20px' };
-    const box2Style = { backgroundColor: '#75e6a3', color: '#333333', padding: '20px' };
+    const box1Style = { backgroundColor: '#35ac65', color: '#333333', padding: '20px' };
+    const box2Style = { backgroundColor: '#35ac65', color: '#333333', padding: '20px' };
 
     const [showLoginUp, setShowLoginUp] = useState(false);
 

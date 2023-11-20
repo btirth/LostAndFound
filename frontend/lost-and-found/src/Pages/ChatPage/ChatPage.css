@@ -32,7 +32,7 @@
         .listHeader{
             margin-top: 10px;
             margin-bottom: 10px;
-            color: #75e6a3;
+            color: #35ac65;
             font-weight: 700;
             padding: 10px;
         }
@@ -47,7 +47,7 @@
 
             &:hover{
                 /* background-color: #8a7979; */
-                background-color: #75e6a3;
+                background-color: #35ac65;
                 color: #333;
             }
 
@@ -113,7 +113,7 @@
                 .incoming-message {
                     float: left;
                     /* background-color: #5ade93; */
-                    background-color: #75e6a3;
+                    background-color: #35ac65;
                     margin-left: 10px;
                 }
                 
@@ -150,7 +150,7 @@
 
                 
                 button{
-                    color: #75e6a3;
+                    color: #35ac65;
                     border: none;
                     padding: 10px;
                 }
