@@ -188,13 +188,13 @@ public class ItemIntegrationTest {
     this.itemRepository.save(lostItem);
     SearchFilter searchFilter = new SearchFilter();
     HashMap<String, FilterOptions> filters = new HashMap<>();
-    //    FilterOptions foundItemFilter = new FilterOptions();
-    //    foundItemFilter.setValue(true);
-    //    foundItemFilter.setMode("is");
-    //    filters.put("foundItem", foundItemFilter);
-    //    searchFilter.setPage(0);
-    //    searchFilter.setSize(10);
-    //    searchFilter.setFilters(filters);
+    FilterOptions foundItemFilter = new FilterOptions();
+    foundItemFilter.setValue(true);
+    foundItemFilter.setMode("is");
+    filters.put("foundItem", foundItemFilter);
+    searchFilter.setPage(0);
+    searchFilter.setSize(10);
+    searchFilter.setFilters(filters);
 
     // act + assert
     mockMvc
@@ -203,12 +203,9 @@ public class ItemIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(searchFilter))
                 .header("Authorization", "Bearer " + bearerToken))
-        .andExpect(status().isOk());
-    //        .andExpect(MockMvcResultMatchers.jsonPath("$.content").isArray())
-    //        .andExpect(
-    //            MockMvcResultMatchers.jsonPath("$.content[0].id")
-    //                .value(foundItem.getId()))
-    //        .andExpect(MockMvcResultMatchers.jsonPath("$.totalElements").value(2));
-    ;
+        .andExpect(status().isOk())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.content").isArray())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].title").value(foundItem.getTitle()))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.totalElements").value(1));
   }
 }
