@@ -11,11 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/reward")
 public class RewardController {
-    @Autowired private RewardService rewardService;
+  @Autowired private RewardService rewardService;
 
-    @PostMapping("/create")
-    public Reward create(@RequestBody Reward reward) {
-        return this.rewardService.create(reward);
-    }
-
+  @PostMapping("/create")
+  public Reward create(@RequestBody Reward reward) {
+    return this.rewardService.create(reward);
+  }
 }

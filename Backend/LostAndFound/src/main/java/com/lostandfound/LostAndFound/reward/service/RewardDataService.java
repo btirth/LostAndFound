@@ -24,8 +24,8 @@ public interface RewardDataService {
 
   /**
    * Get all reward data ids
-   * @return the ids of all reward data
    *
+   * @return the ids of all reward data
    */
   List<String> getAllIds();
 }
