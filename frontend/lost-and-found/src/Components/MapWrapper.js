@@ -63,14 +63,7 @@ function LeafletgeoSearch(props) {
 
     return (
         <div>
-            {/* <h3>Pinned Locations:</h3>
-            <ul>
-                {loc.map((location, index) => (
-                    <li key={index}>
-                        Latitude: {location[0]}, Longitude: {location[1]}
-                    </li>
-                ))}
-            </ul> */}
+        
             {locations.map((coordinate, index) => (
                 <Marker key={index} position={[coordinate.lat, coordinate.lng]} icon={customIcon}>
                     <Popup key={index}>{coordinate.label}</Popup>
@@ -84,40 +77,6 @@ function LeafletgeoSearch(props) {
     );
 }
 
-
-// class MapWrapper extends React.Component {
-
-//     render() {
-
-//         const [locations, setLocations] = useState([]);
-
-//         const addLocation = (newLocation) => {
-//             console.log(newLocation)
-//             setLocations([...locations, newLocation]);
-//         };
-
-//         return (
-//             <div id="mapid">
-//                 <MapContainer
-//                     center={center}
-//                     zoom={13}
-//                     scrollWheelZoom={true}
-//                     style={{ height: '400px', width: '800px' }}
-//                 >
-//                     {/* <TileLayer
-//             attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
-//             url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
-//           /> */}
-//                     <TileLayer
-//                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-//                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-//                     />
-//                     <LeafletgeoSearch />
-//                 </MapContainer>
-//             </div>
-//         );
-//     }
-// }
 function MapWrapper({setLocation}) {
 
 

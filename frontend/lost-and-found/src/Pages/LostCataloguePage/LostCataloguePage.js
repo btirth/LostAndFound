@@ -366,12 +366,12 @@ const LostCatalogue = () => {
 
     const renderItemImage = () => {
       if (sensitive) {
-        return <img src={sensitiveImg} alt="Default" style={defaultImageStyle} />;
+        return <img src={sensitiveImg} alt="Default" style={{...defaultImageStyle, objectFit: 'cover', width: '100%', height: '100%' }} />;
       } else {
         if (!image) {
-          return <img src={noImg} alt="Default" style={defaultImageStyle} />;
+          return <img src={noImg} alt="Default" style={{...defaultImageStyle, objectFit: 'cover', width: '100%', height: '100%' }} />;
         } else {
-          return <img src={image[0]} alt={title} style={imageStyle} />;
+          return <img src={image[0]} alt={title} style={{...imageStyle, objectFit: 'cover', width: '100%', height: '100%' }} />;
         }
       }
     };
@@ -528,7 +528,7 @@ const LostCatalogue = () => {
                       ? selectedLinkItem.title
                       : "No Option Selected"}
                   </Dropdown.Toggle>
-                  <Dropdown.Menu>
+                  <Dropdown.Menu style={{ maxHeight: "200px", overflowY: "auto" , overflowX:"hidden" }}>
                     {lostItems?.map((item) => (
                       <Dropdown.Item
                         key={item.id}
