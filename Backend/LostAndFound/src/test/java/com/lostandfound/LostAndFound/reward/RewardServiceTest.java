@@ -48,8 +48,10 @@ public class RewardServiceTest {
 
   @Test
   public void testFindAllByWinnerId() {
+    when(rewardRepository.findAllByWinnerId(reward.getWinnerId())).thenReturn(List.of(reward));
+
     List<Reward> expectedReward = rewardService.findAllByWinnerId(reward.getWinnerId());
 
-    Assertions.assertEquals(expectedReward, List.of());
+    Assertions.assertEquals(expectedReward, List.of(reward));
   }
 }

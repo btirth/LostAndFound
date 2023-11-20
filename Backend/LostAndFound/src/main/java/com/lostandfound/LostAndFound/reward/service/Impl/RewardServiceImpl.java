@@ -56,6 +56,6 @@ public class RewardServiceImpl implements RewardService {
    */
   @Override
   public List<Reward> findAllByWinnerId(String winnerId) {
-    return List.of();
+    return this.rewardRepository.findAllByWinnerId(winnerId);
   }
 }
