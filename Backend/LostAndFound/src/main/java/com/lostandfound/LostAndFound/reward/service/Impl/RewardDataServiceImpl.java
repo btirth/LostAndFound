@@ -5,6 +5,7 @@ import com.lostandfound.LostAndFound.core.exception.LostAndFoundNotFoundExceptio
 import com.lostandfound.LostAndFound.reward.entities.RewardData;
 import com.lostandfound.LostAndFound.reward.repo.RewardDataRepository;
 import com.lostandfound.LostAndFound.reward.service.RewardDataService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +40,18 @@ public class RewardDataServiceImpl implements RewardDataService {
   @Override
   public RewardData findById(String id) {
     return this.rewardDataRepository
-            .findById(id)
-            .orElseThrow(() -> new LostAndFoundNotFoundException("Reward data not found"));
+        .findById(id)
+        .orElseThrow(() -> new LostAndFoundNotFoundException("Reward data not found"));
+  }
+
+  /**
+   * Get all reward data ids
+   *
+   * @return the ids of all reward data
+   */
+  @Override
+  public List<String> getAllIds() {
+    List<RewardData> rewardDataList = this.rewardDataRepository.findAll();
+    return rewardDataList.stream().map(RewardData::getId).toList();
   }
 }

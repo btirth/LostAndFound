@@ -15,8 +15,7 @@ public class RewardData {
   private String title;
   private String description;
 
-    public RewardData copy() {
-        return new RewardData(this.id, this.title, this.description);
-    }
-
+  public RewardData copy() {
+    return new RewardData(this.id, this.title, this.description);
+  }
 }
