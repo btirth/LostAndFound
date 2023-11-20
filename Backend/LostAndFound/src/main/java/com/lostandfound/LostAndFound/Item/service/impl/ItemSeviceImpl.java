@@ -3,9 +3,9 @@ package com.lostandfound.LostAndFound.Item.service.impl;
 import com.lostandfound.LostAndFound.Item.entities.Item;
 import com.lostandfound.LostAndFound.Item.repo.ItemRepository;
 import com.lostandfound.LostAndFound.Item.service.IItemService;
-import com.lostandfound.LostAndFound.core.utils.SearchFilter;
 import com.lostandfound.LostAndFound.core.exception.LostAndFoundException;
 import com.lostandfound.LostAndFound.core.exception.LostAndFoundNotFoundException;
+import com.lostandfound.LostAndFound.core.utils.SearchFilter;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +58,9 @@ public class ItemSeviceImpl implements IItemService {
 
   @Override
   public void delete(String id) {
+    if (!this.itemRepository.existsById(id)) {
+      throw new LostAndFoundNotFoundException("Item with id does not exists");
+    }
     try {
       this.itemRepository.deleteById(id);
     } catch (Exception e) {
@@ -69,7 +72,7 @@ public class ItemSeviceImpl implements IItemService {
   public Page<Item> filterItems(SearchFilter searchFilter) {
     try {
       Pageable pageable = PageRequest.of(searchFilter.getPage(), searchFilter.getSize());
-      Query query = searchFilter.buildQuery(searchFilter);
+      Query query = searchFilter.buildQuery();
       Long count = this.mongoTemplate.count(query, Item.class);
       List<Item> items = this.mongoTemplate.find(query.with(pageable), Item.class);
       return new PageImpl<>(items, pageable, count);
