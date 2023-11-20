@@ -2,7 +2,7 @@ package com.lostandfound.LostAndFound.Item.rest;
 
 import com.lostandfound.LostAndFound.Item.entities.Item;
 import com.lostandfound.LostAndFound.Item.service.IItemService;
-import com.lostandfound.LostAndFound.core.bo.SearchFilter;
+import com.lostandfound.LostAndFound.core.utils.SearchFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
