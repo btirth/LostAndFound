@@ -166,7 +166,7 @@ public class ClaimServiceImpl implements ClaimService {
 
     if (claimRejected == null || claimRejected.containsValue(claimRequestUserId)) {
       throw new LostAndFoundValidationException(
-              "User's claim request has already been rejected for this item.");
+          "User's claim request has already been rejected for this item.");
     }
 
     Map<String, String> claimRequestAccepted = storedItem.getClaimRequestAccepted();

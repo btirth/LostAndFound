@@ -27,8 +27,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @SpringBootTest
 public class UserIntegrationTest {
   User user;
+
   @Value("${auth.token}")
   String bearerToken;
+
   @Autowired private MockMvc mockMvc;
   @Autowired private UserRepository userRepository;
   @Autowired private ObjectMapper objectMapper;
