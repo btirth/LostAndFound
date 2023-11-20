@@ -16,7 +16,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "reward")
 public class Reward {
   @Id private String id;
-  private String rewardId; // id of the reward data
+  private RewardData rewardData;
   private String lostItemUserId;
   private String winnerId; // founder of the item
   @CreatedDate private Date issuedAt;

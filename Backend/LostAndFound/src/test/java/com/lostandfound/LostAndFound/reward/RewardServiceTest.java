@@ -3,6 +3,7 @@ package com.lostandfound.LostAndFound.reward;
 import static org.mockito.Mockito.when;
 
 import com.lostandfound.LostAndFound.reward.entities.Reward;
+import com.lostandfound.LostAndFound.reward.entities.RewardData;
 import com.lostandfound.LostAndFound.reward.repo.RewardRepository;
 import com.lostandfound.LostAndFound.reward.service.Impl.RewardServiceImpl;
 import java.sql.Date;
@@ -17,16 +18,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class RewardServiceTest {
-  Reward reward;
+  private Reward reward;
+  private RewardData rewardData;
 
   @Mock private RewardRepository rewardRepository;
   @InjectMocks private RewardServiceImpl rewardService;
 
   @BeforeEach
   public void setUp() {
+    rewardData = new RewardData("123", "Reward test", "Reward description test");
     reward = new Reward();
     reward.setId("1");
-    reward.setRewardId("123");
+    reward.setRewardData(rewardData);
     reward.setIssuedAt(Date.valueOf(LocalDate.now()));
     reward.setExpiryDate(Date.valueOf(LocalDate.now().plusDays(30)));
     reward.setWinnerId("user1");
