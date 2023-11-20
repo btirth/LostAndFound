@@ -6,3 +6,8 @@ const API_END_POINTS = {
 };
 
 export default API_END_POINTS;
+// name: development
+//     url: http://172.17.0.80:8001
+
+// name: prod
+// url: http://172.17.0.80:1701

@@ -135,6 +135,16 @@ const Navbar = () => {
             Chat
           </Link>
         </li>
+        <li style={navItemStyle}>
+          <Link
+            to="/reward"
+            style={isHovered === 'reward' ? { ...navLinkStyle, ...highlightStyle } : navLinkStyle}
+            onMouseEnter={() => setIsHovered('reward')}
+            onMouseLeave={() => setIsHovered(null)}
+          >
+            Rewards
+          </Link>
+        </li>
       </ul>
 
       <button
