@@ -40,10 +40,10 @@ const MessagePanel = (props) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (inputMessage === "") {
-            setShowAlert(true);
-            setTimeout(() => {
-                setShowAlert(false);
-            }, 2000);
+            // setShowAlert(true);
+            // setTimeout(() => {
+            //     setShowAlert(false);
+            // }, 2000);
             return;
         }
         await updateDoc(doc(db, "chats/" + selectedUser.chatDocumentId), {
@@ -54,6 +54,13 @@ const MessagePanel = (props) => {
                 timestamp: Date.now(),
             }),
         });
+        
+        var secondUser;
+        if(selectedUser.postedBy===currentUserEmail){
+            secondUser=selectedUser.requestBy;
+        }else{
+            secondUser=selectedUser.postedBy;
+        }
 
 
         const chatId = selectedUser.chatDocumentId;
@@ -63,7 +70,7 @@ const MessagePanel = (props) => {
             [chatId + ".lastMessageBy"]: currentUserEmail
         });
 
-        await updateDoc(doc(db, "chatConnections", selectedUser.email), {
+        await updateDoc(doc(db, "chatConnections", secondUser), {
             [chatId + ".lastMessage"]: inputMessage,
             [chatId + ".lastUpdatedTimestamp"]: Date.now(),
             [chatId + ".lastMessageBy"]: currentUserEmail
@@ -72,7 +79,6 @@ const MessagePanel = (props) => {
 
         setInputMessage("");
     }
-
 
 
 
@@ -147,15 +153,17 @@ const MessagePanel = (props) => {
                             <p>Start a new conversation</p>
                         </div> :
                         <div className='chats'>
-                            {chats.map((currMessage, index) => (
-                            <Message key={index} sender={currMessage.sender === currentUserEmail ? currentUserName : selectedUser.name} message={currMessage.message} timestamp={currMessage.timestamp} isOutgoing={currMessage.isOutgoing} />
+                            {
+                            chats.map((currMessage, index) => (
+                                
+                            <Message key={index} sender={currMessage.sender === currentUserEmail ? currentUserName : selectedUser.requestBy === currentUserEmail ? selectedUser.postedBy:selectedUser.requestBy} message={currMessage.message} timestamp={currMessage.timestamp} isOutgoing={currMessage.isOutgoing} />
                             ))}
                         </div>
                     }
                     <Form onSubmit={handleSubmit}>
                         <div className='messageInput'>
                             <input type='text' placeholder='Type something...' onChange={handleChange} value={inputMessage} style={{ width: "100%", border: "none", outline: "none", fontSize: "18px" }}></input>
-                            <button type='submit' style={{ backgroundColor: "#75e6a3", border: "none", height: "40px", width: "40px" }}><Send /></button>
+                            <button type='submit' style={{ backgroundColor: "#35ac65", border: "none", height: "40px", width: "40px" }}><Send /></button>
                         </div>
                     </Form>
                 </div>

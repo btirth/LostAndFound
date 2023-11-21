@@ -1,5 +1,5 @@
 .header {
-    background-color: #75e6a3;
+    background-color: #35ac65;
     color: #fff; /* Text color for headers */
   }
   
@@ -28,7 +28,7 @@
   tr:hover .description,
   tr:hover .location,
   tr:hover .time-found {
-    background-color: #75e6a3; /* Highlight on hover */
+    background-color: #35ac65; /* Highlight on hover */
     color: #fff; /* Text color on hover */
   }
   

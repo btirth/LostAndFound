@@ -28,6 +28,7 @@ public class Item {
   private List<String> image;
   private Boolean foundItem;
   private String category;
+  @Builder.Default private Boolean returned = false;
 
   @Builder.Default private Map<String, String> claimRequested = new HashMap<String, String>();
   @Builder.Default private Map<String, String> claimRequestAccepted = new HashMap<String, String>();
@@ -49,5 +50,6 @@ public class Item {
     this.foundItem = item.foundItem;
     this.category = item.category;
     this.location = item.location;
+    this.returned = item.returned;
   }
 }

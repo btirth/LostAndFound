@@ -14,9 +14,10 @@ const ChatPage = () => {
     });
 
     return (
-        <div style={{height:"100vh",display:"flex",flexDirection:"column",backgroundColor:"#75e6a3"}}>
+        <div style={{height:"100vh",display:"flex",flexDirection:"column",backgroundColor:"#35ac65"}}>
+            <Navbar/>
             <div className='chathome'>
-                
+
                     <div className='chat-container'>
                         <SidePanel selectedUser={selectedUser} selectUserFunction={setSelectedUser}/>
                         <MessagePanel selectedUser={selectedUser} selectUserFunction={setSelectedUser}/>

@@ -2,6 +2,11 @@ import React, { useState } from "react";
 import MapWrapper from "./MapWrapper";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Switch from '@mui/material/Switch';
+
+
+
+
 
 const filterContainerStyle = {
   width: "100%",
@@ -19,7 +24,7 @@ const filterOptionsStyle = {
 };
 
 const filterButtonStyle = {
-  backgroundColor: "#75e6a3",
+  backgroundColor: "#35ac65",
   color: "#fff",
   border: "none",
   borderRadius: "4px",
@@ -64,110 +69,111 @@ const FilterOptions = ({ applyFilter }) => {
     setSelectedCategory("");
   };
 
-    const handleSubmit = (event) => {
-      event.preventDefault();
-      if (selectedFilters.length === 0 && !selectedCategory) {
-        return;
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (selectedFilters.length === 0 && !selectedCategory) {
+      return;
+    }
+    if (selectedFilters.includes("category") && selectedCategory === "") {
+      toast.error("Please select a category!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    } else if (selectedFilters.includes("date") && selectedDate === "") {
+      toast.error("Please select a date!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    } else if (selectedFilters.includes("keyword") && keyword === "") {
+      toast.error("Please enter a keyword!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    } else {
+      // Check if "Location" filter is checked
+      const isLocationFilterChecked = selectedFilters.includes("location");
+
+      if (isLocationFilterChecked && (!location || !radius)) {
+        toast.error("please select location and radius!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       }
-      if (selectedFilters.includes("category") && selectedCategory === "") {
-        toast.error("Please select a category!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-      } else if (selectedFilters.includes("date") && selectedDate === "") {
-        toast.error("Please select a date!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-      } else if (selectedFilters.includes("keyword") && keyword === "") {
-        toast.error("Please enter a keyword!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-      } else {
-        // Check if "Location" filter is checked
-        const isLocationFilterChecked = selectedFilters.includes("location");
 
-        if (isLocationFilterChecked && (!location || !radius)) {
-          toast.error("please select location and radius!", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
-        }
+      const filterParams = {};
 
-        const filterParams = {};
+      // Check if "Category" filter is selected
+      if (selectedCategory) {
+        filterParams.category = {
+          value: selectedCategory,
+          mode: "equals",
+        };
+      }
 
-        // Check if "Category" filter is selected
-        if (selectedCategory) {
-          filterParams.category = {
-            value: selectedCategory,
-            mode: "equals",
-          };
-        }
+      // Check if "Keyword" filter is checked
+      if (selectedFilters.includes("keyword") && keyword) {
+        filterParams.keyword = {
+          value: keyword,
+          mode: "contains",
+        };
+      }
 
-        // Check if "Keyword" filter is checked
-        if (selectedFilters.includes("keyword") && keyword) {
-          filterParams.keyword = {
-            value: keyword,
-            mode: "contains",
-          };
-        }
+      // Check if "Date" filter is checked
+      if (selectedFilters.includes("date") && selectedDate) {
+        const startTime = `${selectedDate}T00:00:00.000+00:00`
+        const endTime = new Date(`${selectedDate}T23:59:59.999Z`).toISOString();;
 
-        // Check if "Date" filter is checked
-        if (selectedFilters.includes("date") && selectedDate) {
-          const startTime = `${selectedDate}T00:00:00.000+00:00`
-          const endTime = new Date(`${selectedDate}T23:59:59.999Z`).toISOString();;
-
-          filterParams.date = {
-            mode: "gte",
-            value: startTime,
-          };
+        filterParams.date = {
+          mode: "gte",
+          value: startTime,
+        };
 
         //   filterParams.date = {
         //     mode: "lte",
         //     value: endTime,
         //   };
-        }
-
-        // Check if "Location" filter is checked
-        if (selectedFilters.includes("location") && location && radius) {
-          filterParams.geo = {
-            value: {
-              x: location[0]?.lng ? location[0]?.lng : "",
-              y: location[0]?.lat ? location[0]?.lat : "",
-              radius: parseFloat(radius),
-            },
-            mode: "geo",
-          };
-        }
-
-        applyFilter(filterParams);
       }
-    };
+
+      // Check if "Location" filter is checked
+      if (selectedFilters.includes("location") && location && radius) {
+        filterParams.geo = {
+          value: {
+            x: location[0]?.lng ? location[0]?.lng : "",
+            y: location[0]?.lat ? location[0]?.lat : "",
+            radius: parseFloat(radius),
+          },
+          mode: "geo",
+        };
+      }
+
+      applyFilter(filterParams);
+    }
+  };
+
 
 
   return (
@@ -186,13 +192,13 @@ const FilterOptions = ({ applyFilter }) => {
             <option value="document">Document</option>
           </select>
         </label>
+      
         <label>
-          <input
-            type="checkbox"
-            value="keyword"
-            checked={selectedFilters.includes("keyword")}
-            onChange={handleFilterChange}
-          />
+          <Switch
+          checked={selectedFilters.includes("keyword")}
+          value="keyword"
+          onChange={handleFilterChange}
+         />
           <span style={{ fontSize: "16px", marginRight: "4px" }}></span>
           Keyword
         </label>
@@ -204,12 +210,11 @@ const FilterOptions = ({ applyFilter }) => {
           style={filterOptionsStyle}
         />
         <label>
-          <input
-            type="checkbox"
-            value="date"
-            checked={selectedFilters.includes("date")}
-            onChange={handleFilterChange}
-          />
+           <Switch
+          checked={selectedFilters.includes("date")}
+          value="date"
+          onChange={handleFilterChange}
+         />
           <span style={{ fontSize: "16px", marginRight: "4px" }}></span>
           Date
         </label>
@@ -221,12 +226,12 @@ const FilterOptions = ({ applyFilter }) => {
         />
 
         <label>
-          <input
-            type="checkbox"
-            value="location"
-            checked={selectedFilters.includes("location")}
-            onChange={handleFilterChange}
-          />
+
+           <Switch
+          checked={selectedFilters.includes("location")}
+          value="location"
+          onChange={handleFilterChange}
+         />
           <span style={{ fontSize: "16px", marginRight: "4px" }}></span>
           Location
         </label>

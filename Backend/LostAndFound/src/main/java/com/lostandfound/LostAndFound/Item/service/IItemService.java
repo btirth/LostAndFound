@@ -42,4 +42,13 @@ public interface IItemService {
    * @return
    */
   Page<Item> filterItems(SearchFilter searchFilter);
+
+  /**
+   * This method will update the returned status of the item
+   *
+   * @param itemId of the item which is returned
+   * @param userId of the user whose item is returned
+   * @return
+   */
+  Item updateReturn(String itemId, String userId);
 }

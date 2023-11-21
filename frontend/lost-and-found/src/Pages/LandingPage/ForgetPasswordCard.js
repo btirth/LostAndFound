@@ -55,7 +55,7 @@ function ForgetPasswordCard()  {
                             <Form.Label>Account Email</Form.Label>
                             <Form.Control value={email} onChange={(evt) => setEmail(evt.currentTarget.value)} required type='email' placeholder='name@email.com' />
                         </Form.Group>
-                        <Button type='submit' className='w-100 mt-4' style={{backgroundColor:'#75e6a3',color:'black'}}>Reset My Password</Button>
+                        <Button type='submit' className='w-100 mt-4' style={{backgroundColor:'#35ac65',color:'black'}}>Reset My Password</Button>
                     </Form>
             }
         </Card.Body>
