@@ -8,6 +8,7 @@ import com.lostandfound.LostAndFound.core.exception.LostAndFoundNotFoundExceptio
 import com.lostandfound.LostAndFound.core.exception.LostAndFoundValidationException;
 import com.lostandfound.LostAndFound.core.utils.SearchFilter;
 import com.lostandfound.LostAndFound.reward.service.RewardService;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -120,5 +121,17 @@ public class ItemSeviceImpl implements IItemService {
         storedItem.getCreatedBy(), userId, lostItemId, storedItem.getId(), storedItem.getTitle());
 
     return this.itemRepository.save(storedItem);
+  }
+
+  /**
+   * Retrieve all the items of a user for which the user has raised a claim request.
+   *
+   * @param userId of the user whose items are to be retrieved
+   * @return list of items
+   */
+  @Override
+  public List<Item> getRequestRaisedItemsByUserId(String userId) {
+
+    return this.itemRepository.findAllByFoundItem(true);
   }
 }
