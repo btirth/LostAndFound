@@ -68,4 +68,15 @@ public class ItemController {
   public void deleteById(@PathVariable("id") String id) {
     this.iItemService.delete(id);
   }
+
+  /**
+   * Set item status returned to true
+   *
+   * @param id of the item to be updated
+   * @param userId of the user whose item is returned
+   */
+  @PutMapping(path = "/returned/{id}")
+  public Item setReturned(@PathVariable("id") String id, @RequestParam("userId") String userId) {
+    return this.iItemService.updateReturn(id, userId);
+  }
 }
