@@ -123,8 +123,8 @@ public class SearchFilter {
   }
 
   private Criteria applyDateOnFilter(String key, Object value) {
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
     Criteria criteria = new Criteria(key);
-    SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
     dateFormat.setLenient(false);
     try {
       Date parsedDate = dateFormat.parse((String) value);
@@ -143,10 +143,9 @@ public class SearchFilter {
       calendar.set(Calendar.SECOND, DAY_END_SEC);
       Date endOfDay = calendar.getTime();
 
-      criteria.andOperator(Criteria.where(key).gte(startOfDay), Criteria.where(key).lte(endOfDay));
+      return Criteria.where(key).gte(startOfDay).lte(endOfDay);
     } catch (ParseException e) {
       throw new LostAndFoundException(e.getMessage());
     }
-    return criteria;
   }
 }
