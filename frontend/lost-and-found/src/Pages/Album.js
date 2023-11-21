@@ -11,16 +11,16 @@ import axios from "axios";
 import { API_URL } from "../config/api-end-points";
 import sensitiveImg from "../Assets/Images/sensitive.jpg";
 import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 import DashboardOptions from "../constants/DashboardOptions";
 import { ApiRequest } from "../helpers/api-request";
-import {
-  Form,
-  Modal,
-  Row,
-  Col,
-  Image
-} from "react-bootstrap";
+import { toast } from "react-toastify";
+import { Form, Modal, Row, Col, Image } from "react-bootstrap";
 import { BsImage } from "react-icons/bs";
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 
 const Album = (props) => {
   const [revokeRequest, setRevokeRequest] = useState({
@@ -36,7 +36,7 @@ const Album = (props) => {
 
   const [linkedLostItem, setLinkedLostItem] = useState(null);
   const [currentSelectedItemID, setcurrentSelectedItemID] = useState(null);
-  const [filterClaimStatus, setfilterClaimStatus] = useState(1);
+  const [filterClaimStatus, setFilterClaimStatus] = useState(1);
   const [showModal, setShowModal] = useState(false);
 
   const cardStyle = {
@@ -78,7 +78,7 @@ const Album = (props) => {
   useEffect(() => {
     setCurrentPage(1);
     setTotalPages(1);
-    
+
     const fetchData = async () => {
       await getResult();
     };
@@ -123,6 +123,7 @@ const Album = (props) => {
       });
       // console.log("GET request successful:", response.content);
       // setItems(response.content);
+      toast.success("Request Revoked!");
       await getResult();
 
       // });
@@ -152,28 +153,42 @@ const Album = (props) => {
     // }));
 
     try {
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-      };
-      // const response = await axios.put(
-      //   `${API_URL}items/claims/accept?itemId=${itemId}&userId=${revokeRequest.userId}&claimRequestUserId=${claimRequestUserId}`,
-      //   "",
-      //   { headers }
-      // );
       await ApiRequest.fetch({
         method: "put",
         url: `${API_URL}/api/v1/items/claims/accept?itemId=${currentSelectedItemID}&userId=${revokeRequest.userId}&claimRequestLostItemId=${itemId}`,
       });
       await getResult();
       setShowModal(false);
-      // console.log("GET request successful:", response.data.content);
-      // setItems(response.data.content);
+      toast.success("Request Accepted!");
     } catch (error) {
       console.error("Error:", error);
+      toast.error("Something went wrong!");
     }
-    // }
-    // fetchData();
+  };
+
+  const handleReject = async (itemId, claimRequestUserId) => {
+    console.log("ItemID clicked", itemId, claimRequestUserId);
+    console.log("selectedItem", currentSelectedItemID);
+    // const fetchData = async () => {
+
+    // setRevokeRequest((prevData) => ({
+    //   ...prevData,
+    //   itemId: event,
+    //   // Update other properties as needed
+    // }));
+
+    try {
+      await ApiRequest.fetch({
+        method: "put",
+        url: `${API_URL}/api/v1/items/claims/reject?itemId=${currentSelectedItemID}&userId=${revokeRequest.userId}&claimRequestUserId=${claimRequestUserId}`,
+      });
+      await getResult();
+      setShowModal(false);
+      toast.success("Request Rejected!");
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Something went wrong!");
+    }
   };
 
   const renderClaims = (item) => {
@@ -182,9 +197,9 @@ const Album = (props) => {
         case 1:
           return item.claimRequested;
         case 2:
-          return item.claimApproved;
+          return item.claimRequestAccepted;
         case 3:
-          return item.claimReject;
+          return item.claimRejected;
         default:
           return null;
       }
@@ -207,10 +222,6 @@ const Album = (props) => {
               />
               <CardContent sx={{ flexGrow: 1 }}>
                 <Typography gutterBottom>{item.title}</Typography>
-                <Typography sx={{ color: "grey" }}>
-                  {item.description}
-                </Typography>
-                <br />
                 <Typography style={{ wordWrap: "break-word" }} gutterBottom>
                   User: {value}
                 </Typography>
@@ -272,25 +283,19 @@ const Album = (props) => {
             updatedFilter.filters[key] = { value: value, mode: "geo" };
           else if (key === "date") {
             const endDate = `${value}T23:59:59.000Z `;
+            // updatedFilter.filters.postedAt = {
+            //   value: `${value}, 00:00:00 AM`,
+            //   mode: "on",
+            // };
             updatedFilter.filters.postedAt = {
-              value: `${value}, 00:00:00 AM`,
-              mode: "gte",
-            };
-            updatedFilter.filters.postedAt = {
-              value: new Date(endDate).toISOString(),
-              mode: "lte",
+              value: endDate,
+              mode: "on",
             };
           }
           // }
           // You can customize the mode if needed
         });
       }
-      // if (keywordValue != "") {
-      //   updatedFilter.filters.keyword = {
-      //     value: keywordValue,
-      //     mode: "contains",
-      //   };
-      // }
       getFilteredData(updatedFilter, setItems);
     } else if (props.value === 1) {
       const updatedFilter = {
@@ -354,12 +359,11 @@ const Album = (props) => {
     try {
       ApiRequest.fetch({
         method: "get",
-        url: `${API_URL}/api/v1/items/`+key,
+        url: `${API_URL}/api/v1/items/` + key,
       }).then((response) => {
         console.log("GET item requested successful:", response.content);
         setLinkedLostItem(response);
         setShowModal(true);
-
       });
       // const response = await axios.post(
       //   `${API_URL}items/search`,
@@ -373,6 +377,10 @@ const Album = (props) => {
     }
     // setSelectedLostItem(null);
     // setNewImages([]);
+  };
+
+  const handleChange = (event) => {
+    setFilterClaimStatus(event.target.value);
   };
 
   const Pagination = () => {
@@ -397,30 +405,49 @@ const Album = (props) => {
     };
 
     return (
-      <div>
-        <div>
-          <button onClick={handlePrevPage} disabled={currentPage === 1}>
-            Previous
-          </button>
-          <span>
-            {" "}
-            Page {currentPage} of {totalPages}{" "}
-          </span>
-          <button
-            onClick={handleNextPage}
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </button>
-        </div>
-        {/* Render your content for the current page */}
-      </div>
+      <Box display="flex" justifyContent="center" alignItems="center" mt={3}>
+        <Button
+          onClick={handlePrevPage}
+          disabled={currentPage === 1}
+          variant="contained"
+          color="primary"
+        >
+          Previous
+        </Button>
+        <Typography variant="h6" component="span" style={{ margin: "0 10px" }}>
+          Page {currentPage} of {totalPages}
+        </Typography>
+        <Button
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+          variant="contained"
+          color="primary"
+        >
+          Next
+        </Button>
+      </Box>
     );
   };
+  
 
   return (
     // <ThemeProvider theme={defaultTheme}>
     <main>
+      {props.value === 2 ? (
+      <FormControl  sx={{ width: 160 }}>
+        <InputLabel id="demo-simple-select-label">Status</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={filterClaimStatus}
+          label="Status"
+          onChange={handleChange}
+        >
+          <MenuItem value={1}>Requested</MenuItem>
+          <MenuItem value={2}>Approved</MenuItem>
+          <MenuItem value={3}>Rejected</MenuItem>
+        </Select>
+      </FormControl>) : ""}
       {/* Hero unit */}
       {items !== undefined && items !== null && items.length !== 0 ? (
         <Container sx={{ py: 3 }}>
@@ -481,93 +508,107 @@ const Album = (props) => {
         <div style={noDataStyler}>No Data</div>
       )}
 
-{props.value === 0 ? (<div>
-        <Pagination />
-      </div>) : ""}
+      {props.value === 0 ? (
+        <div>
+          <Pagination />
+        </div>
+      ) : (
+        ""
+      )}
 
       <Modal
-          show={showModal}
-          onHide={handleCloseModal}
-          dialogClassName="custom-modal"
-          size="lg">
-          <Modal.Header closeButton>
-            <Modal.Title style={{ color: "#75e6a3" }}>
-              {"Linked Lost Item"}
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              <Form.Group controlId="formTitle">
-                <Form.Label
-                  style={{
-                    color: "#333",
-                    marginRight: "5px",
-                    fontWeight: "bold",
-                  }}>
-                  Title
-                </Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter title"
-                  value={linkedLostItem?.title || ""}
-                />
-              </Form.Group>
-              <Form.Group controlId="formDescription">
-                <Form.Label
-                  style={{
-                    color: "#333",
-                    marginRight: "5px",
-                    fontWeight: "bold",
-                  }}>
-                  Description
-                </Form.Label>
-                <Form.Control
-                  as="textarea"
-                  placeholder="Enter description"
-                  value={linkedLostItem?.description || ""}
-                />
-              </Form.Group>
+        show={showModal}
+        onHide={handleCloseModal}
+        dialogClassName="custom-modal"
+        size="lg"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title style={{ color: "#75e6a3" }}>
+            {"Linked Lost Item"}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="formTitle">
               <Form.Label
                 style={{
                   color: "#333",
                   marginRight: "5px",
                   fontWeight: "bold",
-                }}>
-                Item Category
+                }}
+              >
+                Title
               </Form.Label>
-              <Form.Select
-                style={{ width: "100%", height: "40px" }}
-                aria-label="personal"
-                value={linkedLostItem?.category || "personal"}>
-                <option>Select Category</option>
-                <option value="personal">Personal Item</option>
-                <option value="electronics">Electronics</option>
-                <option value="document">Document</option>
-              </Form.Select>
+              <Form.Control
+                type="text"
+                placeholder="Enter title"
+                value={linkedLostItem?.title || ""}
+                readOnly
+              />
+            </Form.Group>
+            <Form.Group controlId="formDescription">
               <Form.Label
                 style={{
                   color: "#333",
                   marginRight: "5px",
                   fontWeight: "bold",
-                  marginTop: "5px",
-                }}>
-                Images:
+                }}
+              >
+                Description
               </Form.Label>
-              <Container>
-                <Row>
-                  {(linkedLostItem?.image || []).map((img, index) => (
-                    <Col
-                      xs={4}
-                      className="text-center p-2 shadow mb-4 item-edit-card"
-                      key={index}>
-                      <div>
-                        <Image
-                          src={img}
-                          alt={`Image ${index + 1}`}
-                          style={{ height: "150px", width: "150px" }}
-                        />
-                      </div>
-                      {/* <Button
+              <Form.Control
+                as="textarea"
+                placeholder="Enter description"
+                value={linkedLostItem?.description || ""}
+                readOnly
+              />
+            </Form.Group>
+            <Form.Label
+              style={{
+                color: "#333",
+                marginRight: "5px",
+                fontWeight: "bold",
+              }}
+            >
+              Item Category
+            </Form.Label>
+            <Form.Select
+              style={{ width: "100%", height: "40px" }}
+              aria-label="personal"
+              value={linkedLostItem?.category || "personal"}
+              disabled
+            >
+              <option>Select Category</option>
+              <option value="personal">Personal Item</option>
+              <option value="electronics">Electronics</option>
+              <option value="document">Document</option>
+            </Form.Select>
+            <Form.Label
+              style={{
+                color: "#333",
+                marginRight: "5px",
+                fontWeight: "bold",
+                marginTop: "5px",
+              }}
+            >
+              Images:
+            </Form.Label>
+            <Container>
+              <Row>
+                {(linkedLostItem?.image || []).map((img, index) => (
+                  <Col
+                    xs={4}
+                    className="text-center p-2 shadow mb-4 item-edit-card"
+                    key={index}
+                  >
+                    <div>
+                      <Image
+                        src={img}
+                        alt={`Image ${index + 1}`}
+                        style={{ height: "150px", width: "150px" }}
+                      />
+                    </div>
+                    {/* <Button
                         className="delete-image-button mt-2"
                         onClick={() => handleDeleteImage(img)}
                         variant="danger"
@@ -575,10 +616,10 @@ const Album = (props) => {
                         block>
                         Delete
                       </Button> */}
-                    </Col>
-                  ))}
+                  </Col>
+                ))}
 
-                  {/* {newImages?.map((img, index) => (
+                {/* {newImages?.map((img, index) => (
                     <Col
                       xs={4}
                       className="text-center p-2 shadow mb-4 item-edit-card"
@@ -600,9 +641,9 @@ const Album = (props) => {
                       </Button>
                     </Col>
                   ))} */}
-                </Row>
-              </Container>
-              {/* <Form.Group controlId="formImages">
+              </Row>
+            </Container>
+            {/* <Form.Group controlId="formImages">
                     
                             <Form.Control
                                 style={{ marginTop: '10px' }}
@@ -614,7 +655,7 @@ const Album = (props) => {
                             />
                     </Form.Group> */}
 
-              {/* <Row className="mb-3 align-items-center">
+            {/* <Row className="mb-3 align-items-center">
                 <Col xs={6} md={4} className="d-flex">
                   <Form.Label style={{ fontWeight: "bold" }}>
                     Add New Images:
@@ -635,7 +676,7 @@ const Album = (props) => {
                 </Col>
               </Row> */}
 
-              {/* <div className="lost-item-group  mt-3">
+            {/* <div className="lost-item-group  mt-3">
                 <Form.Label style={{ color: "#333", fontWeight: "bold" }}>
                   Location Picker
                 </Form.Label>
@@ -654,26 +695,38 @@ const Album = (props) => {
                   isEdit={true}
                 />
               </div> */}
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-          <Button variant="contained" onClick={() => handleAccept(linkedLostItem.id, linkedLostItem.createdBy)} color="success">
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <div>
+          {filterClaimStatus == 1 ? (<>
+            <Button
+              variant="contained"
+              onClick={() =>
+                handleAccept(linkedLostItem.id, linkedLostItem.createdBy)
+              }
+              color="success"
+            >
               Accept
             </Button>
-            <Button variant="contained" color="error">
+            <Button variant="contained" color="error" onClick={() =>
+                handleReject(linkedLostItem.id, linkedLostItem.createdBy)
+              }>
               Reject
-            </Button>
-            <Button variant="secondary">
+            </Button></>) : ""}
+            <Button variant="secondary" onClick={handleCloseModal}>
               Close
             </Button>
             <Button
               variant="primary"
               // onClick={handleSaveChanges}
-              className="save-color-button">
+              className="save-color-button"
+            >
               {/* {selectedLostItem ? "Save Changes" : "Confirm"} */}
             </Button>
-          </Modal.Footer>
-        </Modal>
+          </div>
+        </Modal.Footer>
+      </Modal>
     </main>
 
     // </ThemeProvider>
