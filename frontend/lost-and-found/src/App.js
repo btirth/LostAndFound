@@ -15,6 +15,7 @@ import LostItemForm from "./Pages/LostItemForm/LostItemForm";
 import LostCatalogue from "./Pages/LostCataloguePage/LostCataloguePage";
 import Layout from "./Components/Layout";
 import ChatPage from './Pages/ChatPage/ChatPage';
+import RewardsPage from "./Pages/RewardsPage/RewardsPage";
 
 const App = () => {
   return (
@@ -28,6 +29,7 @@ const App = () => {
           <PrivateRoute path="/lost-form" component={LostItemForm} />
           <PrivateRoute path="/lost-catalogue" component={LostCatalogue} />
           <PrivateRoute path="/chat" component={ChatPage} />
+          <PrivateRoute path="/reward" component={RewardsPage} />
         </Layout>
       </Switch>
     </Router>
