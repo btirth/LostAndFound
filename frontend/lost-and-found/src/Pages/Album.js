@@ -17,17 +17,15 @@ import { ApiRequest } from "../helpers/api-request";
 import { toast } from "react-toastify";
 import { Form, Modal, Row, Col, Image } from "react-bootstrap";
 import { BsImage } from "react-icons/bs";
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
 
 const Album = (props) => {
   const [revokeRequest, setRevokeRequest] = useState({
-    // Your data or state
     itemId: "",
     userId: localStorage.getItem("user_email"),
-    // Add other parameters as needed
   });
 
   const [currentLoggedinUser, setcurrentLoggedinUser] = useState(
@@ -36,8 +34,10 @@ const Album = (props) => {
 
   const [linkedLostItem, setLinkedLostItem] = useState(null);
   const [currentSelectedItemID, setcurrentSelectedItemID] = useState(null);
+  const [seletectedPostedItem, setseletectedPostedItem] = useState(null);
   const [filterClaimStatus, setFilterClaimStatus] = useState(1);
   const [showModal, setShowModal] = useState(false);
+  const [showItemPostedModal, setshowItemPostedModal] = useState(false);
 
   const cardStyle = {
     height: "100%",
@@ -53,11 +53,6 @@ const Album = (props) => {
     },
   };
 
-  const gridItemStyle = {
-    flex: 1, // Allow the Grid item to grow and shrink, but don't let it shrink below its content's intrinsic size
-    // maxWidth: '300px', // Adjust the maximum width as needed
-  };
-
   const noDataStyler = {
     display: "flex",
     justifyContent: "center",
@@ -65,10 +60,9 @@ const Album = (props) => {
 
   const [searchFilter, setSearchFilter] = useState({
     filters: {
-      // Example filters
     },
     page: 0,
-    size: 2,
+    size: 10,
     sortField: "postedAt",
     sortDirection: "DESC", // or 'DESC' depending on your requirement
   });
@@ -137,6 +131,43 @@ const Album = (props) => {
     } catch (error) {
       console.error("Error:", error);
     }
+    // }
+    // fetchData();
+  };
+
+  const handleItemPostedClick = async (item) => {
+    console.log("ItemID clicked", item);
+    // setseletectedPostedItem(item);
+    // setshowItemPostedModal(true);
+    setLinkedLostItem(item);
+    setShowModal(true);
+
+    // setRevokeRequest((prevData) => ({
+    //   ...prevData,
+    //   itemId: item,
+    // }));
+
+    // try {
+    //   await ApiRequest.fetch({
+    //     method: "put",
+    //     url: `${API_URL}/api/v1/items/claims/revoke?itemId=${item}&userId=${revokeRequest.userId}`,
+    //   });
+    //   // console.log("GET request successful:", response.content);
+    //   // setItems(response.content);
+    //   toast.success("Request Revoked!");
+    //   await getResult();
+
+    //   // });
+    //   // const response = await axios.put(
+    //   //   `${API_URL}items/claims/revoke?itemId=${event}&userId=${revokeRequest.userId}`,
+    //   //   "",
+    //   //   { headers }
+    //   // );
+    //   // console.log("GET request successful:", response.data.content);
+    //   // setItems(response.data.content);
+    // } catch (error) {
+    //   console.error("Error:", error);
+    // }
     // }
     // fetchData();
   };
@@ -428,26 +459,28 @@ const Album = (props) => {
       </Box>
     );
   };
-  
 
   return (
     // <ThemeProvider theme={defaultTheme}>
     <main>
       {props.value === 2 ? (
-      <FormControl  sx={{ width: 160 }}>
-        <InputLabel id="demo-simple-select-label">Status</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={filterClaimStatus}
-          label="Status"
-          onChange={handleChange}
-        >
-          <MenuItem value={1}>Requested</MenuItem>
-          <MenuItem value={2}>Approved</MenuItem>
-          <MenuItem value={3}>Rejected</MenuItem>
-        </Select>
-      </FormControl>) : ""}
+        <FormControl sx={{ width: 160 }} style={{ marginLeft: "383px" }}>
+          <InputLabel id="demo-simple-select-label">Status</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={filterClaimStatus}
+            label="Status"
+            onChange={handleChange}
+          >
+            <MenuItem value={1}>Requested</MenuItem>
+            <MenuItem value={2}>Approved</MenuItem>
+            <MenuItem value={3}>Rejected</MenuItem>
+          </Select>
+        </FormControl>
+      ) : (
+        ""
+      )}
       {/* Hero unit */}
       {items !== undefined && items !== null && items.length !== 0 ? (
         <Container sx={{ py: 3 }}>
@@ -456,7 +489,7 @@ const Album = (props) => {
             <Grid container spacing={4}>
               {items.map((item) => (
                 <Grid item key={item.id} xs={12} sm={6} md={4} lg={3}>
-                  <Card sx={cardStyle}>
+                  <Card sx={cardStyle} onClick={() => handleItemPostedClick(item)}>
                     <CardMedia
                       component="div"
                       sx={{
@@ -593,6 +626,7 @@ const Album = (props) => {
             >
               Images:
             </Form.Label>
+              
             <Container>
               <Row>
                 {(linkedLostItem?.image || []).map((img, index) => (
@@ -643,6 +677,21 @@ const Album = (props) => {
                   ))} */}
               </Row>
             </Container>
+            <Form.Label
+                style={{
+                  color: "#333",
+                  marginRight: "5px",
+                  fontWeight: "bold",
+                }}
+              >
+                Posted Date
+              </Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter title"
+                value={linkedLostItem?.postedAt ? linkedLostItem.postedAt.split('T')[0] : ""}
+                readOnly
+              />
             {/* <Form.Group controlId="formImages">
                     
                             <Form.Control
@@ -698,35 +747,47 @@ const Album = (props) => {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <div>
-          {filterClaimStatus == 1 ? (<>
-            <Button
-              variant="contained"
-              onClick={() =>
-                handleAccept(linkedLostItem.id, linkedLostItem.createdBy)
-              }
-              color="success"
-            >
-              Accept
-            </Button>
-            <Button variant="contained" color="error" onClick={() =>
-                handleReject(linkedLostItem.id, linkedLostItem.createdBy)
-              }>
-              Reject
-            </Button></>) : ""}
-            <Button variant="secondary" onClick={handleCloseModal}>
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "space-evenly",
+            }}
+          >
+            {filterClaimStatus == 1 && props.value == 2 ? (
+              <>
+                <Button
+                  variant="contained"
+                  onClick={() =>
+                    handleAccept(linkedLostItem.id, linkedLostItem.createdBy)
+                  }
+                  color="success"
+                >
+                  Accept
+                </Button>
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={() =>
+                    handleReject(linkedLostItem.id, linkedLostItem.createdBy)
+                  }
+                >
+                  Reject
+                </Button>
+              </>
+            ) : (
+              ""
+            )}
+            <Button variant="secondary" onClick={handleCloseModal} style={{
+                    backgroundColor: "grey",
+                    color: "white",
+                  }}>
               Close
-            </Button>
-            <Button
-              variant="primary"
-              // onClick={handleSaveChanges}
-              className="save-color-button"
-            >
-              {/* {selectedLostItem ? "Save Changes" : "Confirm"} */}
             </Button>
           </div>
         </Modal.Footer>
       </Modal>
+      
     </main>
 
     // </ThemeProvider>
