@@ -5,7 +5,9 @@ import com.lostandfound.LostAndFound.Item.repo.ItemRepository;
 import com.lostandfound.LostAndFound.Item.service.IItemService;
 import com.lostandfound.LostAndFound.core.exception.LostAndFoundException;
 import com.lostandfound.LostAndFound.core.exception.LostAndFoundNotFoundException;
+import com.lostandfound.LostAndFound.core.exception.LostAndFoundValidationException;
 import com.lostandfound.LostAndFound.core.utils.SearchFilter;
+import com.lostandfound.LostAndFound.reward.service.RewardService;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ public class ItemSeviceImpl implements IItemService {
   @Autowired private ItemRepository itemRepository;
 
   @Autowired private MongoTemplate mongoTemplate;
+  @Autowired private RewardService rewardService;
 
   @Override
   public Item create(Item item) {
@@ -79,5 +82,34 @@ public class ItemSeviceImpl implements IItemService {
     } catch (Exception e) {
       throw new LostAndFoundException("Something went wrong.");
     }
+  }
+
+  /**
+   * This method will update the returned status of the item and give reward to the user who found
+   * it.
+   *
+   * @param itemId of the item which is returned
+   * @param userId of the user whose item is returned
+   * @return item with updated returned status
+   */
+  @Override
+  public Item updateReturn(String itemId, String userId) {
+    Item storedItem =
+        this.itemRepository
+            .findById(itemId)
+            .orElseThrow(() -> new LostAndFoundNotFoundException("Item with id does not exists"));
+
+    if (storedItem.getReturned()) {
+      throw new LostAndFoundValidationException("Item is already returned.");
+    }
+
+    if (!storedItem.getClaimedBy().equals(userId)) {
+      throw new LostAndFoundValidationException("Item is not yet approved for this user.");
+    }
+
+    storedItem.setReturned(true);
+    this.rewardService.giveReward(storedItem.getCreatedBy(), userId);
+
+    return this.itemRepository.save(storedItem);
   }
 }
