@@ -32,7 +32,7 @@
         .listHeader{
             margin-top: 10px;
             margin-bottom: 10px;
-            color: #35ac65;
+            color: #75e6a3;
             font-weight: 700;
             padding: 10px;
         }
@@ -47,7 +47,7 @@
 
             &:hover{
                 /* background-color: #8a7979; */
-                background-color: #35ac65;
+                background-color: #75e6a3;
                 color: #333;
             }
 
@@ -58,7 +58,9 @@
 
             .messagerInfo{
                 align-items: center;
-                
+                p{
+                  margin-bottom: 0%;  
+                }
             }
         }
     }
@@ -113,7 +115,7 @@
                 .incoming-message {
                     float: left;
                     /* background-color: #5ade93; */
-                    background-color: #35ac65;
+                    background-color: #75e6a3;
                     margin-left: 10px;
                 }
                 

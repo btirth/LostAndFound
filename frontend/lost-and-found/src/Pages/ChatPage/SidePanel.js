@@ -4,6 +4,7 @@ import { db } from "./../../firebase-config";
 import { doc, onSnapshot } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 import { Alert } from 'react-bootstrap';
+import { ConeStriped } from 'react-bootstrap-icons';
 
 
 
@@ -23,6 +24,15 @@ const SidePanel = (props) => {
         // console.log(selectedUser);
     };
 
+    function getNameForChat(chatopt){
+        console.log("Chat opt:",chatopt);
+        if(chatopt.postedBy===currentUser){
+            return "Request by "+chatopt.requestBy;
+        }else{
+            return "Posted by "+chatopt.postedBy;
+        }
+    }
+
 
     useEffect(() => {
         const getChats = () => {
@@ -37,7 +47,8 @@ const SidePanel = (props) => {
                             name: usersData[key].name,
                             lastUpdatedTimestamp: usersData[key].lastUpdatedTimestamp,
                             lastMessage: usersData[key].lastMessage,
-                            email: usersData[key].email,
+                            postedBy: usersData[key].postedBy,
+                            requestBy:usersData[key].requestBy,
                             photoUrl: usersData[key].photoUrl,
                             chatDocumentId: key,
                             lastMessageBy: usersData[key].lastMessageBy
@@ -86,6 +97,7 @@ const SidePanel = (props) => {
                     <img src={user.photoUrl} style={{ height: '50px', width: '50px', borderRadius: "50%" }}></img>
                     <div className='messagerInfo'>
                         <span style={{ fontSize: "18px", fontWeight: "500" }}>{user.name}</span>
+                        <p style={{ fontSize: "14px" }}>{getNameForChat(user)}</p>
                         <p style={{ fontSize: "14px" }}>{user.lastMessage}</p>
                     </div>
                 </div>

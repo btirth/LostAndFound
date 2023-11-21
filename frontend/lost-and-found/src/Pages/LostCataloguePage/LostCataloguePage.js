@@ -102,7 +102,7 @@ const LostCatalogue = () => {
   };
 
   const lightButtonStyle = {
-    backgroundColor: BaseColor, 
+    backgroundColor: "#75e6a3", 
     color: '#fff', 
     border: 'none',
     borderRadius: '4px',
