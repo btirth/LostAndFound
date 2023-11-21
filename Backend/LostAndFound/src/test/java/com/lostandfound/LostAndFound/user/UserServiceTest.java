@@ -1,5 +1,7 @@
 package com.lostandfound.LostAndFound.user;
 
+import static org.mockito.Mockito.when;
+
 import com.lostandfound.LostAndFound.core.exception.LostAndFoundNotFoundException;
 import com.lostandfound.LostAndFound.core.exception.LostAndFoundValidationException;
 import com.lostandfound.LostAndFound.user.entities.User;
@@ -30,8 +32,7 @@ class UserServiceTest {
   @Test
   void testFindUserByEmailSuccess() {
     // arrange
-    Mockito.when(userRepository.findByEmail("test@email.com"))
-        .thenReturn(Optional.ofNullable(user));
+    when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.ofNullable(user));
 
     // act
     User foundUser = userService.findByEmail("test@email.com");
@@ -43,7 +44,7 @@ class UserServiceTest {
   @Test
   void testFindUserByEmailFailure() {
     // arrange
-    Mockito.when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.empty());
+    when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.empty());
 
     // act + assert
     Assertions.assertThrows(
@@ -57,8 +58,8 @@ class UserServiceTest {
   @Test
   void testInsertUserSuccess() {
     // arrange
-    Mockito.when(userRepository.existsByEmail(user.getEmail())).thenReturn(false);
-    Mockito.when(userRepository.insert(user)).thenReturn(user);
+    when(userRepository.existsByEmail(user.getEmail())).thenReturn(false);
+    when(userRepository.insert(user)).thenReturn(user);
 
     // act
     User insertedUser = userService.insert(user);
@@ -70,7 +71,7 @@ class UserServiceTest {
   @Test
   void testInsertUserAlreadyExists() {
     // arrange
-    Mockito.when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
+    when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
 
     // act + assert
     Assertions.assertThrows(
@@ -84,8 +85,8 @@ class UserServiceTest {
   @Test
   void testUpdateUserUpdateName() {
     // arrange
-    Mockito.when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
-    Mockito.when(userRepository.save(user)).thenReturn(user);
+    when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
+    when(userRepository.save(user)).thenReturn(user);
     user.setName("newName");
 
     // act
@@ -98,7 +99,7 @@ class UserServiceTest {
   @Test
   void testUpdateUserNotExists() {
     // arrange
-    Mockito.when(userRepository.existsByEmail(user.getEmail())).thenReturn(false);
+    when(userRepository.existsByEmail(user.getEmail())).thenReturn(false);
     // act + assert
     Assertions.assertThrows(
         LostAndFoundNotFoundException.class,
@@ -111,8 +112,8 @@ class UserServiceTest {
   @Test
   void testUpdateUserUpdateEmail() {
     // arrange
-    Mockito.when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
-    Mockito.when(userRepository.save(user)).thenReturn(user);
+    when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
+    when(userRepository.save(user)).thenReturn(user);
     user.setEmail("newemail@gmail.com");
 
     // act + assert
@@ -126,8 +127,8 @@ class UserServiceTest {
   @Test
   void testUpdateUserUpdateCreatedDate() {
     // arrange
-    Mockito.when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
-    Mockito.when(userRepository.save(user)).thenReturn(user);
+    when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
+    when(userRepository.save(user)).thenReturn(user);
     user.setCreatedDate(new Date());
 
     // act
@@ -140,8 +141,8 @@ class UserServiceTest {
   @Test
   void testUpdateUserUpdateUpdatedDate() {
     // arrange
-    Mockito.when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
-    Mockito.when(userRepository.save(user)).thenReturn(user);
+    when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
+    when(userRepository.save(user)).thenReturn(user);
     user.setUpdatedDate(new Date());
 
     // act
@@ -154,8 +155,8 @@ class UserServiceTest {
   @Test
   void testUpdateUserUpdateProfilePicUrl() {
     // arrange
-    Mockito.when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
-    Mockito.when(userRepository.save(user)).thenReturn(user);
+    when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
+    when(userRepository.save(user)).thenReturn(user);
     user.setProfilePicUrl("new-pic.com");
 
     // act
@@ -168,7 +169,7 @@ class UserServiceTest {
   @Test
   void testDeleteUserSuccess() {
     // arrange
-    Mockito.when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
+    when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
 
     // act
     userService.delete(user.getEmail());
@@ -180,7 +181,7 @@ class UserServiceTest {
   @Test
   void testDeleteUserNotExists() {
     // arrange
-    Mockito.when(userRepository.existsByEmail(user.getEmail())).thenReturn(false);
+    when(userRepository.existsByEmail(user.getEmail())).thenReturn(false);
 
     // act + assert
     Assertions.assertThrows(
