@@ -20,7 +20,6 @@ import { BsImage } from "react-icons/bs";
 import { v4 as uuid } from "uuid";
 import { doc, setDoc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../firebase-config";
-import { toast } from 'react-toastify'
 
 
 
