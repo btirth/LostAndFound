@@ -17,6 +17,12 @@ import { ApiRequest } from "../helpers/api-request";
 import { toast } from "react-toastify";
 import { Form, Modal, Row, Col, Image } from "react-bootstrap";
 import { BsImage } from "react-icons/bs";
+import { v4 as uuid } from "uuid";
+import { doc, setDoc, updateDoc, getDoc } from "firebase/firestore";
+import { db } from "../firebase-config";
+
+
+
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -155,11 +161,72 @@ const Album = (props) => {
     try {
       await ApiRequest.fetch({
         method: "put",
-        url: `${API_URL}/api/v1/items/claims/accept?itemId=${currentSelectedItemID}&userId=${revokeRequest.userId}&claimRequestLostItemId=${itemId}`,
+        url: `${API_URL}/api/v1/items/claims/accept?itemId=${currentSelectedItemID.id}&userId=${revokeRequest.userId}&claimRequestLostItemId=${itemId}`,
+      }).then(async () => {
+        await getResult();
+        setShowModal(false);
+        // **************************** 
+        //create chat document
+
+        const newChatId = uuid();
+        await setDoc(doc(db, "chats", newChatId), {
+          "messages": []
+        }).then(async (response) => {
+
+          //add entry for both users
+
+          await updateDoc(doc(db, "chatConnections", currentLoggedinUser), {
+            [newChatId]: {
+              "lastMessage": "",
+              "postedBy": currentLoggedinUser,
+              "requestBy": claimRequestUserId,
+              "lastUpdatedTimestamp": "",
+              "name": currentSelectedItemID.itemTitle,
+              "photoUrl": currentSelectedItemID.photoUrl
+            }
+
+          }).catch((error) => { console.log("Chat connection issue-1", error) });;
+          console.log("new connection chat created for u1");
+
+
+
+          await updateDoc(doc(db, "chatConnections", claimRequestUserId), {
+
+            [newChatId]: {
+              "lastMessage": "",
+              "postedBy": currentLoggedinUser,
+              "requestBy": claimRequestUserId,
+              "lastUpdatedTimestamp": "",
+              "name": currentSelectedItemID.itemTitle,
+              "photoUrl": currentSelectedItemID.photoUrl
+            }
+
+          }).catch((error) => { console.log("Chat connection issue-3", error) });
+          console.log("new connection chat created for u2");
+
+        }
+        ).catch((error) => { console.log("Chat array issue", error) });
+        console.log("chats created");
+
+        toast.success("Request Approved! You can now chat with the approved user", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+
       });
+
+
+
+      // console.log("GET request successful:", response.data.content);
+      // setItems(response.data.content);
       await getResult();
       setShowModal(false);
-      toast.success("Request Accepted!");
     } catch (error) {
       console.error("Error:", error);
       toast.error("Something went wrong!");
@@ -228,7 +295,7 @@ const Album = (props) => {
               </CardContent>
               <CardActions>
                 <Button
-                  onClick={() => handleReviewRequest(key, item.id)}
+                  onClick={() => handleReviewRequest(key, item.id, item.title, item.image[0])}
                   size="large"
                   style={{
                     backgroundColor: "green",
@@ -353,9 +420,9 @@ const Album = (props) => {
     // setSelectedLostItem(null);
     // setNewImages([]);
   };
-  const handleReviewRequest = (key, primeItemID) => {
+  const handleReviewRequest = (key, primeItemID, title, photoUrl) => {
     console.log("key", key);
-    setcurrentSelectedItemID(primeItemID);
+    setcurrentSelectedItemID({ "id": primeItemID, "itemTitle": title, "photoUrl": photoUrl });
     try {
       ApiRequest.fetch({
         method: "get",

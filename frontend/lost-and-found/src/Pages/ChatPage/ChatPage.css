@@ -58,7 +58,9 @@
 
             .messagerInfo{
                 align-items: center;
-                
+                p{
+                  margin-bottom: 0%;  
+                }
             }
         }
     }
@@ -150,7 +152,7 @@
 
                 
                 button{
-                    color: #75e6a3;
+                    color: #35ac65;
                     border: none;
                     padding: 10px;
                 }

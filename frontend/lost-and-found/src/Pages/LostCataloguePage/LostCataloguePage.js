@@ -15,7 +15,7 @@ const LostCatalogue = () => {
   const [items, setItems] = useState([]);
   const [lostItems, setlostItems] = useState([]);
   const toggleFilter = () => setFilterOpen(!isFilterOpen);
-  const BaseColor = '#75e6a3';
+  const BaseColor = '#35ac65';
 
   const [showClaimModal, setShowClaimModal] = useState(false);
   const [selectedLinkItem, setSelectedLinkItem] = useState(null);
@@ -102,7 +102,7 @@ const LostCatalogue = () => {
   };
 
   const lightButtonStyle = {
-    backgroundColor: BaseColor, 
+    backgroundColor: "#75e6a3", 
     color: '#fff', 
     border: 'none',
     borderRadius: '4px',

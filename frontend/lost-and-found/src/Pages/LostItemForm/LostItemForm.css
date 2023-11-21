@@ -19,7 +19,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 15px;
-  border: 2px solid #75e6a3;
+  border: 2px solid #35ac65;
   border-radius: 10px;
   background-color: #f0f8f4;
   transition: background-color 0.3s ease;
@@ -61,14 +61,14 @@
 .lost-item-select {
   width: 100%;
   padding: 15px;
-  border: 2px solid #75e6a3;
+  border: 2px solid #35ac65;
   border-radius: 8px;
   margin-top: 10px;
   font-size: 16px;
 } */
 
 .lost-item-button {
-  background-color: #75e6a3 !important;
+  background-color: #35ac65 !important;
   color: #fff !important;
   border: none;
   padding: 15px;
@@ -85,8 +85,8 @@
 }
 
 .save-color-button {
-  background-color: #75e6a3; 
-  border-color: #75e6a3; 
+  background-color: #35ac65; 
+  border-color: #35ac65; 
   color: #fff; 
 }
 
