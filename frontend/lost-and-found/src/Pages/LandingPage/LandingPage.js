@@ -21,7 +21,7 @@ function LandingPage() {
     const box2Style = { backgroundColor: '#75e6a3', color: '#333333', padding: '20px' };
 
     const [showLoginUp, setShowLoginUp] = useState(false);
-
+    console.log("process.env", process.env);
    
     function redirectToLogin(){
         window.location = '/login'
