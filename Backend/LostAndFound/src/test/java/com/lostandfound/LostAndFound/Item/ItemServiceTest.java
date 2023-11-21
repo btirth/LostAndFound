@@ -64,12 +64,16 @@ public class ItemServiceTest {
   @Test
   public void testGetRequestRaisedItemsByUserIdSuccess() {
     String userId = "losttest@gmail.com";
-    boolean foundItem = true;
+    boolean isFoundItem = true;
 
-    when(itemRepository.findAllByFoundItem(foundItem)).thenReturn(List.of());
+    foundItem.getClaimRequested().put(lostItem.getId(), lostItem.getCreatedBy());
+    when(itemRepository.findAllByFoundItem(isFoundItem)).thenReturn(List.of(foundItem, lostItem));
 
     List<Item> expectedItems = itemService.getRequestRaisedItemsByUserId(userId);
 
-    Assertions.assertEquals(expectedItems, List.of());
+    Item firstItem = expectedItems.get(0);
+
+    Assertions.assertEquals(firstItem.getClaimRequested().get(lostItem.getId()), userId);
+    Assertions.assertEquals(firstItem, foundItem);
   }
 }

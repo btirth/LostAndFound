@@ -8,7 +8,6 @@ import com.lostandfound.LostAndFound.core.exception.LostAndFoundNotFoundExceptio
 import com.lostandfound.LostAndFound.core.exception.LostAndFoundValidationException;
 import com.lostandfound.LostAndFound.core.utils.SearchFilter;
 import com.lostandfound.LostAndFound.reward.service.RewardService;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -132,6 +131,14 @@ public class ItemSeviceImpl implements IItemService {
   @Override
   public List<Item> getRequestRaisedItemsByUserId(String userId) {
 
-    return this.itemRepository.findAllByFoundItem(true);
+    return this.itemRepository.findAllByFoundItem(true).stream()
+        .filter(
+            item -> {
+              if (item.getClaimRequested() != null) {
+                return item.getClaimRequested().containsValue(userId);
+              }
+              return false;
+            })
+        .toList();
   }
 }

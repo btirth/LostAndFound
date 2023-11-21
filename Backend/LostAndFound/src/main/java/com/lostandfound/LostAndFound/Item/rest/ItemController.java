@@ -32,10 +32,7 @@ public class ItemController {
    * @return list of items
    */
   @GetMapping(path = "/request-raised/{userId}")
-  public List<Item> getItemsByUserId(
-      @PathVariable("userId") String userId,
-      @RequestParam("page") int page,
-      @RequestParam("size") int size) {
+  public List<Item> getRequestRaisedItemsByUserId(@PathVariable("userId") String userId) {
     return this.iItemService.getRequestRaisedItemsByUserId(userId);
   }
 
