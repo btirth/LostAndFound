@@ -3,6 +3,8 @@ import { Container, Row, Col, Card, Button, Badge } from "react-bootstrap";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import "./RewardsPage.css";
+import { ApiRequest } from "../../helpers/api-request";
+import { API_URL } from "../../config/api-end-points";
 
 const dummyData = [
   {
@@ -109,7 +111,8 @@ const dummyData = [
 const RewardsPage = () => {
   const [showCode, setShowCode] = useState({});
   const [activeTab, setActiveTab] = useState("all");
-  const [filteredRewards, setFilteredRewards] = useState(dummyData)
+  const [filteredRewards, setFilteredRewards] = useState([])
+  const [rewards, setRewards] = useState([])
 
   const toggleCodeVisibility = (id) => {
     setShowCode((prevShowCode) => ({
@@ -117,6 +120,23 @@ const RewardsPage = () => {
       [id]: !prevShowCode[id],
     }));
   };
+
+  const userEmail = localStorage.getItem('user_email');
+  useEffect(() => {
+    ApiRequest.fetch({
+      method: "get",
+      url: `${API_URL}/api/v1/reward/all/${userEmail}`,
+    })
+      .then((response) => {
+        console.log("resonse",response);
+        setFilteredRewards(response)
+        setRewards(response)
+      })
+      .catch((error) => {
+       console.log("error",error);
+      })
+  }, [userEmail])
+  
 
   // const filterRewards = (reward) => {
   //   const currentDate = new Date().toISOString().split("T")[0];
@@ -135,16 +155,16 @@ const RewardsPage = () => {
     const currentDate = new Date().toISOString().split("T")[0];
 
     if (activeTab === "active") {
-      setFilteredRewards(dummyData.filter((item) => item.expiryDate >= currentDate))
+      setFilteredRewards(rewards.filter((item) => item.expiryDate >= currentDate))
       // return reward.expiryDate >= currentDate;
     } else if (activeTab === "expired") {
-      setFilteredRewards(dummyData.filter((item) => item.expiryDate < currentDate))
+      setFilteredRewards(rewards.filter((item) => item.expiryDate < currentDate))
       // return reward.expiryDate < currentDate;
     }
     else{
-      setFilteredRewards(dummyData)
+      setFilteredRewards(rewards)
     }
-  }, [activeTab])
+  }, [activeTab,rewards])
   
 
   const copyCodeToClipboard = (code) => {
@@ -184,28 +204,28 @@ const RewardsPage = () => {
           <Col key={reward.id} xs={12} sm={6} md={4} lg={3}>
             <Card className="mb-4 reward-card">
               <Card.Body>
-                <Card.Title>{reward.title}</Card.Title>
-                <Card.Text>{reward.description}</Card.Text>
-                <Card.Text>
+                <Card.Title>{reward.rewardData.title}</Card.Title>
+                <Card.Text>{reward.rewardData.description}</Card.Text>
+                {/* <Card.Text>
                   <strong>Item:</strong> {reward.itemName}
-                </Card.Text>
+                </Card.Text> */}
                 <Card.Text>
-                  <strong>Issued At:</strong> {reward.issuedAt}
+                  <strong>Issued At:</strong> {new Date(reward.issuedAt).toLocaleDateString('en-GB').split('/').reverse().slice(0, 3).join('-')}
                 </Card.Text>
                 <Card.Text>
                   <strong>Expiry Date:</strong>{" "}
-                  <Badge bg="danger">{reward.expiryDate}</Badge>
+                  <Badge bg="danger">{new Date(reward.expiryDate).toLocaleDateString('en-GB').split('/').reverse().slice(0, 3).join('-') }</Badge>
                 </Card.Text>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               
                     <Button
                       variant="link"
-                      onClick={() => copyCodeToClipboard(reward.code)}
+                      onClick={() => copyCodeToClipboard(reward.rewardData.code)}
                       className="copy-icon-button">
                       <FileCopyIcon className="icon" />
                     </Button>
                     {showCode[reward.id] ? (
-                      <span className="code-text">{reward.code}</span>
+                      <span className="code-text">{reward.rewardData.code}</span>
                     ) : (
                       <span
                         className={`blurred-code ${
