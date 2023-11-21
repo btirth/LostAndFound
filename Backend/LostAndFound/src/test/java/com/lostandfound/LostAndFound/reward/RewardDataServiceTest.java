@@ -26,7 +26,7 @@ public class RewardDataServiceTest {
 
   @BeforeEach
   public void setUp() {
-    rewardData = new RewardData("123", "Reward test", "Reward description test");
+    rewardData = new RewardData("123", "Reward test", "Reward description test", "TEST123");
   }
 
   @Test
@@ -70,6 +70,7 @@ public class RewardDataServiceTest {
     Assertions.assertEquals(rewardData.getId(), foundRewardData.getId());
     Assertions.assertEquals(rewardData.getTitle(), foundRewardData.getTitle());
     Assertions.assertEquals(rewardData.getDescription(), foundRewardData.getDescription());
+    Assertions.assertEquals(rewardData.getCode(), foundRewardData.getCode());
   }
 
   @Test

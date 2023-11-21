@@ -14,8 +14,9 @@ public class RewardData {
   @Id private String id;
   private String title;
   private String description;
+  private String code;
 
   public RewardData copy() {
-    return new RewardData(this.id, this.title, this.description);
+    return new RewardData(this.id, this.title, this.description, this.code);
   }
 }

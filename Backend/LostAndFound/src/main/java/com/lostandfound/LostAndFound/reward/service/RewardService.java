@@ -19,4 +19,6 @@ public interface RewardService {
    * @return the reward list
    */
   List<Reward> findAllByWinnerId(String winnerId);
+
+  void giveReward(String winnerId, String lostItemId);
 }

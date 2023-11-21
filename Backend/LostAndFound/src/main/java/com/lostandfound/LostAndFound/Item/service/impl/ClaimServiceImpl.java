@@ -5,6 +5,7 @@ import com.lostandfound.LostAndFound.Item.repo.ItemRepository;
 import com.lostandfound.LostAndFound.Item.service.ClaimService;
 import com.lostandfound.LostAndFound.core.exception.LostAndFoundNotFoundException;
 import com.lostandfound.LostAndFound.core.exception.LostAndFoundValidationException;
+import com.lostandfound.LostAndFound.reward.service.RewardService;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ClaimServiceImpl implements ClaimService {
   @Autowired private ItemRepository itemRepository;
+  @Autowired private RewardService rewardService;
 
   @Override
   public Item updateClaimRequest(String userId, String itemId, String lostItemId) {
@@ -153,6 +155,7 @@ public class ClaimServiceImpl implements ClaimService {
     }
 
     storedItem.setClaimedBy(claimRequestUserId);
+    this.rewardService.giveReward(claimRequestUserId, userId);
     return this.itemRepository.save(storedItem);
   }
 

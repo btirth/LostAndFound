@@ -6,6 +6,7 @@ import com.lostandfound.LostAndFound.reward.entities.Reward;
 import com.lostandfound.LostAndFound.reward.entities.RewardData;
 import com.lostandfound.LostAndFound.reward.repo.RewardRepository;
 import com.lostandfound.LostAndFound.reward.service.Impl.RewardServiceImpl;
+import com.lostandfound.LostAndFound.reward.service.RewardDataService;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
@@ -23,11 +24,13 @@ public class RewardServiceTest {
   private RewardData rewardData;
 
   @Mock private RewardRepository rewardRepository;
+
+  @Mock private RewardDataService rewardDataService;
   @InjectMocks private RewardServiceImpl rewardService;
 
   @BeforeEach
   public void setUp() {
-    rewardData = new RewardData("123", "Reward test", "Reward description test");
+    rewardData = new RewardData("123", "Reward test", "Reward description test", "TEST123");
     reward = new Reward();
     reward.setId("1");
     reward.setRewardData(rewardData);
@@ -40,7 +43,7 @@ public class RewardServiceTest {
   @Test
   public void testCreate() {
     when(rewardRepository.save(reward)).thenReturn(reward);
-
+    when(rewardDataService.getAllIds()).thenReturn(List.of(reward.getId()));
     Reward expectedReward = rewardService.create(reward);
 
     Assertions.assertEquals(expectedReward, reward);
