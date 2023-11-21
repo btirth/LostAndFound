@@ -59,12 +59,25 @@ public class RewardServiceImpl implements RewardService {
     return this.rewardRepository.findAllByWinnerId(winnerId);
   }
 
+  /**
+   * Give reward to the winner
+   *
+   * @param winnerId email/id of the winner
+   * @param lostItemUserId id of the lost item user
+   * @param lostItemId id of the lost item
+   * @param itemId id of the found item
+   * @param itemTitle title of the found item
+   */
   @Override
-  public void giveReward(String winnerId, String lostItemId) {
+  public void giveReward(
+      String winnerId, String lostItemUserId, String lostItemId, String itemId, String itemTitle) {
     Reward reward = new Reward();
 
     reward.setWinnerId(winnerId);
-    reward.setLostItemUserId(lostItemId);
+    reward.setLostItemUserId(lostItemUserId);
+    reward.setLostItemId(lostItemId);
+    reward.setItemId(itemId);
+    reward.setItemTitle(itemTitle);
 
     this.create(reward);
   }

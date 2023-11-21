@@ -36,12 +36,14 @@ public class RewardServiceTest {
     reward.setRewardData(rewardData);
     reward.setIssuedAt(Date.valueOf(LocalDate.now()));
     reward.setExpiryDate(Date.valueOf(LocalDate.now().plusDays(30)));
-    reward.setWinnerId("user1");
-    reward.setLostItemUserId("lostuser1");
+    reward.setWinnerId("user1@dal.ca");
+    reward.setLostItemUserId("lostuser1@dal.ca");
+    reward.setItemId("item123");
+    reward.setItemTitle("Item test");
   }
 
   @Test
-  public void testCreate() {
+  public void testCreateSuccess() {
     when(rewardRepository.save(reward)).thenReturn(reward);
     when(rewardDataService.getAllIds()).thenReturn(List.of(reward.getId()));
     Reward expectedReward = rewardService.create(reward);

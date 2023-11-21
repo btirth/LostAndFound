@@ -20,5 +20,15 @@ public interface RewardService {
    */
   List<Reward> findAllByWinnerId(String winnerId);
 
-  void giveReward(String winnerId, String lostItemId);
+  /**
+   * Give reward to the winner
+   *
+   * @param winnerId email/id of the winner
+   * @param lostItemUserId id of the lost item user
+   * @param lostItemId id of the lost item
+   * @param itemId id of the found item
+   * @param itemTitle title of the found item
+   */
+  void giveReward(
+      String winnerId, String lostItemUserId, String lostItemId, String itemId, String itemTitle);
 }

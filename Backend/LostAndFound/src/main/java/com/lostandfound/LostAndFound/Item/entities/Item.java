@@ -28,7 +28,7 @@ public class Item {
   private List<String> image;
   private Boolean foundItem;
   private String category;
-  private Boolean returned;
+  @Builder.Default private Boolean returned = false;
 
   @Builder.Default private Map<String, String> claimRequested = new HashMap<String, String>();
   @Builder.Default private Map<String, String> claimRequestAccepted = new HashMap<String, String>();

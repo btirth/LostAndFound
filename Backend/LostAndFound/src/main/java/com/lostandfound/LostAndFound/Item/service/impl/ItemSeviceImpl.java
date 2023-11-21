@@ -9,6 +9,7 @@ import com.lostandfound.LostAndFound.core.exception.LostAndFoundValidationExcept
 import com.lostandfound.LostAndFound.core.utils.SearchFilter;
 import com.lostandfound.LostAndFound.reward.service.RewardService;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -107,8 +108,16 @@ public class ItemSeviceImpl implements IItemService {
       throw new LostAndFoundValidationException("Item is not yet approved for this user.");
     }
 
+    String lostItemId =
+        storedItem.getClaimRequestAccepted().entrySet().stream()
+            .filter(entry -> entry.getValue().equals(userId))
+            .map(Map.Entry::getKey)
+            .findFirst()
+            .orElse(null);
+
     storedItem.setReturned(true);
-    this.rewardService.giveReward(storedItem.getCreatedBy(), userId);
+    this.rewardService.giveReward(
+        storedItem.getCreatedBy(), userId, lostItemId, storedItem.getId(), storedItem.getTitle());
 
     return this.itemRepository.save(storedItem);
   }

@@ -18,6 +18,9 @@ public class Reward {
   @Id private String id;
   private RewardData rewardData;
   private String lostItemUserId;
+  private String itemId;
+  private String itemTitle;
+  private String lostItemId;
   private String winnerId; // founder of the item
   @CreatedDate private Date issuedAt;
   private Date expiryDate;
