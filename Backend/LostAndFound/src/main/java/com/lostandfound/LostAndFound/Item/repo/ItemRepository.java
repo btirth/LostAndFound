@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 public interface ItemRepository extends MongoRepository<Item, String> {
 
   /**
-   * Method that returh the item by its ID
+   * Method that return the item by its ID
    *
    * @param id
    * @return Optional<Item></Item>
