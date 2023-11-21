@@ -7,6 +7,7 @@ import com.lostandfound.LostAndFound.Item.repo.ItemRepository;
 import com.lostandfound.LostAndFound.Item.service.impl.ClaimServiceImpl;
 import com.lostandfound.LostAndFound.core.exception.LostAndFoundNotFoundException;
 import com.lostandfound.LostAndFound.core.exception.LostAndFoundValidationException;
+import com.lostandfound.LostAndFound.reward.service.RewardService;
 import java.util.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +25,7 @@ public class ClaimServiceTest {
   Item lostItem;
   Date date = new Calendar.Builder().setDate(2023, 11, 2).build().getTime();
   @Mock private ItemRepository itemRepository;
+  @Mock private RewardService rewardService;
   @InjectMocks private ClaimServiceImpl claimService;
 
   @BeforeEach
@@ -41,6 +43,7 @@ public class ClaimServiceTest {
             new ArrayList<String>(),
             false,
             "Electronics",
+            false,
             new HashMap<String, String>(),
             new HashMap<String, String>(),
             new HashMap<String, String>(),
@@ -59,6 +62,7 @@ public class ClaimServiceTest {
             new ArrayList<String>(),
             false,
             "Electronics",
+            false,
             new HashMap<String, String>(),
             new HashMap<String, String>(),
             new HashMap<String, String>(),
@@ -369,6 +373,7 @@ public class ClaimServiceTest {
   public void testApproveClaimSuccessful() {
     // arrange
     when(itemRepository.findById(foundItem.getId())).thenReturn(Optional.of(foundItem));
+
     foundItem.getClaimRequestAccepted().put(lostItem.getId(), lostItem.getCreatedBy());
 
     // act
