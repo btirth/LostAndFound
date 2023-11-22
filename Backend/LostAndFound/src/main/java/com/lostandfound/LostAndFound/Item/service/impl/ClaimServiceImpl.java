@@ -159,10 +159,10 @@ public class ClaimServiceImpl implements ClaimService {
           "User's claim request has already been rejected for this item.");
     }
 
-    Map<String, String> claimRequestAccepted = storedItem.getClaimRequestAccepted();
+    Map<String, String> claimRequested = storedItem.getClaimRequested();
 
     String lostItemId = null;
-    for (Map.Entry<String, String> entry : claimRequestAccepted.entrySet()) {
+    for (Map.Entry<String, String> entry : claimRequested.entrySet()) {
       if (entry.getValue().equals(claimRequestUserId)) {
         lostItemId = entry.getKey();
         break;
@@ -170,7 +170,7 @@ public class ClaimServiceImpl implements ClaimService {
     }
 
     claimRejected.put(lostItemId, claimRequestUserId);
-    claimRequestAccepted.remove(lostItemId);
+    claimRequested.remove(lostItemId);
     return this.itemRepository.save(storedItem);
   }
 }
