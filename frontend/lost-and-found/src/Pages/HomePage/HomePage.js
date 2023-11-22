@@ -75,12 +75,6 @@ const HomePage = () => {
   const componentBStyle = {
     flex: "3",
     padding: "16px",
-    // paddingLeft: '5%',
-    // display: 'flex',
-    // justifyContent: 'space-between',
-    // display: 'flex',
-    // flexDirection: 'column',
-    // justifyContent: 'space-between',
   };
 
   const cardStyle = {
@@ -223,23 +217,7 @@ const HomePage = () => {
     const [selectedDate, setSelectedDate] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
 
-    //   const [formData, setFormData] = useState({
-    //   keyword: filterParams.keyword || '',
-    //   date: filterParams.date || '',
-    //   category: filterParams.category || '',
-    //   latitude: filterParams.latitude || '',
-    //   longitude: filterParams.longitude || '',
-    //   distance: filterParams.distance || '',
-    // });
-
-    // const handleChange = (e) => {
-    //   const { name, value } = e.target;
-    //   setFormData({ ...formData, [name]: value });
-    // };
-
-    // useEffect(() => {
-    //   setKeyword(filterParamKeyword);
-    // }, [filterParamKeyword]);
+    
     const handleFilterChange = (event) => {
       const value = event.target.value;
       if (selectedFilters.includes(value)) {
@@ -356,22 +334,7 @@ const HomePage = () => {
         console.log("Filter Parameters:", filterParams);
         setFilterParams(filterParams);
 
-        // const headers = {
-        //   'Content-Type': 'application/json',
-        //   'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-        // };
-
-        // axios.get(`${API_URL}/api/v1/item/get-list-by-filter?isFoundItem=true`, {
-        //   headers,
-        //   params: filterParams,
-        // })
-        //   .then(response => {
-        //     console.log('GET request successful:', response.data);
-        //     setItems(response.data);
-        //   })
-        //   .catch(error => {
-        //     console.error('Error:', error);
-        //   });
+       
       }
     };
 
@@ -462,66 +425,7 @@ const HomePage = () => {
 
   return (
     <div>
-      {/* <Navbar /> */}
-      {/* <h2>Welcome to the Home Page</h2> */}
-      {/* <div>
-        <Button
-          id="demo-positioned-button"
-          aria-controls={open ? "demo-positioned-menu" : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? "true" : undefined}
-          onClick={handleClick}
-        >
-          Dashboard
-        </Button>
-        <Menu
-          id="demo-positioned-menu"
-          aria-labelledby="demo-positioned-button"
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "left",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "left",
-          }}
-        >
-          <MenuItem onClick={handleClose}>Profile</MenuItem>
-          <MenuItem onClick={handleClose}>My account</MenuItem>
-          <MenuItem onClick={handleClose}>Logout</MenuItem>
-        </Menu>
-      </div> */}
-      {/* <div className="align-report-buttons-and-tab"> */}
-      {/* <div> */}
-      {/* <div>
-          <Stack style={stackButton} spacing={2} direction="row">
-
-            <Button onClick={openLostForm} variant="contained">
-              Report Lost Item
-            </Button>
-            <Button onClick={openForm} variant="contained">
-              Report Found Item
-            </Button>
-          </Stack>
-        </div> */}
-
-      {/* <Box sx={{ width: "100%", typography: "body1" }}>
-        <TabContext value={1}>
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <TabList onChange={handleChange} aria-label="lab API tabs example">
-              <Tab label="Item One" value="1" />
-              <Tab label="Item Two" value="2" />
-              <Tab label="Item Three" value="3" />
-            </TabList>
-          </Box>
-          <TabPanel value="1">Item One</TabPanel>
-          <TabPanel value="2">Item Two</TabPanel>
-          <TabPanel value="3">Item Three</TabPanel>
-        </TabContext>
-      </Box> */}
+     
       <div className="margin-left-20 margin-bottom-20">
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
@@ -597,7 +501,6 @@ const HomePage = () => {
         onRequestClose={closeForm}
         resetVariable={resetVariable}
       />
-      {/* Other content */}
     </div>
   );
 };
