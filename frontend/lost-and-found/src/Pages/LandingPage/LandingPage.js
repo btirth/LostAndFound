@@ -60,7 +60,7 @@ function LandingPage() {
                                 showLoginUp ? <LoginCard /> : <SignUpCard />
                                 
                             }
-                           <div style={{textAlign:'center',paddingBottom:'5px'}}>  <h6 className='mt-3'>{showLoginUp ? 'Don\'t have an account? ' : 'Already have an account? '}<a style={{textDecoration: 'underline', color: 'blue' }} onClick={redirectToLogin}>Click here</a></h6> </div>
+                           <div style={{textAlign:'center',paddingBottom:'5px'}}>  <h6 className='mt-3'>{showLoginUp ? 'Don\'t have an account? ' : 'Already have an account? '}<a style={{textDecoration: 'underline',color: 'darkgreen',cursor: 'pointer' }} onClick={redirectToLogin}>Click here</a></h6> </div>
                           </Card>
                     </Col>
                 </Row>

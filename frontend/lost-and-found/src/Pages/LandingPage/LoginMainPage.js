@@ -64,10 +64,11 @@ function LoginMainPage() {
                                 ForgotPassword ? <ForgetPasswordCard /> : <LoginCard />
 
                             {!ForgotPassword ?
-                                <div style={{ textAlign: 'center', paddingBottom: '5px' }}> <h6 className='mt-3'>{showLoginUp ? 'Don\'t have an account? ' : 'Already have an account? '}<a style={{ textDecoration: 'underline', color: 'blue' }} onClick={handleToggleForm}>Click here</a></h6></div>
+                                <div style={{ textAlign: 'center', paddingBottom: '5px' }}> <h6 className='mt-3'>{showLoginUp ? 'Don\'t have an account? ' : 'Already have an account? '}<a style={{ textDecoration: 'underline', color: 'darkgreen',cursor: 'pointer' }} onClick={handleToggleForm}>Click here</a></h6></div>
                                 : <></>}
-                          {!ForgotPassword ? <div style={{ textAlign: 'center', paddingBottom: '10px' }}><h6 className='mt-3'>{showLoginUp ? 'Forgot Password?' : ''}<a style={{ textDecoration: 'underline', color: 'blue' }} onClick={showForgotPassword}>Click here</a></h6> </div>
-                                : <div style={{ textAlign: 'center', paddingBottom: '10px' }}><h6 className='mt-3'>{'Back to Login '}<a style={{ textDecoration: 'underline', color: 'blue' }} onClick={showLoginPage}>Click here</a></h6></div>}
+                            {/* <Button variant='link' size='sm' onClick={handleToggleForm} className='mb-3 mx-4' >{showLoginUp ? 'New User' : 'Already has an account?'} </Button> */}
+                            {!ForgotPassword ? <div style={{ textAlign: 'center', paddingBottom: '10px' }}><h6 className='mt-3'>{showLoginUp ? 'Forgot Password?' : ''}<a style={{ textDecoration: 'underline', color: 'darkgreen',cursor: 'pointer' }} onClick={showForgotPassword}>Click here</a></h6> </div>
+                                : <div style={{ textAlign: 'center', paddingBottom: '10px' }}><h6 className='mt-3'>{'Back to Login '}<a style={{ textDecoration: 'underline', color: 'darkgreen',cursor: 'pointer' }} onClick={showLoginPage}>Click here</a></h6></div>}
                         </Card>
                     </Col>
                 </Row>
