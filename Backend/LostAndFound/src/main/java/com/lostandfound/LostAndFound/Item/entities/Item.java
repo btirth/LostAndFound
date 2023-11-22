@@ -10,8 +10,8 @@ import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Getter
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -28,6 +28,7 @@ public class Item {
   private List<String> image;
   private Boolean foundItem;
   private String category;
+  @Builder.Default private Boolean returned = false;
 
   @Builder.Default private Map<String, String> claimRequested = new HashMap<String, String>();
   @Builder.Default private Map<String, String> claimRequestAccepted = new HashMap<String, String>();
@@ -35,19 +36,4 @@ public class Item {
 
   @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
   private GeoJsonPoint location;
-
-  public Item(Item item) {
-    this.id = item.id;
-    this.title = item.title;
-    this.description = item.description;
-    this.createdBy = item.createdBy;
-    this.claimedBy = item.claimedBy;
-    this.sensitive = item.sensitive;
-    this.postedAt = item.postedAt;
-    this.updatedDate = item.updatedDate;
-    this.image = item.image;
-    this.foundItem = item.foundItem;
-    this.category = item.category;
-    this.location = item.location;
-  }
 }

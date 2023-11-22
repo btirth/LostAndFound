@@ -6,6 +6,7 @@ import com.lostandfound.LostAndFound.Item.service.ClaimService;
 import com.lostandfound.LostAndFound.core.exception.LostAndFoundNotFoundException;
 import com.lostandfound.LostAndFound.core.exception.LostAndFoundValidationException;
 import java.util.Map;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,18 +16,9 @@ public class ClaimServiceImpl implements ClaimService {
 
   @Override
   public Item updateClaimRequest(String userId, String itemId, String lostItemId) {
-    Item storedItem =
-        this.itemRepository
-            .findById(itemId)
-            .orElseThrow(() -> new LostAndFoundNotFoundException("Requested Item does not exists"));
 
-    Item lostItem =
-        this.itemRepository
-            .findById(lostItemId)
-            .orElseThrow(
-                () ->
-                    new LostAndFoundNotFoundException(
-                        "Failed to link lost item. It does not exists"));
+    Item storedItem = fetchItem(itemId);
+    Item lostItem = fetchItem(lostItemId);
 
     if (storedItem.getClaimedBy() != null) {
       throw new LostAndFoundValidationException("Item is already claimed by someone.");
@@ -59,13 +51,20 @@ public class ClaimServiceImpl implements ClaimService {
     return this.itemRepository.save(storedItem);
   }
 
+  private Item fetchItem(String itemId) {
+    Optional<Item> item = this.itemRepository.findById(itemId);
+    if (item.isEmpty()) {
+      throw new LostAndFoundNotFoundException("Item with id does not exists");
+    }
+
+    return item.get();
+  }
+
   @Override
   public Item updateClaimRequestAccepted(
       String userId, String itemId, String claimRequestLostItemId) {
-    Item storedItem =
-        this.itemRepository
-            .findById(itemId)
-            .orElseThrow(() -> new LostAndFoundNotFoundException("Item with id does not exists"));
+
+    Item storedItem = fetchItem(itemId);
 
     Map<String, String> claimRequested = storedItem.getClaimRequested();
     String claimRequestUserId = claimRequested.get(claimRequestLostItemId);
@@ -103,10 +102,7 @@ public class ClaimServiceImpl implements ClaimService {
 
   @Override
   public Item revokeClaimRequest(String userId, String itemId) {
-    Item storedItem =
-        this.itemRepository
-            .findById(itemId)
-            .orElseThrow(() -> new LostAndFoundNotFoundException("Item with id does not exists"));
+    Item storedItem = fetchItem(itemId);
 
     Map<String, String> claimRequested = storedItem.getClaimRequested();
     if (claimRequested == null || !claimRequested.containsValue(userId)) {
@@ -127,10 +123,7 @@ public class ClaimServiceImpl implements ClaimService {
 
   @Override
   public Item approveClaim(String userId, String itemId, String claimRequestUserId) {
-    Item storedItem =
-        this.itemRepository
-            .findById(itemId)
-            .orElseThrow(() -> new LostAndFoundNotFoundException("Item with id does not exists"));
+    Item storedItem = fetchItem(itemId);
 
     if (storedItem.getClaimedBy() != null) {
       throw new LostAndFoundValidationException("Item is already claimed by someone.");
@@ -158,10 +151,7 @@ public class ClaimServiceImpl implements ClaimService {
 
   @Override
   public Item rejectClaim(String userId, String itemId, String claimRequestUserId) {
-    Item storedItem =
-        this.itemRepository
-            .findById(itemId)
-            .orElseThrow(() -> new LostAndFoundNotFoundException("Item does not exists"));
+    Item storedItem = fetchItem(itemId);
     Map<String, String> claimRejected = storedItem.getClaimRejected();
 
     if (claimRejected == null || claimRejected.containsValue(claimRequestUserId)) {
@@ -169,10 +159,10 @@ public class ClaimServiceImpl implements ClaimService {
           "User's claim request has already been rejected for this item.");
     }
 
-    Map<String, String> claimRequestAccepted = storedItem.getClaimRequestAccepted();
+    Map<String, String> claimRequested = storedItem.getClaimRequested();
 
     String lostItemId = null;
-    for (Map.Entry<String, String> entry : claimRequestAccepted.entrySet()) {
+    for (Map.Entry<String, String> entry : claimRequested.entrySet()) {
       if (entry.getValue().equals(claimRequestUserId)) {
         lostItemId = entry.getKey();
         break;
@@ -180,7 +170,7 @@ public class ClaimServiceImpl implements ClaimService {
     }
 
     claimRejected.put(lostItemId, claimRequestUserId);
-    claimRequestAccepted.remove(lostItemId);
+    claimRequested.remove(lostItemId);
     return this.itemRepository.save(storedItem);
   }
 }

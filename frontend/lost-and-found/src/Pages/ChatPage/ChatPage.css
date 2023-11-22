@@ -58,7 +58,9 @@
 
             .messagerInfo{
                 align-items: center;
-                
+                p{
+                  margin-bottom: 0%;  
+                }
             }
         }
     }
@@ -71,13 +73,27 @@
             display: flex;
             flex-direction: column;
 
-            .userInfo{
+            .userHeader{
                 padding: 10px;
-                color: white;
                 gap: 20px;
                 background-color: #454040;
                 display: flex;
                 flex-direction: row;
+                justify-content: space-between;
+                
+                .userInfo{
+                    display: flex;
+                    flex-direction: row;
+                    gap: 20px;
+                    color: white;
+                }
+
+                .returnButton{
+                    background-color: #35ac65;
+                    width: auto;
+                    height: auto;
+                    color: #333;
+                }
             }
             .chats{
                 background-color: white;
@@ -150,7 +166,7 @@
 
                 
                 button{
-                    color: #75e6a3;
+                    color: #35ac65;
                     border: none;
                     padding: 10px;
                 }

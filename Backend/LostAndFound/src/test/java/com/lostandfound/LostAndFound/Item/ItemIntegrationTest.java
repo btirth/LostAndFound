@@ -28,6 +28,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @ActiveProfiles("test")
 @SpringBootTest
 public class ItemIntegrationTest {
+  private final Double LONGITUDE = 12.123;
+  private final Double LATITUDE = 12.123;
+  private final int PAGE_SIZE = 10;
+
   @Value("${auth.token}")
   String bearerToken;
 
@@ -40,42 +44,37 @@ public class ItemIntegrationTest {
 
   @BeforeEach
   void setUp() {
+    foundItem = new Item();
+    foundItem.setId("123");
+    foundItem.setTitle("iPhone 12");
+    foundItem.setDescription("Black iPhone 12");
+    foundItem.setCreatedBy("test@gmail.com");
+    foundItem.setSensitive(false);
+    foundItem.setPostedAt(date);
+    foundItem.setUpdatedDate(date);
+    foundItem.setImage(new ArrayList<>());
+    foundItem.setFoundItem(true);
+    foundItem.setCategory("Electronics");
+    foundItem.setClaimRequested(new HashMap<>());
+    foundItem.setClaimRequestAccepted(new HashMap<>());
+    foundItem.setClaimRejected(new HashMap<>());
+    foundItem.setLocation(new GeoJsonPoint(LONGITUDE, LATITUDE));
 
-    foundItem =
-        new Item(
-            "123",
-            "iPhone 12",
-            "Black iPhone 12",
-            "test@gmail.com",
-            null,
-            false,
-            date,
-            date,
-            new ArrayList<String>(),
-            true,
-            "Electronics",
-            new HashMap<String, String>(),
-            new HashMap<String, String>(),
-            new HashMap<String, String>(),
-            new GeoJsonPoint(12.123, 12.123));
-
-    lostItem =
-        new Item(
-            "1a2b3c",
-            "iPhone 12",
-            "Black Color iPhone 12",
-            "losttest@gmail.com",
-            null,
-            false,
-            date,
-            date,
-            new ArrayList<String>(),
-            false,
-            "Electronics",
-            new HashMap<String, String>(),
-            new HashMap<String, String>(),
-            new HashMap<String, String>(),
-            new GeoJsonPoint(12.123, 12.123));
+    lostItem = new Item();
+    lostItem.setId("1a2b3c");
+    lostItem.setTitle("iPhone 12");
+    lostItem.setDescription("Black Color iPhone 12");
+    lostItem.setCreatedBy("losttest@gmail.com");
+    lostItem.setSensitive(false);
+    lostItem.setPostedAt(date);
+    lostItem.setUpdatedDate(date);
+    lostItem.setImage(new ArrayList<>());
+    lostItem.setFoundItem(false);
+    lostItem.setCategory("Electronics");
+    lostItem.setClaimRequested(new HashMap<>());
+    lostItem.setClaimRequestAccepted(new HashMap<>());
+    lostItem.setClaimRejected(new HashMap<>());
+    lostItem.setLocation(new GeoJsonPoint(LONGITUDE, LATITUDE));
   }
 
   @AfterEach
@@ -193,7 +192,7 @@ public class ItemIntegrationTest {
     foundItemFilter.setMode("is");
     filters.put("foundItem", foundItemFilter);
     searchFilter.setPage(0);
-    searchFilter.setSize(10);
+    searchFilter.setSize(PAGE_SIZE);
     searchFilter.setFilters(filters);
 
     // act + assert

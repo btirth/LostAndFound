@@ -3,6 +3,7 @@ package com.lostandfound.LostAndFound.Item.rest;
 import com.lostandfound.LostAndFound.Item.entities.Item;
 import com.lostandfound.LostAndFound.Item.service.IItemService;
 import com.lostandfound.LostAndFound.core.utils.SearchFilter;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,17 @@ public class ItemController {
   public Item get(@PathVariable("id") String id) {
 
     return this.iItemService.getItem(id);
+  }
+
+  /**
+   * Retrieve all the items of a user for which the user has raised a claim request.
+   *
+   * @param userId of the user whose items are to be retrieved
+   * @return list of items
+   */
+  @GetMapping(path = "/request-raised/{userId}")
+  public List<Item> getRequestRaisedItemsByUserId(@PathVariable("userId") String userId) {
+    return this.iItemService.getRequestRaisedItemsByUserId(userId);
   }
 
   /**
@@ -67,5 +79,16 @@ public class ItemController {
   @DeleteMapping(path = "/{id}")
   public void deleteById(@PathVariable("id") String id) {
     this.iItemService.delete(id);
+  }
+
+  /**
+   * Set item status returned to true
+   *
+   * @param id of the item to be updated
+   * @param userId of the user whose item is returned
+   */
+  @PutMapping(path = "/returned/{id}")
+  public Item setReturned(@PathVariable("id") String id, @RequestParam("userId") String userId) {
+    return this.iItemService.updateReturn(id, userId);
   }
 }

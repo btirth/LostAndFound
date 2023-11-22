@@ -2,6 +2,7 @@ package com.lostandfound.LostAndFound.Item.service;
 
 import com.lostandfound.LostAndFound.Item.entities.Item;
 import com.lostandfound.LostAndFound.core.utils.SearchFilter;
+import java.util.List;
 import org.springframework.data.domain.Page;
 
 public interface IItemService {
@@ -25,6 +26,7 @@ public interface IItemService {
    * Updates an existing item.
    *
    * @param item needs to be updated
+   * @return updated item
    */
   Item update(Item item);
 
@@ -39,7 +41,24 @@ public interface IItemService {
    * This method will filter the items with pagination
    *
    * @param searchFilter
-   * @return
+   * @return filtered items
    */
   Page<Item> filterItems(SearchFilter searchFilter);
+
+  /**
+   * This method will update the returned status of the item
+   *
+   * @param itemId of the item which is returned
+   * @param userId of the user whose item is returned
+   * @return updated item
+   */
+  Item updateReturn(String itemId, String userId);
+
+  /**
+   * Retrieve all the items of a user for which the user has raised a claim request.
+   *
+   * @param userId of the user whose items are to be retrieved
+   * @return list of items
+   */
+  List<Item> getRequestRaisedItemsByUserId(String userId);
 }
