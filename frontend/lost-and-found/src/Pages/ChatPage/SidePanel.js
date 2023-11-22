@@ -25,11 +25,10 @@ const SidePanel = (props) => {
     };
 
     function getNameForChat(chatopt){
-        console.log("Chat opt:",chatopt);
         if(chatopt.postedBy===currentUser){
             return "Request by "+chatopt.requestBy;
         }else{
-            return "Posted by "+chatopt.postedBy;
+            return "Found by "+chatopt.postedBy;
         }
     }
 
@@ -51,7 +50,8 @@ const SidePanel = (props) => {
                             requestBy:usersData[key].requestBy,
                             photoUrl: usersData[key].photoUrl,
                             chatDocumentId: key,
-                            lastMessageBy: usersData[key].lastMessageBy
+                            lastMessageBy: usersData[key].lastMessageBy,
+                            itemId: usersData[key].itemId
                         })
                     });
                     setUsersForChat(userList);

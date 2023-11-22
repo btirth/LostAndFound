@@ -180,9 +180,10 @@ const Album = (props) => {
               "lastMessage": "",
               "postedBy": currentLoggedinUser,
               "requestBy": claimRequestUserId,
-              "lastUpdatedTimestamp": "",
+              "lastUpdatedTimestamp": Date.now(),
               "name": currentSelectedItemID.itemTitle,
-              "photoUrl": currentSelectedItemID.photoUrl
+              "photoUrl": currentSelectedItemID.photoUrl,
+              "itemId":currentSelectedItemID.id
             }
 
           }).catch((error) => { console.log("Chat connection issue-1", error) });;
@@ -196,9 +197,10 @@ const Album = (props) => {
               "lastMessage": "",
               "postedBy": currentLoggedinUser,
               "requestBy": claimRequestUserId,
-              "lastUpdatedTimestamp": "",
+              "lastUpdatedTimestamp": Date.now(),
               "name": currentSelectedItemID.itemTitle,
-              "photoUrl": currentSelectedItemID.photoUrl
+              "photoUrl": currentSelectedItemID.photoUrl,
+              "itemId":currentSelectedItemID.id
             }
 
           }).catch((error) => { console.log("Chat connection issue-3", error) });

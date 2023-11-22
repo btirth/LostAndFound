@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Navbar, Card, Col, Container, Row } from 'react-bootstrap'
 import { Box2Fill } from 'react-bootstrap-icons'
 import FooterComponent from '../../Components/FooterComponent';
+import { useHistory } from 'react-router-dom'
 
 // Images
 import LandingPageImg from '../../Assets/Images/landing_page_image.jpg'
@@ -12,15 +13,16 @@ import LoginCard from './LoginCard'
 import SignUpCard from './SignUpCard'
 import ForgetPasswordCard from './ForgetPasswordCard'
 
-// import { Link, Redirect } from 'react-router-dom'
-
-
 
 function LoginMainPage() {
+    const history = useHistory();
     const imgvar = LandingPageImg;
     const box1Style = { backgroundColor: '#35ac65', color: '#333333', padding: '20px' };
     const box2Style = { backgroundColor: '#35ac65', color: '#333333', padding: '20px' };
 
+    if (localStorage.getItem('access_token')) {
+        history.push('/home');
+    }
     const [showLoginUp, setShowLoginUp] = useState(true);
     const [ForgotPassword, setForgotPassword] = useState(false);
 
@@ -55,19 +57,12 @@ function LoginMainPage() {
                 <Row>
                     <Col lg={6} md={12} xs={12} className='pt-3 d-flex flex-column justify-content-center align-items-center px-4' >
                         <img src={LandingPageImg} alt="Image" className="img-fluid" />
-                        {/* <h1>Hello World</h1> */}
                     </Col>
                     <Col lg={{ span: 6, order: 'last' }} md={{ span: 12, order: 'first' }} xs={{ span: 12, order: 'first' }} className='d-flex justify-content-center align-items-center px-2' >
                         <Card className='w-75 border shadow'>
-                            {
-                                // formMode === FORM_MODE_ENUM.RESET_PASSWORD ?
-
-                                //     <ForgetPasswordCard />
-
-                                //     :
+                         
                                 ForgotPassword ? <ForgetPasswordCard /> : <LoginCard />
 
-                            }
                             {!ForgotPassword ?
                                 <div style={{ textAlign: 'center', paddingBottom: '5px' }}> <h6 className='mt-3'>{showLoginUp ? 'Don\'t have an account? ' : 'Already have an account? '}<a style={{ textDecoration: 'underline', color: 'darkgreen',cursor: 'pointer' }} onClick={handleToggleForm}>Click here</a></h6></div>
                                 : <></>}

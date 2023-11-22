@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react'
-import {  Send } from 'react-bootstrap-icons'
+import { Send } from 'react-bootstrap-icons'
 import Message from './Message';
-import { Alert, Form } from 'react-bootstrap';
+import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import { db } from "./../../firebase-config";
 import { v4 as uuid } from "uuid";
 import { arrayUnion, doc, updateDoc, onSnapshot } from "firebase/firestore";
+import { ApiRequest } from "../../helpers/api-request.js";
+import { API_URL } from "../../config/api-end-points.js";
 
 
 function formatTimestamp(timestamp) {
@@ -25,8 +27,10 @@ const MessagePanel = (props) => {
 
     const [chats, setChats] = useState([]);
     const [inputMessage, setInputMessage] = useState("");
+    const [currentItem, setCurrentItem] = useState(null);
     const [showAlert, setShowAlert] = useState(false);
     const chatSubscriptionRef = useRef(null);
+
 
     const selectedUser = props.selectedUser;
     const currentUserEmail = localStorage.getItem('user_email');
@@ -38,7 +42,10 @@ const MessagePanel = (props) => {
     }
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        if (e) {
+
+            e.preventDefault();
+        }
         if (inputMessage === "") {
             // setShowAlert(true);
             // setTimeout(() => {
@@ -46,6 +53,13 @@ const MessagePanel = (props) => {
             // }, 2000);
             return;
         }
+
+        pushMessage(selectedUser,inputMessage,currentUserEmail);
+
+        setInputMessage("");
+    }
+
+    const pushMessage= async (selectedUser,inputMessage,currentUserEmail) => {
         await updateDoc(doc(db, "chats/" + selectedUser.chatDocumentId), {
             messages: arrayUnion({
                 id: uuid(),
@@ -54,12 +68,12 @@ const MessagePanel = (props) => {
                 timestamp: Date.now(),
             }),
         });
-        
+
         var secondUser;
-        if(selectedUser.postedBy===currentUserEmail){
-            secondUser=selectedUser.requestBy;
-        }else{
-            secondUser=selectedUser.postedBy;
+        if (selectedUser.postedBy === currentUserEmail) {
+            secondUser = selectedUser.requestBy;
+        } else {
+            secondUser = selectedUser.postedBy;
         }
 
 
@@ -75,9 +89,6 @@ const MessagePanel = (props) => {
             [chatId + ".lastUpdatedTimestamp"]: Date.now(),
             [chatId + ".lastMessageBy"]: currentUserEmail
         });
-
-
-        setInputMessage("");
     }
 
 
@@ -85,7 +96,7 @@ const MessagePanel = (props) => {
     useEffect(() => {
 
 
-        const getChats = () => {
+        const getChats = async () => {
 
             if (chatSubscriptionRef.current) {
                 chatSubscriptionRef.current();
@@ -116,12 +127,21 @@ const MessagePanel = (props) => {
                 // return () => {
                 //     unsub();
                 // };
+
+                await ApiRequest.fetch({
+                    method: "get",
+                    url: `${API_URL}/api/v1/items/` + selectedUser.itemId,
+                }).then((response) => {
+                    console.log("resp", response)
+                    setCurrentItem(response);
+                });
             }
 
         };
 
-        selectedUser && getChats();
 
+
+        selectedUser && getChats();
         return () => {
             // Unsubscribe from the current subscription when the component is unmounted or selectedUser changes
             if (chatSubscriptionRef.current) {
@@ -130,7 +150,125 @@ const MessagePanel = (props) => {
         };
     }, [selectedUser]);
 
+    function ClaimButton(props) {
+        const selectedUser = props.selectedUserProp;
+        const currentItem = props.currentItemProp;
+        const setCurrentItem = props.setCurrentItemProp;
+        const currentUserEmail = props.currentUserEmailProp;
+        const setInputMessage = props.setInputMessageProp;
+        const [show, setShow] = useState(false);
 
+        var showButton = false;
+        var buttonMessage = "Messasge";
+        var buttonType = "default";
+        const modalApproveBody="Are you sure you want to approve user as owner?"
+        const modalReturnBody="Are you sure you want to confirm return?"
+
+        const handleClose = () => setShow(false);
+        const handleShow = () => setShow(true);
+
+        if (selectedUser.postedBy == currentUserEmail) {
+            if (!currentItem?.claimedBy) {
+                buttonMessage = "Approve Claim";
+                showButton = true;
+                buttonType = "approveType";
+            }
+        } else {
+            if (currentItem?.claimedBy === currentUserEmail) {
+                if (!currentItem.returned) {
+                    buttonMessage = "Confirm Return";
+                    showButton = true;
+                    buttonType = "returnType";
+                }
+
+            }
+        }
+
+        function handleClaimClick(buttonType) {
+            if (buttonType === "approveType") {
+                const requestBody = {
+                    "itemId": selectedUser.itemId,
+                    "userId": currentUserEmail,
+                    "claimUserId": selectedUser.requestBy
+                };
+
+                ApiRequest.fetch({
+                    method: "put",
+                    url: `${API_URL}/api/v1/items/claims/approve`,
+                    params: requestBody,
+                }).then((itemResponse) => {
+                    if (itemResponse?.claimedBy === selectedUser.requestBy) {
+                        const approveMsg="I have approved your claim. Please confirm the return of item";
+                        
+                        pushMessage(selectedUser,approveMsg,currentUserEmail);
+                        ApiRequest.fetch({
+                            method: "get",
+                            url: `${API_URL}/api/v1/items/` + selectedUser.itemId,
+                        }).then((response) => {
+                            console.log("resp", response)
+                            setCurrentItem(response);
+                        });
+                        // handleSubmit();
+                    }
+                })
+            } else if (buttonType === "returnType") {
+                const requestBody = {
+                    "userId": currentUserEmail,
+                };
+
+                ApiRequest.fetch({
+                    method: "put",
+                    url: `${API_URL}/api/v1/items/returned/` + selectedUser.itemId,
+                    params: requestBody,
+                }).then((itemResponse) => {
+                    console.log(itemResponse);
+                    if (itemResponse.returned === true) {
+                        const returnMsg="Thank you! I have received the item. Please check the rewards page to claim coupon code";
+                        // handleSubmit();
+                        pushMessage(selectedUser,returnMsg,currentUserEmail);
+                        ApiRequest.fetch({
+                            method: "get",
+                            url: `${API_URL}/api/v1/items/` + selectedUser.itemId,
+                        }).then((response) => {
+                            console.log("resp", response)
+                            setCurrentItem(response);
+                        });
+                    }
+                })
+            }
+
+            setShow(false);
+        }
+
+        return (
+            <>
+                {showButton ?
+                    <>
+                        <Button className='returnButton' onClick={() => handleShow()}>
+                            {buttonMessage}
+                        </Button>
+                        <Modal show={show} onHide={handleClose}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Confirm</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>{buttonType==="approveType" ? modalApproveBody:modalReturnBody}</Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={handleClose}>
+                                    Close
+                                </Button>
+                                <Button variant="primary" style={{backgroundColor:"#35ac65"}} onClick={() => handleClaimClick(buttonType)}>
+                                    Confirm
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
+                    </>
+                    :
+                    <></>
+                }
+            </>
+        );
+
+    }
 
 
     // console.log("user:",selectedUser);
@@ -141,9 +279,12 @@ const MessagePanel = (props) => {
                     <p>Select a user to chat</p>
                 </div> :
                 <div className='message-panel'>
-                    <div className='userInfo'>
-                        <img src={selectedUser.photoUrl} style={{ height: '50px', width: '50px', borderRadius: "50%" }}></img>
-                        <p style={{ marginTop: "10px" }}>{selectedUser.name}</p>
+                    <div className='userHeader'>
+                        <div className='userInfo'>
+                            <img src={selectedUser.photoUrl} style={{ height: '50px', width: '50px', borderRadius: "50%" }}></img>
+                            <p style={{ marginTop: "10px" }}>{selectedUser.name}</p>
+                        </div>
+                        <ClaimButton selectedUserProp={selectedUser} currentItemProp={currentItem} currentUserEmailProp={currentUserEmail} setInputMessageProp={setInputMessage} setCurrentItemProp={setCurrentItem} />
                     </div>
                     {showAlert ?
                         <Alert variant="danger">Cannot send empty message</Alert> : <></>}
@@ -154,10 +295,10 @@ const MessagePanel = (props) => {
                         </div> :
                         <div className='chats'>
                             {
-                            chats.map((currMessage, index) => (
-                                
-                            <Message key={index} sender={currMessage.sender === currentUserEmail ? currentUserName : selectedUser.requestBy === currentUserEmail ? selectedUser.postedBy:selectedUser.requestBy} message={currMessage.message} timestamp={currMessage.timestamp} isOutgoing={currMessage.isOutgoing} />
-                            ))}
+                                chats.map((currMessage, index) => (
+
+                                    <Message key={index} sender={currMessage.sender === currentUserEmail ? currentUserName : selectedUser.requestBy === currentUserEmail ? selectedUser.postedBy : selectedUser.requestBy} message={currMessage.message} timestamp={currMessage.timestamp} isOutgoing={currMessage.isOutgoing} />
+                                ))}
                         </div>
                     }
                     <Form onSubmit={handleSubmit}>
