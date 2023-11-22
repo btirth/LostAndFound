@@ -202,13 +202,13 @@ const RewardsPage = () => {
       <Row className="mt-4">
         {filteredRewards?.map((reward) => (
           <Col key={reward.id} xs={12} sm={6} md={4} lg={3}>
-            <Card className="mb-4 reward-card">
+            <Card className={`mb-4 reward-card ${reward.expiryDate < new Date().toISOString().split("T")[0] ? 'expired' : ''}`}>
               <Card.Body>
                 <Card.Title>{reward.rewardData.title}</Card.Title>
                 <Card.Text>{reward.rewardData.description}</Card.Text>
-                {/* <Card.Text>
-                  <strong>Item:</strong> {reward.itemName}
-                </Card.Text> */}
+                <Card.Text>
+                  <strong>Item:</strong> {reward.itemTitle}
+                </Card.Text>
                 <Card.Text>
                   <strong>Issued At:</strong> {new Date(reward.issuedAt).toLocaleDateString('en-GB').split('/').reverse().slice(0, 3).join('-')}
                 </Card.Text>

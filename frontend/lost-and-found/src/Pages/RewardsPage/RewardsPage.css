@@ -98,3 +98,8 @@
   .icon {
     color: #444444e4; 
   }
+
+  .expired {
+    opacity: 0.5;
+    pointer-events: none;
+  }
