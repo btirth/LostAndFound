@@ -42,7 +42,6 @@ const LoginCard = () => {
                     password: password,
                     client_id: '0UOtlCkeRywKyHbavmcbu6iihiUnwVYI',}
                 }).then((response) => {
-                    console.log("response",response);
             const accessToken = response.id_token;
             
             if (accessToken != null) {
@@ -54,7 +53,6 @@ const LoginCard = () => {
 
                 axios.get('https://dev-3vtey6tugvrs4132.us.auth0.com/userinfo',
                 {headers}).then((userDataResponse)=>{
-                    // console.log(userDataResponse.data.name);
 
                     localStorage.setItem('username', userDataResponse.data.name);
                     localStorage.setItem('access_token', accessToken);
@@ -63,18 +61,6 @@ const LoginCard = () => {
                     window.location = '/home'
                     setErrorMessage(null);
                 }).catch(uerror => {  setErrorMessage('An error occurred during login');})
-
-                // ApiRequest.fetch({
-                //     method:'get',
-                //     url:`https://dev-3vtey6tugvrs4132.us.auth0.com/userinfo`
-                // }).then((userDataResponse)=>{
-                    
-                //     window.location = '/home'
-                    
-                // }).catch(error=>{setErrorMessage('An Error occured during login while fetching name')})
-                
-                // localStorage.setItem('username', userDataResponse.data.name);
-                // console.log(userDataResponse.data.name);
 
                 localStorage.setItem('access_token', accessToken);
                 localStorage.setItem('user_email', email);

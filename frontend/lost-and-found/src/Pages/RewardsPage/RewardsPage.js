@@ -128,12 +128,11 @@ const RewardsPage = () => {
       url: `${API_URL}/api/v1/reward/all/${userEmail}`,
     })
       .then((response) => {
-        console.log("resonse",response);
         setFilteredRewards(response)
         setRewards(response)
       })
       .catch((error) => {
-       console.log("error",error);
+       console.error("error",error);
       })
   }, [userEmail])
   

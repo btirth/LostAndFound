@@ -104,12 +104,10 @@ const MessagePanel = (props) => {
 
             if (selectedUser.chatDocumentId.length > 0) {
                 const unsub = onSnapshot(doc(db, "chats/" + selectedUser.chatDocumentId), (doc) => {
-                    // console.log(doc.data().messages);
                     const messageList = [];
 
                     if (doc.exists()) {
                         const result = doc.data().messages;
-                        // console.log(result);
                         result.map((msg, index) => {
                             messageList.push({
                                 message: msg.message,
@@ -270,8 +268,6 @@ const MessagePanel = (props) => {
 
     }
 
-
-    // console.log("user:",selectedUser);
     return (
         <div className='message-part'>
             {selectedUser.name == "" ?

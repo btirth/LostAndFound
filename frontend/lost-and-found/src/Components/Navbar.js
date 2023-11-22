@@ -11,7 +11,6 @@ const Navbar = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [resetVariable, setResetVariable] = useState(false);
   const currentUserName = localStorage.getItem('username');
-  console.log(currentUserName);
   const handleLogout = () => {
     localStorage.removeItem('access_token');
     dispatch(logout());

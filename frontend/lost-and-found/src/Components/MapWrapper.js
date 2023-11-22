@@ -31,11 +31,8 @@ function LeafletgeoSearch(props) {
     const setLocation = props.setLocationsFun2
 
     const addLocation = (newLocation) => {
-        console.log("add point", newLocation)
-        console.log("printing locs before", locations);
         setLocations([newLocation]);
         setLocation([newLocation]);
-        console.log("printing locs after", locations);
     };
 
     const map = useMap();
