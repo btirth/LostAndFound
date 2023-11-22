@@ -16,6 +16,7 @@ import MapWrapper from "../../Components/MapWrapper";
 import { API_URL } from "../../config/api-end-points";
 import axios from "axios";
 import Typography from "@mui/material/Typography";
+import FilterOptions from '../../Components/FilterOptions';
 
 const HomePage = () => {
   const [value, setValue] = React.useState(0);
@@ -26,6 +27,7 @@ const HomePage = () => {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+    setFilterParams(null);
   };
   const openLostForm = () => {
     window.location = "/lost-form";
@@ -214,251 +216,257 @@ const HomePage = () => {
 
   const [items, setItems] = useState([]);
 
-  const FilterOptions = ({ filterParams }) => {
-    // const { filterParamKeyword } = filterParams;
-    const [selectedFilters, setSelectedFilters] = useState([]);
-    const [location, setLocation] = useState("");
-    const [radius, setRadius] = useState("");
-    const [keyword, setKeyword] = useState("");
-    const [selectedDate, setSelectedDate] = useState("");
-    const [selectedCategory, setSelectedCategory] = useState("");
-
-    //   const [formData, setFormData] = useState({
-    //   keyword: filterParams.keyword || '',
-    //   date: filterParams.date || '',
-    //   category: filterParams.category || '',
-    //   latitude: filterParams.latitude || '',
-    //   longitude: filterParams.longitude || '',
-    //   distance: filterParams.distance || '',
-    // });
-
-    // const handleChange = (e) => {
-    //   const { name, value } = e.target;
-    //   setFormData({ ...formData, [name]: value });
-    // };
-
-    // useEffect(() => {
-    //   setKeyword(filterParamKeyword);
-    // }, [filterParamKeyword]);
-    const handleFilterChange = (event) => {
-      const value = event.target.value;
-      if (selectedFilters.includes(value)) {
-        setSelectedFilters(
-          selectedFilters.filter((filter) => filter !== value)
-        );
-      } else {
-        setSelectedFilters([...selectedFilters, value]);
-      }
-    };
-
-    const handleClearFilters = () => {
-      // Clear all filter values and reset the filters
-      setSelectedFilters([]);
-      setLocation("");
-      setRadius("");
-      setKeyword("");
-      setSelectedDate("");
-      setSelectedCategory("");
-    };
-
-    const handleSubmit = (event) => {
-      event.preventDefault();
-      if (selectedFilters.includes("category") && selectedCategory === "") {
-        toast.error("Please select a category!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-      } else if (selectedFilters.includes("date") && selectedDate === "") {
-        toast.error("Please select a date!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-      } else if (selectedFilters.includes("keyword") && keyword === "") {
-        toast.error("Please enter a keyword!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-      } else {
-        // Handle form submission with selectedFilters, radius, name, selectedDate, and locationFile
-        console.log("Selected Filters:", selectedFilters);
-        console.log("Radius:", radius);
-        console.log("Date:", selectedDate);
-        console.log("Location:", location);
-        console.log("Keyword:", keyword);
-        console.log("Category:", selectedCategory);
-
-        // Check if "Location" filter is checked
-        const isLocationFilterChecked = selectedFilters.includes("location");
-
-        if (isLocationFilterChecked && (!location || !radius)) {
-          toast.error("please select location and radius!", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
-        }
-
-        const filterParams = {};
-
-        // Check if "Keyword" filter is checked
-        if (selectedFilters.includes("keyword") && keyword) {
-          filterParams.keyword = keyword;
-        }
-
-        // Check if "Date" filter is checked
-        if (selectedFilters.includes("date") && selectedDate) {
-          filterParams.date = selectedDate;
-        }
-
-        // Check if "Location" filter is checked
-        if (selectedFilters.includes("location") && location && radius) {
-          let selectedLong = location[0]?.lng ? location[0]?.lng : "";
-          let selectedLat = location[0]?.lat ? location[0]?.lat : "";
-          filterParams.location = {
-            x: selectedLong,
-            y: selectedLat,
-            radius: radius,
-          };
-          // filterParams.longitude = selectedLong;
-          // filterParams.latitude = selectedLat;
-          // filterParams.distance = radius;
-        }
-
-        // Check if "Category" filter is selected
-        if (selectedCategory) {
-          filterParams.category = selectedCategory;
-        }
-
-        // Handle form submission with the filtered parameters
-        console.log("Filter Parameters:", filterParams);
-        setFilterParams(filterParams);
-
-        // const headers = {
-        //   'Content-Type': 'application/json',
-        //   'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-        // };
-
-        // axios.get(`${API_URL}/api/v1/item/get-list-by-filter?isFoundItem=true`, {
-        //   headers,
-        //   params: filterParams,
-        // })
-        //   .then(response => {
-        //     console.log('GET request successful:', response.data);
-        //     setItems(response.data);
-        //   })
-        //   .catch(error => {
-        //     console.error('Error:', error);
-        //   });
-      }
-    };
-
-    const setFilterParamKeyword = (event) => {
-      console.log("event captured", event);
-      filterParams.keyword = event;
-    };
-
-    return (
-      <form style={{ textAlign: "center" }}>
-        <div style={filterContainerStyle}>
-          <div>
-            <label style={labelCheckBox}>
-              <input
-                type="checkbox"
-                value="keyword"
-                checked={selectedFilters.includes("keyword")}
-                onChange={handleFilterChange}
-              />
-              Keyword
-            </label>
-            <label style={labelCheckBox}>
-              <input
-                type="checkbox"
-                value="date"
-                checked={selectedFilters.includes("date")}
-                onChange={handleFilterChange}
-              />
-              Date
-            </label>
-            <label style={labelCheckBox}>
-              <input
-                type="checkbox"
-                value="location"
-                checked={selectedFilters.includes("location")}
-                onChange={handleFilterChange}
-              />
-              Location
-            </label>
-          </div>
-          <label>
-            Category:
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-            >
-              <option value="">All Categories</option>
-              <option value="personal">Personal Item</option>
-              <option value="electronics">Electronics</option>
-              <option value="document">Document</option>
-            </select>
-          </label>
-          <input
-            type="text"
-            placeholder="Keyword"
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            style={filterOptionsStyle}
-          />
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            style={filterOptionsStyle}
-          />
-          <MapWrapper setLocation={setLocation} />
-          <input
-            type="number"
-            placeholder="Radius (meters)"
-            value={radius}
-            onChange={(e) => setRadius(e.target.value)}
-            style={filterOptionsStyle}
-          />
-
-          <div>
-            <button onClick={handleSubmit} style={filterButtonStyle}>
-              Apply Filter
-            </button>
-
-            <button onClick={handleClearFilters} style={clearButtonStyle}>
-              Clear Filter
-            </button>
-          </div>
-        </div>
-      </form>
-    );
+  const applyFilter = (filterParams) => {
+    console.log("filterParams", filterParams)
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    setFilterParams(filterParams);
   };
+
+  // const FilterOptions = ({ filterParams }) => {
+  //   // const { filterParamKeyword } = filterParams;
+  //   const [selectedFilters, setSelectedFilters] = useState([]);
+  //   const [location, setLocation] = useState("");
+  //   const [radius, setRadius] = useState("");
+  //   const [keyword, setKeyword] = useState("");
+  //   const [selectedDate, setSelectedDate] = useState("");
+  //   const [selectedCategory, setSelectedCategory] = useState("");
+
+  //   //   const [formData, setFormData] = useState({
+  //   //   keyword: filterParams.keyword || '',
+  //   //   date: filterParams.date || '',
+  //   //   category: filterParams.category || '',
+  //   //   latitude: filterParams.latitude || '',
+  //   //   longitude: filterParams.longitude || '',
+  //   //   distance: filterParams.distance || '',
+  //   // });
+
+  //   // const handleChange = (e) => {
+  //   //   const { name, value } = e.target;
+  //   //   setFormData({ ...formData, [name]: value });
+  //   // };
+
+  //   // useEffect(() => {
+  //   //   setKeyword(filterParamKeyword);
+  //   // }, [filterParamKeyword]);
+  //   const handleFilterChange = (event) => {
+  //     const value = event.target.value;
+  //     if (selectedFilters.includes(value)) {
+  //       setSelectedFilters(
+  //         selectedFilters.filter((filter) => filter !== value)
+  //       );
+  //     } else {
+  //       setSelectedFilters([...selectedFilters, value]);
+  //     }
+  //   };
+
+  //   const handleClearFilters = () => {
+  //     // Clear all filter values and reset the filters
+  //     setSelectedFilters([]);
+  //     setLocation("");
+  //     setRadius("");
+  //     setKeyword("");
+  //     setSelectedDate("");
+  //     setSelectedCategory("");
+  //   };
+
+  //   const handleSubmit = (event) => {
+  //     event.preventDefault();
+  //     if (selectedFilters.includes("category") && selectedCategory === "") {
+  //       toast.error("Please select a category!", {
+  //         position: "top-right",
+  //         autoClose: 5000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         progress: undefined,
+  //         theme: "dark",
+  //       });
+  //     } else if (selectedFilters.includes("date") && selectedDate === "") {
+  //       toast.error("Please select a date!", {
+  //         position: "top-right",
+  //         autoClose: 5000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         progress: undefined,
+  //         theme: "dark",
+  //       });
+  //     } else if (selectedFilters.includes("keyword") && keyword === "") {
+  //       toast.error("Please enter a keyword!", {
+  //         position: "top-right",
+  //         autoClose: 5000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         progress: undefined,
+  //         theme: "dark",
+  //       });
+  //     } else {
+  //       // Handle form submission with selectedFilters, radius, name, selectedDate, and locationFile
+  //       console.log("Selected Filters:", selectedFilters);
+  //       console.log("Radius:", radius);
+  //       console.log("Date:", selectedDate);
+  //       console.log("Location:", location);
+  //       console.log("Keyword:", keyword);
+  //       console.log("Category:", selectedCategory);
+
+  //       // Check if "Location" filter is checked
+  //       const isLocationFilterChecked = selectedFilters.includes("location");
+
+  //       if (isLocationFilterChecked && (!location || !radius)) {
+  //         toast.error("please select location and radius!", {
+  //           position: "top-right",
+  //           autoClose: 5000,
+  //           hideProgressBar: false,
+  //           closeOnClick: true,
+  //           pauseOnHover: true,
+  //           draggable: true,
+  //           progress: undefined,
+  //           theme: "dark",
+  //         });
+  //       }
+
+  //       const filterParams = {};
+
+  //       // Check if "Keyword" filter is checked
+  //       if (selectedFilters.includes("keyword") && keyword) {
+  //         filterParams.keyword = keyword;
+  //       }
+
+  //       // Check if "Date" filter is checked
+  //       if (selectedFilters.includes("date") && selectedDate) {
+  //         filterParams.date = selectedDate;
+  //       }
+
+  //       // Check if "Location" filter is checked
+  //       if (selectedFilters.includes("location") && location && radius) {
+  //         let selectedLong = location[0]?.lng ? location[0]?.lng : "";
+  //         let selectedLat = location[0]?.lat ? location[0]?.lat : "";
+  //         filterParams.location = {
+  //           x: selectedLong,
+  //           y: selectedLat,
+  //           radius: radius,
+  //         };
+  //         // filterParams.longitude = selectedLong;
+  //         // filterParams.latitude = selectedLat;
+  //         // filterParams.distance = radius;
+  //       }
+
+  //       // Check if "Category" filter is selected
+  //       if (selectedCategory) {
+  //         filterParams.category = selectedCategory;
+  //       }
+
+  //       // Handle form submission with the filtered parameters
+  //       console.log("Filter Parameters:", filterParams);
+  //       setFilterParams(filterParams);
+
+  //       // const headers = {
+  //       //   'Content-Type': 'application/json',
+  //       //   'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+  //       // };
+
+  //       // axios.get(`${API_URL}/api/v1/item/get-list-by-filter?isFoundItem=true`, {
+  //       //   headers,
+  //       //   params: filterParams,
+  //       // })
+  //       //   .then(response => {
+  //       //     console.log('GET request successful:', response.data);
+  //       //     setItems(response.data);
+  //       //   })
+  //       //   .catch(error => {
+  //       //     console.error('Error:', error);
+  //       //   });
+  //     }
+  //   };
+
+  //   const setFilterParamKeyword = (event) => {
+  //     console.log("event captured", event);
+  //     filterParams.keyword = event;
+  //   };
+
+  //   return (
+  //     <form style={{ textAlign: "center" }}>
+  //       <div style={filterContainerStyle}>
+  //         <div>
+  //           <label style={labelCheckBox}>
+  //             <input
+  //               type="checkbox"
+  //               value="keyword"
+  //               checked={selectedFilters.includes("keyword")}
+  //               onChange={handleFilterChange}
+  //             />
+  //             Keyword
+  //           </label>
+  //           <label style={labelCheckBox}>
+  //             <input
+  //               type="checkbox"
+  //               value="date"
+  //               checked={selectedFilters.includes("date")}
+  //               onChange={handleFilterChange}
+  //             />
+  //             Date
+  //           </label>
+  //           <label style={labelCheckBox}>
+  //             <input
+  //               type="checkbox"
+  //               value="location"
+  //               checked={selectedFilters.includes("location")}
+  //               onChange={handleFilterChange}
+  //             />
+  //             Location
+  //           </label>
+  //         </div>
+  //         <label>
+  //           Category:
+  //           <select
+  //             value={selectedCategory}
+  //             onChange={(e) => setSelectedCategory(e.target.value)}
+  //           >
+  //             <option value="">All Categories</option>
+  //             <option value="personal">Personal Item</option>
+  //             <option value="electronics">Electronics</option>
+  //             <option value="document">Document</option>
+  //           </select>
+  //         </label>
+  //         <input
+  //           type="text"
+  //           placeholder="Keyword"
+  //           value={keyword}
+  //           onChange={(e) => setKeyword(e.target.value)}
+  //           style={filterOptionsStyle}
+  //         />
+  //         <input
+  //           type="date"
+  //           value={selectedDate}
+  //           onChange={(e) => setSelectedDate(e.target.value)}
+  //           style={filterOptionsStyle}
+  //         />
+  //         <MapWrapper setLocation={setLocation} />
+  //         <input
+  //           type="number"
+  //           placeholder="Radius (meters)"
+  //           value={radius}
+  //           onChange={(e) => setRadius(e.target.value)}
+  //           style={filterOptionsStyle}
+  //         />
+
+  //         <div>
+  //           <button onClick={handleSubmit} style={filterButtonStyle}>
+  //             Apply Filter
+  //           </button>
+
+  //           <button onClick={handleClearFilters} style={clearButtonStyle}>
+  //             Clear Filter
+  //           </button>
+  //         </div>
+  //       </div>
+  //     </form>
+  //   );
+  // };
 
   return (
     <div>
@@ -579,7 +587,7 @@ const HomePage = () => {
               </div>
               {isFilterOpen && (
                 <div style={filterOptionsContainerStyle}>
-                  <FilterOptions filterParams={filterParams} />
+                  <FilterOptions applyFilter={applyFilter} />
                 </div>
               )}
             </div>

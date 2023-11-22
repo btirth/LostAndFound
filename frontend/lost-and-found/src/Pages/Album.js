@@ -20,13 +20,14 @@ import { BsImage } from "react-icons/bs";
 import { v4 as uuid } from "uuid";
 import { doc, setDoc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../firebase-config";
-
-
-
+import MapWrapper from "../Pages/LostItemForm/MapWrapper";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../firebase-config";
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import "./Album.css"
 
 const Album = (props) => {
   const [revokeRequest, setRevokeRequest] = useState({
@@ -89,21 +90,13 @@ const Album = (props) => {
   const [items, setItems] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [locations, setLocations] = useState([]);
+  const [newImages, setNewImages] = useState([]);
 
-  // useEffect(() => {
-  //   // This will run whenever currentPage changes
-  //   console.log("currentPage changed:", currentPage);
-  //   getResult(currentPage); // Assuming getResult is defined in your component
-  // }, [currentPage]);
 
-  const addFilter = (attributeName, value, mode) => {
-    setSearchFilter((prevFilter) => ({
-      ...prevFilter,
-      filters: {
-        ...prevFilter.filters,
-        [attributeName]: { value, mode },
-      },
-    }));
+  const handleEditInputChange = (e, field) => {
+    const { value } = e.target;
+    setseletectedPostedItem((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleRevok = async (event) => {
@@ -141,12 +134,41 @@ const Album = (props) => {
     // fetchData();
   };
 
+  async function uploadImages(files) {
+    try {
+      const fileLinks = [];
+
+      for (let index = 0; index < files.length; index++) {
+        const file = files[index];
+        let todayDate = new Date().getUTCMilliseconds().toString();
+        const fileRef = ref(
+          storage,
+          `lostnfound/${file.name}-${todayDate}-${index}`
+        );
+
+        try {
+          const snapshot = await uploadBytes(fileRef, file);
+          const url = await getDownloadURL(snapshot.ref);
+          fileLinks.push(url);
+        } catch (error) {
+          console.error("Error getting download URL:", error);
+        }
+      }
+      return fileLinks;
+    } catch (error) {
+      console.error("Error uploading images:", error);
+      return [];
+    }
+  }
+
   const handleItemPostedClick = async (item) => {
     console.log("ItemID clicked", item);
-    // setseletectedPostedItem(item);
+    setLocations([]);
+    setseletectedPostedItem(item);
     // setshowItemPostedModal(true);
     setLinkedLostItem(item);
-    setShowModal(true);
+    // setShowModal(true);
+    setshowItemPostedModal(true);
 
     // setRevokeRequest((prevData) => ({
     //   ...prevData,
@@ -181,13 +203,6 @@ const Album = (props) => {
   const handleAccept = async (itemId, claimRequestUserId) => {
     console.log("ItemID clicked", itemId, claimRequestUserId);
     console.log("selectedItem", currentSelectedItemID);
-    // const fetchData = async () => {
-
-    // setRevokeRequest((prevData) => ({
-    //   ...prevData,
-    //   itemId: event,
-    //   // Update other properties as needed
-    // }));
 
     try {
       await ApiRequest.fetch({
@@ -252,10 +267,6 @@ const Album = (props) => {
 
       });
 
-
-
-      // console.log("GET request successful:", response.data.content);
-      // setItems(response.data.content);
       await getResult();
       setShowModal(false);
     } catch (error) {
@@ -267,13 +278,6 @@ const Album = (props) => {
   const handleReject = async (itemId, claimRequestUserId) => {
     console.log("ItemID clicked", itemId, claimRequestUserId);
     console.log("selectedItem", currentSelectedItemID);
-    // const fetchData = async () => {
-
-    // setRevokeRequest((prevData) => ({
-    //   ...prevData,
-    //   itemId: event,
-    //   // Update other properties as needed
-    // }));
 
     try {
       await ApiRequest.fetch({
@@ -287,6 +291,48 @@ const Album = (props) => {
       console.error("Error:", error);
       toast.error("Something went wrong!");
     }
+  };
+
+  const handleSaveChanges = async (item) => {
+    console.log("ItemID clicked", item);
+    const newfileLinks = await uploadImages(newImages);
+    seletectedPostedItem.image = [...seletectedPostedItem.image, ...newfileLinks];
+    if (locations.length > 0) {
+      seletectedPostedItem.location.x = locations[0].lng;
+      seletectedPostedItem.location.y = locations[0].lat;
+      seletectedPostedItem.location.coordinates = [
+        locations[0].lng,
+        locations[0].lat,
+      ];
+    }
+
+    ApiRequest.fetch({
+      method: "put",
+      url: `${API_URL}/api/v1/items/${item.id}`,
+      data: seletectedPostedItem,
+    })
+      .then((response) => {
+        toast.success("Item Updated Successfully!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      })
+      .finally(() => {
+        getResult();
+      });
+
+    setShowModal(false);
+    setLocations([]);
+    setseletectedPostedItem(null);
   };
 
   const renderClaims = (item) => {
@@ -329,7 +375,7 @@ const Album = (props) => {
                   onClick={() => handleReviewRequest(key, item.id, item.title, item.image[0])}
                   size="large"
                   style={{
-                    backgroundColor: "green",
+                    backgroundColor: "#35ac65",
                     width: "100%",
                     color: "white",
                   }}
@@ -367,20 +413,20 @@ const Album = (props) => {
         props.filterParams !== null
       ) {
         // Iterate over key-value pairs in props.filterParams and add filters
-        Object.entries(props.filterParams).forEach(([key, value]) => {
+        Object.entries(props.filterParams).forEach(([key, fields]) => {
           // if (value != "") {
           if (key === "keyword")
             updatedFilter.filters[key] = {
-              value: value,
+              value: fields.value,
               mode: "contains",
             };
           // You can customize the mode if needed
           else if (key === "category")
-            updatedFilter.filters[key] = { value: value, mode: "equals" };
+            updatedFilter.filters[key] = { value: fields.value, mode: "equals" };
           else if (key === "location")
-            updatedFilter.filters[key] = { value: value, mode: "geo" };
+            updatedFilter.filters[key] = { value: fields.values, mode: "geo" };
           else if (key === "date") {
-            const endDate = `${value}T23:59:59.000Z `;
+            const endDate = `${fields.value}`;
             // updatedFilter.filters.postedAt = {
             //   value: `${value}, 00:00:00 AM`,
             //   mode: "on",
@@ -405,10 +451,22 @@ const Album = (props) => {
           claimRequested: { value: currentLoggedinUser, mode: "contains" },
         },
       };
-      getFilteredData(updatedFilter, setItems);
+      try {
+        ApiRequest.fetch({
+          method: "get",
+          url: `${API_URL}/api/v1/items/request-raised/${currentLoggedinUser}`,
+          data: updatedFilter,
+        }).then((response) => {
+          console.log("GET request successful:", response.content);
+          setItems(response);
+          // setTotalPages(response.totalPages);
+          // setCurrentPage(response.number + 1);
+        });
+      } catch (error) {
+        console.error("Error:", error);
+      }
+      
     } else {
-      console.log("in else");
-      // const currentLoggedinUser = localStorage.getItem("user_email");
 
       const updatedFilter = {
         ...searchFilter,
@@ -435,22 +493,33 @@ const Album = (props) => {
         setTotalPages(response.totalPages);
         setCurrentPage(response.number + 1);
       });
-      // const response = await axios.post(
-      //   `${API_URL}items/search`,
-      //   updatedFilter,
-      //   { headers }
-      // );
-      // console.log("GET request successful:", response.data.content);
-      // setItems(response.data.content);
     } catch (error) {
       console.error("Error:", error);
     }
   }
   const handleCloseModal = () => {
     setShowModal(false);
-    // setSelectedLostItem(null);
-    // setNewImages([]);
+    setshowItemPostedModal(false);
   };
+
+  const handleNewImagesChange = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    setNewImages([...newImages, ...selectedFiles]);
+  };
+  const handleDeleteImage = (imageUrl) => {
+    const updatedEditedFindItem = { ...seletectedPostedItem };
+    updatedEditedFindItem.image = updatedEditedFindItem.image.filter(
+      (img) => img !== imageUrl
+    );
+    setseletectedPostedItem(updatedEditedFindItem);
+  };
+
+  const handleDeleteNewImage = (index) => {
+    const updatedNewImages = [...newImages];
+    updatedNewImages.splice(index, 1);
+    setNewImages(updatedNewImages);
+  };
+
   const handleReviewRequest = (key, primeItemID, title, photoUrl) => {
     console.log("key", key);
     setcurrentSelectedItemID({ "id": primeItemID, "itemTitle": title, "photoUrl": photoUrl });
@@ -459,22 +528,13 @@ const Album = (props) => {
         method: "get",
         url: `${API_URL}/api/v1/items/` + key,
       }).then((response) => {
-        console.log("GET item requested successful:", response.content);
+        console.log("GET item requested successful:", response);
         setLinkedLostItem(response);
         setShowModal(true);
       });
-      // const response = await axios.post(
-      //   `${API_URL}items/search`,
-      //   updatedFilter,
-      //   { headers }
-      // );
-      // console.log("GET request successful:", response.data.content);
-      // setItems(response.data.content);
     } catch (error) {
       console.error("Error:", error);
     }
-    // setSelectedLostItem(null);
-    // setNewImages([]);
   };
 
   const handleChange = (event) => {
@@ -482,23 +542,18 @@ const Album = (props) => {
   };
 
   const Pagination = () => {
-    // const totalPages = Math.ceil(totalItems / itemsPerPage);
-    // const [currentPage, setCurrentPage] = useState(1);
 
     const handleNextPage = () => {
       const newPage = Math.min(currentPage + 1, totalPages);
       console.log("newPage", newPage);
-      setCurrentPage(newPage); //, () => {
-      // });
+      setCurrentPage(newPage);
       console.log("currentPage", currentPage);
       getResult(newPage - 1);
     };
 
     const handlePrevPage = () => {
       const newPage = Math.max(currentPage - 1, 1);
-      setCurrentPage(newPage, () => {
-        console.log("currentPage", currentPage);
-      });
+      setCurrentPage(newPage);
       getResult(newPage - 1);
     };
 
@@ -528,7 +583,6 @@ const Album = (props) => {
   };
 
   return (
-    // <ThemeProvider theme={defaultTheme}>
     <main>
       {props.value === 2 ? (
         <FormControl sx={{ width: 160 }} style={{ marginLeft: "383px" }}>
@@ -548,10 +602,8 @@ const Album = (props) => {
       ) : (
         ""
       )}
-      {/* Hero unit */}
       {items !== undefined && items !== null && items.length !== 0 ? (
         <Container sx={{ py: 3 }}>
-          {/* End hero unit */}
           {props.value !== 2 ? (
             <Grid container spacing={4}>
               {items.map((item) => (
@@ -709,39 +761,9 @@ const Album = (props) => {
                         style={{ height: "150px", width: "150px" }}
                       />
                     </div>
-                    {/* <Button
-                        className="delete-image-button mt-2"
-                        onClick={() => handleDeleteImage(img)}
-                        variant="danger"
-                        size="sm"
-                        block>
-                        Delete
-                      </Button> */}
                   </Col>
                 ))}
 
-                {/* {newImages?.map((img, index) => (
-                    <Col
-                      xs={4}
-                      className="text-center p-2 shadow mb-4 item-edit-card"
-                      key={index}>
-                      <div>
-                        <Image
-                          src={URL.createObjectURL(newImages[index])}
-                          alt={`Image ${index + 1}`}
-                          style={{ height: "150px", width: "150px" }}
-                        />
-                      </div>
-                      <Button
-                        className="delete-image-button mt-2"
-                        onClick={() => handleDeleteNewImage(index)}
-                        variant="danger"
-                        size="sm"
-                        block>
-                        Delete
-                      </Button>
-                    </Col>
-                  ))} */}
               </Row>
             </Container>
             <Form.Label
@@ -759,58 +781,8 @@ const Album = (props) => {
                 value={linkedLostItem?.postedAt ? linkedLostItem.postedAt.split('T')[0] : ""}
                 readOnly
               />
-            {/* <Form.Group controlId="formImages">
-                    
-                            <Form.Control
-                                style={{ marginTop: '10px' }}
-                                type="file"
-                                accept="image/*"
-                                multiple
-                                onChange={handleNewImagesChange}
-                                className="lost-item-input"
-                            />
-                    </Form.Group> */}
 
-            {/* <Row className="mb-3 align-items-center">
-                <Col xs={6} md={4} className="d-flex">
-                  <Form.Label style={{ fontWeight: "bold" }}>
-                    Add New Images:
-                  </Form.Label>
-                </Col>
-                <Col xs={6} md={8} className="d-flex align-items-center">
-                  <label
-                    htmlFor="fileInput"
-                    style={{
-                      cursor: "pointer",
-                      color: "#007bff",
-                      display: "flex",
-                      alignItems: "center",
-                    }}>
-                    <BsImage style={{ marginRight: "5px" }} />
-                    Choose Images
-                  </label>
-                </Col>
-              </Row> */}
-
-            {/* <div className="lost-item-group  mt-3">
-                <Form.Label style={{ color: "#333", fontWeight: "bold" }}>
-                  Location Picker
-                </Form.Label>
-                <MapWrapper
-                  locations={
-                    locations.length > 0
-                      ? locations
-                      : [
-                          {
-                            lat: editedLostItem?.location?.y,
-                            lng: editedLostItem?.location?.x,
-                          },
-                        ]
-                  }
-                  setLocationsFun={setLocations}
-                  isEdit={true}
-                />
-              </div> */}
+            
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -854,6 +826,190 @@ const Album = (props) => {
           </div>
         </Modal.Footer>
       </Modal>
+      <Modal
+          show={showItemPostedModal}
+          onHide={handleCloseModal}
+          dialogClassName="custom-modal"
+          size="lg">
+          <Modal.Header closeButton>
+            <Modal.Title style={{ color: "#35ac65" }}>
+              {"Edit Found Item"}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group controlId="formTitle">
+                <Form.Label
+                  style={{
+                    color: "#333",
+                    marginRight: "5px",
+                    fontWeight: "bold",
+                  }}>
+                  Title
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter title"
+                  value={seletectedPostedItem?.title || ""}
+                  onChange={(e) => handleEditInputChange(e, "title")}
+                />
+              </Form.Group>
+              <Form.Group controlId="formDescription">
+                <Form.Label
+                  style={{
+                    color: "#333",
+                    marginRight: "5px",
+                    fontWeight: "bold",
+                  }}>
+                  Description
+                </Form.Label>
+                <Form.Control
+                  as="textarea"
+                  placeholder="Enter description"
+                  value={seletectedPostedItem?.description || ""}
+                  onChange={(e) => handleEditInputChange(e, "description")}
+                />
+              </Form.Group>
+              <Form.Label
+                style={{
+                  color: "#333",
+                  marginRight: "5px",
+                  fontWeight: "bold",
+                }}>
+                Item Category
+              </Form.Label>
+              <Form.Select
+                style={{ width: "100%", height: "40px" }}
+                aria-label="personal"
+                onChange={(e) => handleEditInputChange(e, "category")}
+                value={seletectedPostedItem?.category || "personal"}>
+                <option>Select Category</option>
+                <option value="personal">Personal Item</option>
+                <option value="electronics">Electronics</option>
+                <option value="document">Document</option>
+              </Form.Select>
+              <Form.Label
+                style={{
+                  color: "#333",
+                  marginRight: "5px",
+                  fontWeight: "bold",
+                  marginTop: "5px",
+                }}>
+                Images:
+              </Form.Label>
+              <Container>
+                <Row>
+                  {(seletectedPostedItem?.image || []).map((img, index) => (
+                    <Col
+                      xs={4}
+                      className="text-center p-2 shadow mb-4 item-edit-card"
+                      key={index}>
+                      <div>
+                        <Image
+                          src={img}
+                          alt={`Image ${index + 1}`}
+                          style={{ height: "150px", width: "150px" }}
+                        />
+                      </div>
+                      <Button
+                        className="delete-image-button mt-2"
+                        onClick={() => handleDeleteImage(img)}
+                        variant="danger"
+                        size="sm"
+                        block>
+                        Delete
+                      </Button>
+                    </Col>
+                  ))}
+
+                  {newImages?.map((img, index) => (
+                    <Col
+                      xs={4}
+                      className="text-center p-2 shadow mb-4 item-edit-card"
+                      key={index}>
+                      <div>
+                        <Image
+                          src={URL.createObjectURL(newImages[index])}
+                          alt={`Image ${index + 1}`}
+                          style={{ height: "150px", width: "150px" }}
+                        />
+                      </div>
+                      <Button
+                        className="delete-image-button mt-2"
+                        onClick={() => handleDeleteNewImage(index)}
+                        variant="danger"
+                        size="sm"
+                        block>
+                        Delete
+                      </Button>
+                    </Col>
+                  ))}
+                </Row>
+              </Container>
+
+              <Row className="mb-3 align-items-center">
+                <Col xs={6} md={4} className="d-flex">
+                  <Form.Label style={{ fontWeight: "bold" }}>
+                    Add New Images:
+                  </Form.Label>
+                </Col>
+                <Col xs={6} md={8} className="d-flex align-items-center">
+                  <label
+                    htmlFor="fileInput"
+                    style={{
+                      cursor: "pointer",
+                      color: "#007bff",
+                      display: "flex",
+                      alignItems: "center",
+                    }}>
+                    <BsImage style={{ marginRight: "5px" }} />
+                    Choose Images
+                  </label>
+                  <Form.Control
+                    style={{ display: "none" }}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleNewImagesChange}
+                    className="lost-item-input"
+                    id="fileInput"
+                  />
+                </Col>
+              </Row>
+
+              <div className="lost-item-group  mt-3">
+                <Form.Label style={{ color: "#333", fontWeight: "bold" }}>
+                  Location Picker
+                </Form.Label>
+                <MapWrapper
+                  locations={
+                    locations.length > 0
+                      ? locations
+                      : [
+                          {
+                            lat: seletectedPostedItem?.location?.y,
+                            lng: seletectedPostedItem?.location?.x,
+                          },
+                        ]
+                  }
+                  setLocationsFun={setLocations}
+                  isEdit={true}
+                />
+              </div>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleCloseModal}>
+              Close
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleSaveChanges}
+              className="save-color-button">
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </Modal>
       
     </main>
 
