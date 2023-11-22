@@ -73,8 +73,7 @@ const FoundItemForm = ({ isOpen, onRequestClose, resetVariable }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!locations) {
+    if (locations.length < 1) {
       toast.error('Please select a location', {
           position: 'top-right',
           autoClose: 5000,

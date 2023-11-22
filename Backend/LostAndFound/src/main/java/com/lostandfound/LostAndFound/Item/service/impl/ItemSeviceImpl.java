@@ -121,4 +121,24 @@ public class ItemSeviceImpl implements IItemService {
 
     return this.itemRepository.save(storedItem);
   }
+
+  /**
+   * Retrieve all the items of a user for which the user has raised a claim request.
+   *
+   * @param userId of the user whose items are to be retrieved
+   * @return list of items
+   */
+  @Override
+  public List<Item> getRequestRaisedItemsByUserId(String userId) {
+
+    return this.itemRepository.findAllByFoundItem(true).stream()
+        .filter(
+            item -> {
+              if (item.getClaimRequested() != null) {
+                return item.getClaimRequested().containsValue(userId);
+              }
+              return false;
+            })
+        .toList();
+  }
 }

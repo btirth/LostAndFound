@@ -31,8 +31,10 @@ public class ItemIntegrationTest {
   private final Double LONGITUDE = 12.123;
   private final Double LATITUDE = 12.123;
   private final int PAGE_SIZE = 10;
+
   @Value("${auth.token}")
   String bearerToken;
+
   Date date = new Calendar.Builder().setDate(2023, 11, 2).build().getTime();
   @Autowired private MockMvc mockMvc;
   @Autowired private ItemRepository itemRepository;

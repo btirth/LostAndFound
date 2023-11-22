@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Navbar, Card, Col, Container, Row } from 'react-bootstrap'
-
+import { useHistory } from 'react-router-dom'
 
 // Images
 import LandingPageImg from '../../Assets/Images/landing_page_image.jpg'
@@ -11,15 +11,18 @@ import LoginCard from './LoginCard'
 import SignUpCard from './SignUpCard'
 import FooterComponent from '../../Components/FooterComponent';
 
-// import { Link, Redirect } from 'react-router-dom'
 
 
 
 function LandingPage() {
     const imgvar = LandingPageImg;
-    const box1Style = { backgroundColor: '#35ac65', color: '#333333', padding: '20px' };
-    const box2Style = { backgroundColor: '#35ac65', color: '#333333', padding: '20px' };
+    const box1Style = { backgroundColor: '#75e6a3', color: '#333333', padding: '20px' };
+    const box2Style = { backgroundColor: '#75e6a3', color: '#333333', padding: '20px' };
+    const history = useHistory();
 
+    if (localStorage.getItem('access_token')) {
+        history.push('/home');
+    }
     const [showLoginUp, setShowLoginUp] = useState(false);
     console.log("process.env", process.env);
    
@@ -48,20 +51,16 @@ function LandingPage() {
                 <Row>
                     <Col lg={6} md={12} xs={12} className='pt-3 d-flex flex-column justify-content-center align-items-center px-4' >
                         <img src={LandingPageImg} alt="Image" className="img-fluid" />
-                        {/* <h1>Hello World</h1> */}
+    
                     </Col>
                     <Col lg={{ span: 6, order: 'last' }} md={{ span: 12, order: 'first' }} xs={{ span: 12, order: 'first' }} className='d-flex justify-content-center align-items-center px-2' >
                         <Card className='w-75 border shadow'>
                             {
-                                // formMode === FORM_MODE_ENUM.RESET_PASSWORD ?
-
-                                //     <ForgetPasswordCard />
-
-                                //     :
+                                
                                 showLoginUp ? <LoginCard /> : <SignUpCard />
                                 
                             }
-                           <div style={{textAlign:'center',paddingBottom:'5px'}}>  <h6 className='mt-3'>{showLoginUp ? 'Don\'t have an account? ' : 'Already have an account? '}<a style={{textDecoration: 'underline', color: 'blue' }} onClick={redirectToLogin}>Click here</a></h6> </div>
+                           <div style={{textAlign:'center',paddingBottom:'5px'}}>  <h6 className='mt-3'>{showLoginUp ? 'Don\'t have an account? ' : 'Already have an account? '}<a style={{textDecoration: 'underline',color: 'darkgreen',cursor: 'pointer' }} onClick={redirectToLogin}>Click here</a></h6> </div>
                           </Card>
                     </Col>
                 </Row>

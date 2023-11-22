@@ -71,9 +71,7 @@ const FilterOptions = ({ applyFilter }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (selectedFilters.length === 0 && !selectedCategory) {
-      return;
-    }
+  
     if (selectedFilters.includes("category") && selectedCategory === "") {
       toast.error("Please select a category!", {
         position: "top-right",
@@ -144,11 +142,10 @@ const FilterOptions = ({ applyFilter }) => {
 
       // Check if "Date" filter is checked
       if (selectedFilters.includes("date") && selectedDate) {
-        const startTime = `${selectedDate}T00:00:00.000+00:00`
-        const endTime = new Date(`${selectedDate}T23:59:59.999Z`).toISOString();;
+        const startTime = `${selectedDate}T23:59:59.999Z`;
 
         filterParams.date = {
-          mode: "gte",
+          mode: "on",
           value: startTime,
         };
 
