@@ -163,41 +163,13 @@ const Album = (props) => {
 
   const handleItemPostedClick = async (item) => {
     console.log("ItemID clicked", item);
-    setLocations([]);
-    setseletectedPostedItem(item);
-    // setshowItemPostedModal(true);
-    setLinkedLostItem(item);
-    // setShowModal(true);
-    setshowItemPostedModal(true);
+    if(props.value === 0) {
+      setLocations([]);
+      setseletectedPostedItem(item);
+      setLinkedLostItem(item);
+      setshowItemPostedModal(true);
+    }
 
-    // setRevokeRequest((prevData) => ({
-    //   ...prevData,
-    //   itemId: item,
-    // }));
-
-    // try {
-    //   await ApiRequest.fetch({
-    //     method: "put",
-    //     url: `${API_URL}/api/v1/items/claims/revoke?itemId=${item}&userId=${revokeRequest.userId}`,
-    //   });
-    //   // console.log("GET request successful:", response.content);
-    //   // setItems(response.content);
-    //   toast.success("Request Revoked!");
-    //   await getResult();
-
-    //   // });
-    //   // const response = await axios.put(
-    //   //   `${API_URL}items/claims/revoke?itemId=${event}&userId=${revokeRequest.userId}`,
-    //   //   "",
-    //   //   { headers }
-    //   // );
-    //   // console.log("GET request successful:", response.data.content);
-    //   // setItems(response.data.content);
-    // } catch (error) {
-    //   console.error("Error:", error);
-    // }
-    // }
-    // fetchData();
   };
 
   const handleAccept = async (itemId, claimRequestUserId) => {
