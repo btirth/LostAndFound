@@ -1,17 +1,13 @@
-import React, { useState, useEffect } from 'react'
-import { Alert, Button, Card, Col, Container, Form, InputGroup, Row } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux';
-import {Redirect} from 'react-router-dom'
-import { toast } from 'react-toastify'
-import validator from 'validator'
-import { ApiRequest } from '../../helpers/api-request';
 import axios from 'axios';
+import React, { useState } from 'react';
+import { Alert, Button, Card, Form } from 'react-bootstrap';
+import { toast } from 'react-toastify';
+import validator from 'validator';
+import { ApiRequest } from '../../helpers/api-request';
 
 
 
 const LoginCard = () => {
-    const user = useSelector((state) => state.user);
-    const dispatch = useDispatch();
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -54,7 +50,6 @@ const LoginCard = () => {
 
                 axios.get('https://dev-3vtey6tugvrs4132.us.auth0.com/userinfo',
                 {headers}).then((userDataResponse)=>{
-                    // console.log(userDataResponse.data.name);
 
                     localStorage.setItem('username', userDataResponse.data.name);
                     localStorage.setItem('access_token', accessToken);
@@ -63,18 +58,6 @@ const LoginCard = () => {
                     window.location = '/home'
                     setErrorMessage(null);
                 }).catch(uerror => {  setErrorMessage('An error occurred during login');})
-
-                // ApiRequest.fetch({
-                //     method:'get',
-                //     url:`https://dev-3vtey6tugvrs4132.us.auth0.com/userinfo`
-                // }).then((userDataResponse)=>{
-                    
-                //     window.location = '/home'
-                    
-                // }).catch(error=>{setErrorMessage('An Error occured during login while fetching name')})
-                
-                // localStorage.setItem('username', userDataResponse.data.name);
-                // console.log(userDataResponse.data.name);
 
                 localStorage.setItem('access_token', accessToken);
                 localStorage.setItem('user_email', email);

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Card, Button, Badge } from "react-bootstrap";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
-import "./RewardsPage.css";
-import { ApiRequest } from "../../helpers/api-request";
+import React, { useEffect, useState } from "react";
+import { Badge, Button, Card, Col, Container, Row } from "react-bootstrap";
 import { API_URL } from "../../config/api-end-points";
+import { ApiRequest } from "../../helpers/api-request";
+import "./RewardsPage.css";
 
 const dummyData = [
   {

@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { API_URL } from "../../config/api-end-points";
-import sensitiveImg from "../../Assets/Images/sensitive.jpg";
-import noImg from "../../Assets/Images/No-Image-Placeholder.png";
-import { ToastContainer, toast } from "react-toastify";
+import React, { useEffect, useMemo, useState } from "react";
+import { Button, Dropdown, Form, Modal } from "react-bootstrap";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
-import Navbar from "../../Components/Navbar";
-import { ApiRequest } from "../../helpers/api-request";
+import noImg from "../../Assets/Images/No-Image-Placeholder.png";
+import sensitiveImg from "../../Assets/Images/sensitive.jpg";
 import FilterOptions from "../../Components/FilterOptions";
-import { Modal, Button, Form, Dropdown } from "react-bootstrap";
+import { API_URL } from "../../config/api-end-points";
+import { ApiRequest } from "../../helpers/api-request";
 
 const LostCatalogue = () => {
   const [isFilterOpen, setFilterOpen] = useState(true);

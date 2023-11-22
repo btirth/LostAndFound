@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { MapContainer, TileLayer, useMap, Marker, Circle, Popup } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
 import "leaflet-geosearch/dist/geosearch.css";
+import "leaflet/dist/leaflet.css";
+import React, { useEffect, useState } from "react";
+import { Circle, MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 
-import { Icon } from 'leaflet'
+import { Icon } from 'leaflet';
 import { Button } from "react-bootstrap";
-import { XLg } from 'react-bootstrap-icons'
+import { XLg } from 'react-bootstrap-icons';
 
 
 

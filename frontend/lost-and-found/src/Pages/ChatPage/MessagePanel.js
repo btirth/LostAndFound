@@ -1,12 +1,12 @@
-import React, { useEffect, useState, useRef } from 'react'
-import { Send } from 'react-bootstrap-icons'
-import Message from './Message';
+import { arrayUnion, doc, onSnapshot, updateDoc } from "firebase/firestore";
+import React, { useEffect, useRef, useState } from 'react';
 import { Alert, Button, Form, Modal } from 'react-bootstrap';
-import { db } from "./../../firebase-config";
+import { Send } from 'react-bootstrap-icons';
 import { v4 as uuid } from "uuid";
-import { arrayUnion, doc, updateDoc, onSnapshot } from "firebase/firestore";
-import { ApiRequest } from "../../helpers/api-request.js";
 import { API_URL } from "../../config/api-end-points.js";
+import { ApiRequest } from "../../helpers/api-request.js";
+import { db } from "./../../firebase-config";
+import Message from './Message';
 
 
 function formatTimestamp(timestamp) {

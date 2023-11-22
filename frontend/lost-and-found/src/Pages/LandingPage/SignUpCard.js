@@ -1,26 +1,22 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react';
 import { API_URL } from "../../config/api-end-points";
 
 // import { Redirect } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
 
-import { Alert, Button, Card, Col, Container, Form, InputGroup, Row } from 'react-bootstrap'
+import { Alert, Button, Card, Form } from 'react-bootstrap';
 
-import { Check } from 'react-bootstrap-icons'
-import { storeAccessToken, signup  } from '../../actions/authActions';
+import { Check } from 'react-bootstrap-icons';
 
-import { useDispatch, useSelector } from 'react-redux';
-
-import  FailedAlert from '../../Components/FailedAlert'
+import FailedAlert from '../../Components/FailedAlert';
 
 // import { Link, Redirect } from 'react-router-dom'
 
-import  SuccessAlert  from '../../Components/SuccessAlert'
+import SuccessAlert from '../../Components/SuccessAlert';
 
-import { toast } from 'react-toastify'
+import { toast } from 'react-toastify';
 
-import validator from 'validator'
-import axios from 'axios'
+import axios from 'axios';
 import { ApiRequest } from '../../helpers/api-request';
 
 const SignUpCard = ({history}) => {
@@ -40,8 +36,6 @@ const SignUpCard = ({history}) => {
     const [passwordConditions, setPasswordConditions] = useState(null)
 
     const [confirmPass, setConfirmPass] = useState(null)
-    const dispatch = useDispatch();
-    const signupError = useSelector((state) => state.signupError);
 
 
     useEffect(() => {

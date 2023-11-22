@@ -1,37 +1,32 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Alert,
-  Form,
   Button,
   Card,
-  Modal,
-  Container,
-  Row,
   Col,
+  Container,
+  Form,
   Image,
+  Modal,
+  Row,
 } from "react-bootstrap";
 import { BsImage } from "react-icons/bs";
 // import { CSSTransition } from 'react-transition-group';
 // import LocationPicker from './LocationPicker';
 // import 'leaflet/dist/leaflet.css';
 
-import "./LostItemForm.css";
-import Navbar from "../../Components/Navbar";
-import MapWrapper from "./MapWrapper";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import {
-  XLg,
-  X,
-  XCircle,
   FileArrowUpFill,
-  Eye,
   PencilSquare,
+  XCircle
 } from "react-bootstrap-icons";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "./../../firebase-config.js";
-import axios from "axios";
 import { toast } from "react-toastify";
-import { ApiRequest } from "../../helpers/api-request.js";
 import { API_URL } from "../../config/api-end-points.js";
+import { ApiRequest } from "../../helpers/api-request.js";
+import { storage } from "./../../firebase-config.js";
+import "./LostItemForm.css";
+import MapWrapper from "./MapWrapper";
 
 const LostItemForm = () => {
   const [formData, setFormData] = useState({

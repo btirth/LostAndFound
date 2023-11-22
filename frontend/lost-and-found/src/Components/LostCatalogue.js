@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useMemo } from 'react'
-import { API_URL } from "../config/api-end-points";
-import './MainDashboardComponent.css';
-import sensitiveImg from '../Assets/Images/sensitive.jpg';
+import React, { useEffect, useMemo, useState } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import noImg from '../Assets/Images/No-Image-Placeholder.png';
-import MapWrapper from './MapWrapper';
-import { ToastContainer, toast } from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios'
-import Navbar from '../Components/Navbar';
+import sensitiveImg from '../Assets/Images/sensitive.jpg';
+import { API_URL } from "../config/api-end-points";
 import { ApiRequest } from '../helpers/api-request';
+import './MainDashboardComponent.css';
+import MapWrapper from './MapWrapper';
 
 const LostCatalogue = () => {
   const [isFilterOpen, setFilterOpen] = useState(true);

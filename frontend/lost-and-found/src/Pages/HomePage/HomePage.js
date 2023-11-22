@@ -1,21 +1,14 @@
-import React, { useState, useEffect } from "react";
-import Navbar from "../../Components/Navbar"; // Import the Navbar component
+import React, { useState } from "react";
 import FoundItemForm from "../FoundItemForm/FoundItemForm";
 
-import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
-import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import Album from "../Album";
-import Stack from "@mui/material/Stack";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import "./HomePage.css"; // Import the CSS file
-import { ToastContainer, toast } from "react-toastify";
-import MapWrapper from "../../Components/MapWrapper";
-import { API_URL } from "../../config/api-end-points";
-import axios from "axios";
+import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
+import { toast } from "react-toastify";
+import MapWrapper from "../../Components/MapWrapper";
+import Album from "../Album";
+import "./HomePage.css"; // Import the CSS file
 
 const HomePage = () => {
   const [value, setValue] = React.useState(0);
