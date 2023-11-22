@@ -61,7 +61,7 @@ function LoginMainPage() {
                     <Col lg={{ span: 6, order: 'last' }} md={{ span: 12, order: 'first' }} xs={{ span: 12, order: 'first' }} className='d-flex justify-content-center align-items-center px-2' >
                         <Card className='w-75 border shadow'>
                          
-                                ForgotPassword ? <ForgetPasswordCard /> : <LoginCard />
+                                {ForgotPassword ? <ForgetPasswordCard /> : <LoginCard />}
 
                             {!ForgotPassword ?
                                 <div style={{ textAlign: 'center', paddingBottom: '5px' }}> <h6 className='mt-3'>{showLoginUp ? 'Don\'t have an account? ' : 'Already have an account? '}<a style={{ textDecoration: 'underline', color: 'darkgreen',cursor: 'pointer' }} onClick={handleToggleForm}>Click here</a></h6></div>
