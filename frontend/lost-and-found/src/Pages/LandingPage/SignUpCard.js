@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { API_URL } from "../../config/api-end-points";
 
-import { Redirect } from 'react-router-dom';
+// import { Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
+
 import { Alert, Button, Card, Col, Container, Form, InputGroup, Row } from 'react-bootstrap'
 
 import { Check } from 'react-bootstrap-icons'
@@ -21,7 +23,7 @@ import validator from 'validator'
 import axios from 'axios'
 import { ApiRequest } from '../../helpers/api-request';
 
-const SignUpCard = () => {
+const SignUpCard = ({history}) => {
 
     const [companyName, setCompanyName] = useState('')
     const [firstName, setFirstName] = useState('')
@@ -32,6 +34,7 @@ const SignUpCard = () => {
     const [isEmailSubscribed, setIsEmailSubscribed] = useState(true)
     // const [fleetSize, setFleetSize] = useState(fleetSizeOptions[0])
     const [error, setError] = useState(null);
+    const [alertType, setAlertType] = useState(true);
 
 
     const [passwordConditions, setPasswordConditions] = useState(null)
@@ -177,20 +180,41 @@ const SignUpCard = () => {
                         });
                 
             }
-      
+            toast.success("Sign-Up Successfully! Please check mailbox to verify email", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+              });
             // Clear input fields
             setFirstName('');
             setLastName('');
             setEmail('');
             setPassword('');
-            window.location = '/login'
+            
+            history.push('/login');
 
             // setError('');
           } catch (error) {
-            console.error('Error signing up:', error);
+            setAlertType(false);
+            toast.error("Something went wrong. Please try again", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+              });
+             
+
             setError('Something went wrong. Please try again.'); 
           }
-
     }
 
 
@@ -199,7 +223,7 @@ const SignUpCard = () => {
 
         <Card.Body>
             <Card.Title>Welcome</Card.Title>
-            {error && <Alert variant="danger">{error}</Alert>} 
+            {/* {error && <Alert variant={alertType ? "success":"danger"}>{error}</Alert>}  */}
       
             <Form className='text-left' onSubmit={handleSubmitSignUp} >
                 <Form.Group className='m-1'>
@@ -246,7 +270,7 @@ const SignUpCard = () => {
                     <Form.Control id='confirm-password' required onChange={confirmPassword} type='password' />
                 </Form.Group>
 
-                <Button type='submit' className='w-100 mt-3' style={{backgroundColor:'#75e6a3',color:'black'}} >Sign Up</Button>
+                <Button type='submit' className='w-100 mt-3' style={{backgroundColor:'#35ac65',color:'white'}} >Sign Up</Button>
 
 
             </Form>
@@ -259,4 +283,4 @@ const SignUpCard = () => {
 
 
 
-export default SignUpCard;
+export default withRouter(SignUpCard);

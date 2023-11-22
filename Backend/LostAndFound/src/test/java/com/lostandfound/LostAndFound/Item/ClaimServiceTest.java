@@ -7,6 +7,7 @@ import com.lostandfound.LostAndFound.Item.repo.ItemRepository;
 import com.lostandfound.LostAndFound.Item.service.impl.ClaimServiceImpl;
 import com.lostandfound.LostAndFound.core.exception.LostAndFoundNotFoundException;
 import com.lostandfound.LostAndFound.core.exception.LostAndFoundValidationException;
+import com.lostandfound.LostAndFound.reward.service.RewardService;
 import java.util.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,50 +20,49 @@ import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 
 @ExtendWith(MockitoExtension.class)
 public class ClaimServiceTest {
-  private final String userId = "testuser@gmail.com";
+  private final String USER_ID = "testuser@gmail.com";
+  private final Double LONGITUDE = 12.123;
+  private final Double LATITUDE = 12.123;
   Item foundItem;
   Item lostItem;
   Date date = new Calendar.Builder().setDate(2023, 11, 2).build().getTime();
   @Mock private ItemRepository itemRepository;
+  @Mock private RewardService rewardService;
   @InjectMocks private ClaimServiceImpl claimService;
 
   @BeforeEach
   void setUp() {
-    foundItem =
-        new Item(
-            "123",
-            "iPhone 12",
-            "Black iPhone 12",
-            "test@gmail.com",
-            null,
-            false,
-            date,
-            date,
-            new ArrayList<String>(),
-            false,
-            "Electronics",
-            new HashMap<String, String>(),
-            new HashMap<String, String>(),
-            new HashMap<String, String>(),
-            new GeoJsonPoint(12.123, 12.123));
+    foundItem = new Item();
+    foundItem.setId("123");
+    foundItem.setTitle("iPhone 12");
+    foundItem.setDescription("Black iPhone 12");
+    foundItem.setCreatedBy("test@gmail.com");
+    foundItem.setSensitive(false);
+    foundItem.setPostedAt(date);
+    foundItem.setUpdatedDate(date);
+    foundItem.setImage(new ArrayList<>());
+    foundItem.setFoundItem(false);
+    foundItem.setCategory("Electronics");
+    foundItem.setClaimRequested(new HashMap<>());
+    foundItem.setClaimRequestAccepted(new HashMap<>());
+    foundItem.setClaimRejected(new HashMap<>());
+    foundItem.setLocation(new GeoJsonPoint(LONGITUDE, LATITUDE));
 
-    lostItem =
-        new Item(
-            "1a2b3c",
-            "iPhone 12",
-            "Black Color iPhone 12",
-            "losttest@gmail.com",
-            null,
-            false,
-            date,
-            date,
-            new ArrayList<String>(),
-            false,
-            "Electronics",
-            new HashMap<String, String>(),
-            new HashMap<String, String>(),
-            new HashMap<String, String>(),
-            new GeoJsonPoint(12.123, 12.123));
+    lostItem = new Item();
+    lostItem.setId("1a2b3c");
+    lostItem.setTitle("iPhone 12");
+    lostItem.setDescription("Black Color iPhone 12");
+    lostItem.setCreatedBy("losttest@gmail.com");
+    lostItem.setSensitive(false);
+    lostItem.setPostedAt(date);
+    lostItem.setUpdatedDate(date);
+    lostItem.setImage(new ArrayList<>());
+    lostItem.setFoundItem(false);
+    lostItem.setCategory("Electronics");
+    lostItem.setClaimRequested(new HashMap<>());
+    lostItem.setClaimRequestAccepted(new HashMap<>());
+    lostItem.setClaimRejected(new HashMap<>());
+    lostItem.setLocation(new GeoJsonPoint(LONGITUDE, LATITUDE));
   }
 
   @Test
@@ -235,7 +235,7 @@ public class ClaimServiceTest {
         LostAndFoundNotFoundException.class,
         () -> {
           claimService.updateClaimRequestAccepted(
-              userId, foundItem.getId(), lostItem.getCreatedBy());
+              USER_ID, foundItem.getId(), lostItem.getCreatedBy());
         },
         "Item does not exists");
   }
@@ -252,7 +252,7 @@ public class ClaimServiceTest {
         LostAndFoundValidationException.class,
         () -> {
           claimService.updateClaimRequestAccepted(
-              userId, foundItem.getId(), lostItem.getCreatedBy());
+              USER_ID, foundItem.getId(), lostItem.getCreatedBy());
         },
         "Item is already claimed by someone.");
   }
@@ -299,7 +299,7 @@ public class ClaimServiceTest {
         LostAndFoundValidationException.class,
         () -> {
           claimService.updateClaimRequestAccepted(
-              userId, foundItem.getId(), lostItem.getCreatedBy());
+              USER_ID, foundItem.getId(), lostItem.getCreatedBy());
         },
         "User has not raised claim request for this item.");
   }
@@ -326,9 +326,6 @@ public class ClaimServiceTest {
     // arrange
     when(itemRepository.findById(foundItem.getId())).thenReturn(Optional.of(foundItem));
     foundItem.getClaimRequested().put(lostItem.getId(), lostItem.getCreatedBy());
-
-    // assert
-    Assertions.assertTrue(foundItem.getClaimRequested().containsValue(lostItem.getCreatedBy()));
 
     // act
     claimService.revokeClaimRequest(lostItem.getCreatedBy(), foundItem.getId());
@@ -360,7 +357,7 @@ public class ClaimServiceTest {
     Assertions.assertThrows(
         LostAndFoundValidationException.class,
         () -> {
-          claimService.revokeClaimRequest(userId, foundItem.getId());
+          claimService.revokeClaimRequest(USER_ID, foundItem.getId());
         },
         "User has not raised claim request for this item.");
   }
@@ -369,6 +366,7 @@ public class ClaimServiceTest {
   public void testApproveClaimSuccessful() {
     // arrange
     when(itemRepository.findById(foundItem.getId())).thenReturn(Optional.of(foundItem));
+
     foundItem.getClaimRequestAccepted().put(lostItem.getId(), lostItem.getCreatedBy());
 
     // act
@@ -387,7 +385,7 @@ public class ClaimServiceTest {
     Assertions.assertThrows(
         LostAndFoundNotFoundException.class,
         () -> {
-          claimService.approveClaim(userId, foundItem.getId(), lostItem.getCreatedBy());
+          claimService.approveClaim(USER_ID, foundItem.getId(), lostItem.getCreatedBy());
         },
         "Item does not exists");
   }
@@ -402,7 +400,7 @@ public class ClaimServiceTest {
     Assertions.assertThrows(
         LostAndFoundValidationException.class,
         () -> {
-          claimService.approveClaim(userId, foundItem.getId(), lostItem.getCreatedBy());
+          claimService.approveClaim(USER_ID, foundItem.getId(), lostItem.getCreatedBy());
         },
         "Item is already claimed by someone.");
   }
@@ -416,7 +414,7 @@ public class ClaimServiceTest {
     Assertions.assertThrows(
         LostAndFoundValidationException.class,
         () -> {
-          claimService.approveClaim(userId, foundItem.getId(), lostItem.getCreatedBy());
+          claimService.approveClaim(USER_ID, foundItem.getId(), lostItem.getCreatedBy());
         },
         "You can not approve claim request for item posted by other user.");
   }
@@ -473,7 +471,7 @@ public class ClaimServiceTest {
     Assertions.assertThrows(
         LostAndFoundNotFoundException.class,
         () -> {
-          claimService.rejectClaim(userId, foundItem.getId(), lostItem.getCreatedBy());
+          claimService.rejectClaim(USER_ID, foundItem.getId(), lostItem.getCreatedBy());
         },
         "Item does not exists");
   }
@@ -488,7 +486,7 @@ public class ClaimServiceTest {
     Assertions.assertThrows(
         LostAndFoundValidationException.class,
         () -> {
-          claimService.rejectClaim(userId, foundItem.getId(), lostItem.getCreatedBy());
+          claimService.rejectClaim(USER_ID, foundItem.getId(), lostItem.getCreatedBy());
         },
         "User's claim request has already been rejected for this item.");
   }

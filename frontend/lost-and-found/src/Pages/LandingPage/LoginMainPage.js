@@ -17,8 +17,8 @@ import ForgetPasswordCard from './ForgetPasswordCard'
 function LoginMainPage() {
     const history = useHistory();
     const imgvar = LandingPageImg;
-    const box1Style = { backgroundColor: '#75e6a3', color: '#333333', padding: '20px' };
-    const box2Style = { backgroundColor: '#75e6a3', color: '#333333', padding: '20px' };
+    const box1Style = { backgroundColor: '#35ac65', color: '#333333', padding: '20px' };
+    const box2Style = { backgroundColor: '#35ac65', color: '#333333', padding: '20px' };
 
     if (localStorage.getItem('access_token')) {
         history.push('/home');

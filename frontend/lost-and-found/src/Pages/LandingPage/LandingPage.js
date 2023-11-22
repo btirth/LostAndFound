@@ -24,7 +24,7 @@ function LandingPage() {
         history.push('/home');
     }
     const [showLoginUp, setShowLoginUp] = useState(false);
-
+    console.log("process.env", process.env);
    
     function redirectToLogin(){
         window.location = '/login'

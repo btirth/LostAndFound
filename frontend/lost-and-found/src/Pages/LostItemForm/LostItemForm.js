@@ -562,7 +562,7 @@ const LostItemForm = () => {
           dialogClassName="custom-modal"
           size="lg">
           <Modal.Header closeButton>
-            <Modal.Title style={{ color: "#75e6a3" }}>
+            <Modal.Title style={{ color: "#35ac65" }}>
               {"Edit Lost Item"}
             </Modal.Title>
           </Modal.Header>

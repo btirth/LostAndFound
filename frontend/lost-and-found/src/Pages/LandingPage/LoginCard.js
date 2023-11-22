@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Alert, Button, Card, Col, Container, Form, InputGroup, Row } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux';
+import {Redirect} from 'react-router-dom'
 import { toast } from 'react-toastify'
 import validator from 'validator'
 import { ApiRequest } from '../../helpers/api-request';
+import axios from 'axios';
 
 
 
@@ -17,7 +19,7 @@ const LoginCard = () => {
     const [emailHelper, setEmailHelper] = useState(null)
     const [passwordHelper, setPasswordHelper] = useState(null)
 
-    const btStyle = { backgroundColor: '#75e6a3', color: 'black' };
+    const btStyle = { backgroundColor: '#35ac65', color: 'white' };
 
     const handleSubmitLogin = async (e) => {
         e.preventDefault()
@@ -44,23 +46,43 @@ const LoginCard = () => {
             const accessToken = response.id_token;
             
             if (accessToken != null) {
+                
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${response.access_token}`
+                };            
 
-                ApiRequest.fetch({
-                    method:'get',
-                    url:`https://dev-3vtey6tugvrs4132.us.auth0.com/userinfo`
-                }).then((userDataResponse)=>{
+                axios.get('https://dev-3vtey6tugvrs4132.us.auth0.com/userinfo',
+                {headers}).then((userDataResponse)=>{
+                    // console.log(userDataResponse.data.name);
+
                     localStorage.setItem('username', userDataResponse.data.name);
-                })
+                    localStorage.setItem('access_token', accessToken);
+                    localStorage.setItem('user_email', email);
 
+                    window.location = '/home'
+                    setErrorMessage(null);
+                }).catch(uerror => {  setErrorMessage('An error occurred during login');})
+
+                // ApiRequest.fetch({
+                //     method:'get',
+                //     url:`https://dev-3vtey6tugvrs4132.us.auth0.com/userinfo`
+                // }).then((userDataResponse)=>{
+                    
+                //     window.location = '/home'
+                    
+                // }).catch(error=>{setErrorMessage('An Error occured during login while fetching name')})
+                
+                // localStorage.setItem('username', userDataResponse.data.name);
+                // console.log(userDataResponse.data.name);
+
+                localStorage.setItem('access_token', accessToken);
+                localStorage.setItem('user_email', email);
+                setErrorMessage(null);
             }
-            localStorage.setItem('access_token', accessToken);
-            localStorage.setItem('user_email', email);
-            setErrorMessage(null);
-
-            window.location = '/home'
-
-
-        }).catch(error => {  setErrorMessage(error.response?.data?.error_description || 'An error occurred during login');
+            
+        }).catch(error => { 
+            setErrorMessage(error?.errorMessages?.error_description || 'An error occurred during login');
     })
 
 

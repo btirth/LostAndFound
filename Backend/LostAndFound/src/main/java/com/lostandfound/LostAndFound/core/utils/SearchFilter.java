@@ -27,11 +27,13 @@ import org.springframework.data.mongodb.core.query.Query;
 public class SearchFilter {
   private final double EARTH_RADIUS_METERS = 6371000.0;
   private final Integer DAY_END_HOUR = 23;
-  private final Integer DAY_END_MIN = 23;
-  private final Integer DAY_END_SEC = 23;
+  private final Integer DAY_END_MIN = 59;
+  private final Integer DAY_END_SEC = 59;
   private final Integer DAY_START_HOUR = 0;
   private final Integer DAY_START_MIN = 0;
   private final Integer DAY_START_SEC = 0;
+
+  private final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSX";
 
   private HashMap<String, FilterOptions> filters = new HashMap<>();
   private int page;
@@ -122,7 +124,7 @@ public class SearchFilter {
 
   private Criteria applyDateOnFilter(String key, Object value) {
     Criteria criteria = new Criteria(key);
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+    SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
     dateFormat.setLenient(false);
     try {
       Date parsedDate = dateFormat.parse((String) value);
