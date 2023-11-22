@@ -256,7 +256,7 @@ const Album = (props) => {
     try {
       await ApiRequest.fetch({
         method: "put",
-        url: `${API_URL}/api/v1/items/claims/reject?itemId=${currentSelectedItemID}&userId=${revokeRequest.userId}&claimRequestUserId=${claimRequestUserId}`,
+        url: `${API_URL}/api/v1/items/claims/reject?itemId=${currentSelectedItemID.id}&userId=${revokeRequest.userId}&claimRequestUserId=${claimRequestUserId}`,
       });
       await getResult();
       setShowModal(false);
@@ -304,9 +304,9 @@ const Album = (props) => {
         getResult();
       });
 
-    setShowModal(false);
+    setshowItemPostedModal(false);
     setLocations([]);
-    setseletectedPostedItem(null);
+    // setseletectedPostedItem(null);
   };
 
   const renderClaims = (item) => {
@@ -532,7 +532,8 @@ const Album = (props) => {
     };
 
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" mt={3}>
+      <>
+      {totalPages > 0 ? (<Box display="flex" justifyContent="center" alignItems="center" mt={3}>
         <Button
           onClick={handlePrevPage}
           disabled={currentPage === 1}
@@ -552,7 +553,8 @@ const Album = (props) => {
         >
           Next
         </Button>
-      </Box>
+      </Box> ) : ""}
+      </>
     );
   };
 
