@@ -57,6 +57,7 @@ const Album = (props) => {
       transform: "scale(1.05)",
       boxShadow: 5,
       outline: "2px solid #75E6A3", // Adjust the border color and size on hover
+      cursor: "pointer"
     },
   };
 
@@ -561,7 +562,7 @@ const Album = (props) => {
   return (
     <main>
       {props.value === 2 ? (
-        <FormControl sx={{ width: 160 }} style={{ marginLeft: "383px" }}>
+        <FormControl sx={{ width: 160 }} style={{ marginLeft: "190px" }}>
           <InputLabel id="demo-simple-select-label">Status</InputLabel>
           <Select
             labelId="demo-simple-select-label"
@@ -651,7 +652,7 @@ const Album = (props) => {
         size="lg"
       >
         <Modal.Header closeButton>
-          <Modal.Title style={{ color: "#75e6a3" }}>
+          <Modal.Title style={{ color: "#35ac65" }}>
             {"Linked Lost Item"}
           </Modal.Title>
         </Modal.Header>
