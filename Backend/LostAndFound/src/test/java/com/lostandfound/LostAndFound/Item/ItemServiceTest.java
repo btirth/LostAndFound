@@ -76,4 +76,29 @@ public class ItemServiceTest {
     Assertions.assertEquals(firstItem.getClaimRequested().get(lostItem.getId()), userId);
     Assertions.assertEquals(firstItem, foundItem);
   }
+
+  @Test
+  public void testGetRequestRaisedItemsByUserIdEmptyList() {
+    String userId = "lost@gmail.com";
+    boolean isFoundItem = true;
+
+    foundItem.getClaimRequested().put(lostItem.getId(), lostItem.getCreatedBy());
+    when(itemRepository.findAllByFoundItem(isFoundItem)).thenReturn(List.of(foundItem, lostItem));
+
+    List<Item> expectedItems = itemService.getRequestRaisedItemsByUserId(userId);
+
+    Assertions.assertEquals(expectedItems.size(), 0);
+  }
+
+  @Test
+  public void testGetRequestRaisedItemsByUserIdNullClaimRequested() {
+    String userId = "losttest@gmail.com";
+    boolean isFoundItem = true;
+    foundItem.setClaimRequested(null);
+    when(itemRepository.findAllByFoundItem(isFoundItem)).thenReturn(List.of(foundItem, lostItem));
+
+    List<Item> expectedItems = itemService.getRequestRaisedItemsByUserId(userId);
+
+    Assertions.assertEquals(expectedItems.size(), 0);
+  }
 }
