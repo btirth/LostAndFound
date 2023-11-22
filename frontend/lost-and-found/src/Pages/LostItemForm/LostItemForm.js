@@ -223,7 +223,6 @@ const LostItemForm = () => {
     }
     //uploading images
     const fileLinks = await uploadImages(mediaFiles);
-    console.log("formData", formData);
     const coordinates = [locations[0].lng, locations[0].lat];
     //submitting form data
     try {
@@ -240,7 +239,6 @@ const LostItemForm = () => {
         sensitive: formData["isSensitive"],
         category: formData["category"],
       };
-      console.log("dataToSend", dataToSend);
 
       ApiRequest.fetch({
         method: "post",

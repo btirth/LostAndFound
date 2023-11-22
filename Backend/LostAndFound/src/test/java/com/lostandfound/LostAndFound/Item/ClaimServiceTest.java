@@ -157,6 +157,23 @@ public class ClaimServiceTest {
         },
         "Your claim request has already been accepted for this item.");
   }
+  
+  @Test
+  public void testClaimRequestedAlreadyRejected() {
+    // arrange
+    when(itemRepository.findById(foundItem.getId())).thenReturn(Optional.of(foundItem));
+    when(itemRepository.findById(lostItem.getId())).thenReturn(Optional.of(lostItem));
+
+    foundItem.getClaimRejected().put(lostItem.getId(), lostItem.getCreatedBy());
+    // act + assert
+    Assertions.assertThrows(
+            LostAndFoundValidationException.class,
+            () -> {
+              claimService.updateClaimRequest(
+                      lostItem.getCreatedBy(), foundItem.getId(), lostItem.getId());
+            },
+            "Your claim request has already been rejected for this item.");
+  }
 
   @Test
   public void testClaimRequestedItemAlreadyRequested() {
