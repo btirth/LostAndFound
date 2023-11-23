@@ -42,7 +42,8 @@ const LostCatalogue = () => {
   const cardStyle = {
     background: "#fff",
     borderRadius: "8px",
-    padding: "16px",
+    padding: "16px 16px 25px 16px",
+    marginBottom:'20px',
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -50,6 +51,7 @@ const LostCatalogue = () => {
     transition: "transform 0.2s",
     cursor: "pointer",
     overflow: "hidden",
+    height : "360px"
   };
 
   const cardHoverStyle = {
@@ -73,13 +75,19 @@ const LostCatalogue = () => {
   const itemNameStyle = {
     color: "#333",
     fontSize: "20px",
-    margin: "0",
+    // margin: "0",
+    // maxHeight: "30px",
+    maxHeight: "1.2em", overflow: "hidden",
+    textOverflow: "ellipsis",
+    // whiteSpace: "nowrap",
   };
 
   const itemTextStyle = {
     color: "#333",
     fontSize: "15px",
-    margin: "4px 0",
+    margin: "4px 4px",
+    maxHeight: "1.4em", overflow: "hidden",
+    textOverflow: "ellipsis",
   };
 
   const defaultImageStyle = {
@@ -371,12 +379,12 @@ const LostCatalogue = () => {
 
     const renderItemImage = () => {
       if (sensitive) {
-        return <img src={sensitiveImg} alt="Default" style={{...defaultImageStyle, objectFit: 'cover', width: '100%', height: '100%' }} />;
+        return <img src={sensitiveImg} alt="Default" style={{...defaultImageStyle, objectFit: 'cover', width: '200px', height: '200px' }} />;
       } else {
         if (!image) {
-          return <img src={noImg} alt="Default" style={{...defaultImageStyle, objectFit: 'cover', width: '100%', height: '100%' }} />;
+          return <img src={noImg} alt="Default" style={{...defaultImageStyle, objectFit: 'cover', width: '200px', height: '200px' }} />;
         } else {
-          return <img src={image[0]} alt={title} style={{...imageStyle, objectFit: 'cover', width: '100%', height: '100%' }} />;
+          return <img src={image[0]} alt={title} style={{...imageStyle, objectFit: 'cover', width: '200px', height: '200px' }} />;
         }
       }
     };
@@ -403,7 +411,7 @@ const LostCatalogue = () => {
         <div style={cardContentStyle}>
           <div style={{ textAlign: "center" }}>{renderItemImage()}</div>
           <div style={itemInfoStyle}>
-            <h3 style={itemNameStyle}>{title}</h3>
+            <p style={itemNameStyle}>{title}</p>
             <p style={itemTextStyle}>
               Posted at: {new Date(postedAt).toLocaleDateString("en-CA")}
             </p>
@@ -544,7 +552,7 @@ const LostCatalogue = () => {
                       {lostItems?.map((item) => (
                         <Dropdown.Item
                           key={item.id}
-                          style={{ width: "250px", marginRight: "10px" }}
+                          style={{ width: "250px", marginRight: "10px" , overflow: "hidden", textOverflow: "ellipsis" }}
                           onClick={() => setSelectedLinkItem(item)}>
                           <img
                             src={item.image[0]}

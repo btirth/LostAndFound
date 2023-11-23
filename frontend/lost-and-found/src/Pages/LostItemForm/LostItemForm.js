@@ -348,7 +348,7 @@ const LostItemForm = () => {
             ) : (
               lostItems.map((lostItem, index) => (
                 <Card
-                  className="shadow mb-2"
+                  className="shadow mb-2" 
                   style={{
                     width: "100%",
                     height: "200px",
@@ -378,7 +378,7 @@ const LostItemForm = () => {
                     <div className="item-detail">
                       <h6 className="item-row">
                         <strong>Name: </strong>
-                        {lostItem.title}
+                       <p className="title-styling" style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",width:'150px' }}> {lostItem.title}</p>
                       </h6>
                       <h6 className="item-row">
                         <strong>Description: </strong>

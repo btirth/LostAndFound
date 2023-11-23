@@ -144,7 +144,7 @@ const FilterOptions = ({ applyFilter }) => {
       if (selectedFilters.includes("date") && selectedDate) {
         const startTime = `${selectedDate}T23:59:59.999Z`;
 
-        filterParams.date = {
+        filterParams.postedAt = {
           mode: "on",
           value: startTime,
         };
