@@ -21,12 +21,4 @@ public class User {
   private String profilePicUrl;
   @CreatedDate private Date createdDate;
   @LastModifiedDate private Date updatedDate;
-
-  public User(User user) {
-    this.email = user.email;
-    this.name = user.name;
-    this.profilePicUrl = user.profilePicUrl;
-    this.createdDate = user.createdDate;
-    this.updatedDate = user.updatedDate;
-  }
 }

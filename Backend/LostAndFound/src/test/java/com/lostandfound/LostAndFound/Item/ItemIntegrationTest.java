@@ -108,6 +108,22 @@ public class ItemIntegrationTest {
   }
 
   @Test
+  void testGetRequestRaisedItemsByUserId() throws Exception {
+    // arrange
+    foundItem.getClaimRequested().put(lostItem.getId(), lostItem.getCreatedBy());
+    this.itemRepository.save(foundItem);
+
+    // act + assert
+    mockMvc
+        .perform(
+            get("/items/request-raised/" + lostItem.getCreatedBy())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + bearerToken))
+        .andExpect(status().isOk())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.[0].id").value(foundItem.getId()));
+  }
+
+  @Test
   void testUpdateItemSuccess() throws Exception {
     // arrange
     foundItem.setTitle("new-title");
@@ -206,5 +222,20 @@ public class ItemIntegrationTest {
         .andExpect(MockMvcResultMatchers.jsonPath("$.content").isArray())
         .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].id").value(foundItem.getId()))
         .andExpect(MockMvcResultMatchers.jsonPath("$.totalElements").value(1));
+  }
+
+  @Test
+  void testSetReturnedFailure() throws Exception {
+    // arrange
+    foundItem.setClaimedBy(lostItem.getCreatedBy());
+    this.itemRepository.save(foundItem);
+
+    // act + assert
+    mockMvc
+        .perform(
+            put("/items/returned/" + foundItem.getId() + "?userId=" + lostItem.getCreatedBy())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + bearerToken))
+        .andExpect(status().is4xxClientError());
   }
 }
