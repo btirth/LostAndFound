@@ -1,5 +1,6 @@
 package com.lostandfound.LostAndFound.reward.service;
 
+import com.lostandfound.LostAndFound.Item.entities.Item;
 import com.lostandfound.LostAndFound.reward.entities.Reward;
 import java.util.List;
 
@@ -29,6 +30,5 @@ public interface RewardService {
    * @param itemId id of the found item
    * @param itemTitle title of the found item
    */
-  void giveReward(
-      String winnerId, String lostItemUserId, String lostItemId, String itemId, String itemTitle);
+  void giveReward(String lostItemUserId, String lostItemId, Item item);
 }

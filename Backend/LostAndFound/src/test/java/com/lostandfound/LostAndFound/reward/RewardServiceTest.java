@@ -20,11 +20,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class RewardServiceTest {
+  private final int VALIDITY = 30;
   private Reward reward;
   private RewardData rewardData;
-
   @Mock private RewardRepository rewardRepository;
-
   @Mock private RewardDataService rewardDataService;
   @InjectMocks private RewardServiceImpl rewardService;
 
@@ -35,7 +34,7 @@ public class RewardServiceTest {
     reward.setId("1");
     reward.setRewardData(rewardData);
     reward.setIssuedAt(Date.valueOf(LocalDate.now()));
-    reward.setExpiryDate(Date.valueOf(LocalDate.now().plusDays(30)));
+    reward.setExpiryDate(Date.valueOf(LocalDate.now().plusDays(VALIDITY)));
     reward.setWinnerId("user1@dal.ca");
     reward.setLostItemUserId("lostuser1@dal.ca");
     reward.setItemId("item123");

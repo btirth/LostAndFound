@@ -11,6 +11,8 @@ import com.lostandfound.LostAndFound.reward.service.RewardService;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -85,6 +87,16 @@ public class ItemSeviceImpl implements IItemService {
     }
   }
 
+  Item fetchItemById(String itemId) {
+    Optional<Item> itemOptional = this.itemRepository.findById(itemId);
+
+    if (itemOptional.isEmpty()) {
+      throw new LostAndFoundNotFoundException("Item with id does not exists");
+    }
+
+    return itemOptional.get();
+  }
+
   /**
    * This method will update the returned status of the item and give reward to the user who found
    * it.
@@ -95,10 +107,7 @@ public class ItemSeviceImpl implements IItemService {
    */
   @Override
   public Item updateReturn(String itemId, String userId) {
-    Item storedItem =
-        this.itemRepository
-            .findById(itemId)
-            .orElseThrow(() -> new LostAndFoundNotFoundException("Item with id does not exists"));
+    Item storedItem = fetchItemById(itemId);
 
     if (storedItem.getReturned()) {
       throw new LostAndFoundValidationException("Item is already returned.");
@@ -108,22 +117,28 @@ public class ItemSeviceImpl implements IItemService {
       throw new LostAndFoundValidationException("Item is not yet approved for this user.");
     }
 
-    String lostItemId =
-        storedItem.getClaimRequestAccepted().entrySet().stream()
-            .filter(entry -> entry.getValue().equals(userId))
-            .map(Map.Entry::getKey)
-            .findFirst()
-            .orElse(null);
+    String lostItemId = getLostItemId(storedItem.getClaimRequestAccepted().entrySet().stream(), userId);
 
     if (lostItemId == null) {
       throw new LostAndFoundValidationException("Claim request is not yet accepted for this user.");
     }
 
     storedItem.setReturned(true);
-    this.rewardService.giveReward(
-        storedItem.getCreatedBy(), userId, lostItemId, storedItem.getId(), storedItem.getTitle());
+    this.rewardService.giveReward(userId, lostItemId, storedItem);
 
     return this.itemRepository.save(storedItem);
+  }
+
+  private String getLostItemId(Stream<Map.Entry<String, String>> stream, String userId) {
+    Optional<String> itemId = stream.filter(entry -> entry.getValue().equals(userId))
+            .map(Map.Entry::getKey)
+            .findFirst();
+
+    if(itemId.isEmpty()) {
+      return null;
+    }
+
+    return itemId.get();
   }
 
   /**
