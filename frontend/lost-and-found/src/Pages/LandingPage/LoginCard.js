@@ -38,7 +38,6 @@ const LoginCard = () => {
                     password: password,
                     client_id: '0UOtlCkeRywKyHbavmcbu6iihiUnwVYI',}
                 }).then((response) => {
-                    console.log("response",response);
             const accessToken = response.id_token;
             
             if (accessToken != null) {

@@ -373,7 +373,6 @@ const LostCatalogue = () => {
         url: `${API_URL}/api/v1/item/get-list-by-filter?isFoundItem=true`,
         params: filterParams,
     }).then((data) => {
-      console.log(process.env);
       setItems(data);
     }).catch(e => { })
     };
@@ -474,7 +473,6 @@ const LostCatalogue = () => {
         method: 'get',
         url: `${API_URL}/api/v1/item/get-list?isFoundItem=true`
     }).then((data) => {
-      console.log(process.env);
       setItems(data);
     }).catch(e => { })
  

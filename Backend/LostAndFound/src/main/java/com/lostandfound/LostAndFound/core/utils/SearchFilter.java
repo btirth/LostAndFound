@@ -22,7 +22,6 @@ import org.springframework.data.mongodb.core.query.Query;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class SearchFilter {
   private final double EARTH_RADIUS_METERS = 6371000.0;
@@ -65,7 +64,7 @@ public class SearchFilter {
   public Query buildQuery() {
     Query query = new Query();
 
-    for (Map.Entry<String, FilterOptions> filters : this.getFilters().entrySet()) {
+    for (Map.Entry<String, FilterOptions> filters : this.filters.entrySet()) {
       query.addCriteria(createCriteria(filters));
     }
 
@@ -80,7 +79,7 @@ public class SearchFilter {
   }
 
   private Criteria handleDefaultFilter() {
-    return new Criteria();
+    throw new LostAndFoundException("Invalid filter");
   }
 
   private Criteria applyContainsFilter(String key, Object value) {
@@ -106,20 +105,7 @@ public class SearchFilter {
   }
 
   private Criteria applyEqualsFilter(String key, Object value) {
-    Criteria criteria = new Criteria(key);
-    if (value instanceof Number) {
-      criteria.is((Number) value);
-    } else if (value instanceof Date) {
-      criteria.is((Date) value);
-    } else if (value instanceof String) {
-      criteria.is((String) value);
-    } else if (value instanceof Boolean) {
-      criteria.is((Boolean) value);
-    } else {
-      criteria.is(value);
-    }
-
-    return criteria;
+    return new Criteria(key).is(value);
   }
 
   private Criteria applyDateOnFilter(String key, Object value) {
@@ -138,6 +124,7 @@ public class SearchFilter {
       Date startOfDay = calendar.getTime();
 
       // Derive the end date
+      calendar.setTime(parsedDate);
       calendar.set(Calendar.HOUR_OF_DAY, DAY_END_HOUR);
       calendar.set(Calendar.MINUTE, DAY_END_MIN);
       calendar.set(Calendar.SECOND, DAY_END_SEC);

@@ -157,7 +157,7 @@ const FilterOptions = ({ applyFilter }) => {
 
       // Check if "Location" filter is checked
       if (selectedFilters.includes("location") && location && radius) {
-        filterParams.geo = {
+        filterParams.location = {
           value: {
             x: location[0]?.lng ? location[0]?.lng : "",
             y: location[0]?.lat ? location[0]?.lat : "",

@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import MapWrapper from "../../Components/MapWrapper";
 import Album from "../Album";
 import "./HomePage.css"; // Import the CSS file
+import FilterOptions from '../../Components/FilterOptions';
 
 const HomePage = () => {
   const [value, setValue] = React.useState(0);
@@ -19,6 +20,7 @@ const HomePage = () => {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+    setFilterParams(null);
   };
   const openLostForm = () => {
     window.location = "/lost-form";
@@ -55,126 +57,9 @@ const HomePage = () => {
     width: "100%",
   };
 
-  const containerFlexStyle = {
-    display: "flex",
-    width: "100%",
-    justifyContent: "center",
-  };
   const componentAStyle = {
     flex: "1",
     padding: "16px",
-  };
-
-  const componentBStyle = {
-    flex: "3",
-    padding: "16px",
-  };
-
-  const cardStyle = {
-    background: "#fff",
-    borderRadius: "8px",
-    padding: "16px",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-    transition: "transform 0.2s",
-    cursor: "pointer",
-    overflow: "hidden",
-  };
-
-  const cardHoverStyle = {
-    transform: "scale(1.05)",
-    boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-  };
-
-  const imageStyle = {
-    width: "200px",
-    height: "200px",
-    borderRadius: "8px",
-    objectFit: "cover",
-  };
-
-  const itemInfoStyle = {
-    flex: "1",
-    marginLeft: "16px",
-    textAlign: "center",
-  };
-
-  const itemNameStyle = {
-    color: BaseColor,
-    fontSize: "24px",
-    margin: "0",
-  };
-
-  const itemTextStyle = {
-    color: "#333",
-    fontSize: "18px",
-    margin: "4px 0",
-  };
-
-  const defaultImageStyle = {
-    width: "200px",
-    height: "200px",
-    borderRadius: "8px",
-    objectFit: "cover",
-    background: "#f0f0f0",
-  };
-
-  const buttonStyle = {
-    backgroundColor: BaseColor,
-    color: "#fff",
-    border: "none",
-    borderRadius: "4px",
-    padding: "8px 16px",
-    cursor: "pointer",
-  };
-
-  const itemContainerStyle = {
-    display: "flex",
-    // justifyContent: 'space-between',
-    flexWrap: "wrap",
-    width: "100%",
-  };
-
-  const filterContainerStyle = {
-    width: "100%",
-    padding: "16px",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  };
-
-  const filterHeadingStyle = {
-    fontSize: "20px",
-    color: BaseColor,
-  };
-
-  const filterOptionsStyle = {
-    width: "100%",
-    border: "1px solid #ddd",
-    borderRadius: "4px",
-    padding: "8px",
-    margin: "8px 0",
-  };
-
-  const filterButtonStyle = {
-    backgroundColor: BaseColor,
-    color: "#fff",
-    border: "none",
-    borderRadius: "4px",
-    padding: "8px 16px",
-    margin: "8px 0",
-    cursor: "pointer",
-  };
-  const clearButtonStyle = {
-    backgroundColor: "#cf534e",
-    color: "#fff",
-    border: "none",
-    borderRadius: "4px",
-    padding: "8px 16px",
-    margin: "8px 0",
-    cursor: "pointer",
   };
   const filterLabelStyle = {
     width: "75%",
@@ -194,231 +79,16 @@ const HomePage = () => {
     justifyContent: "center",
     alignItems: "center",
   };
-  const labelCheckBox = {
-    margin: "0 15px 0 11px",
-    display: "unset",
-  };
 
-  const [items, setItems] = useState([]);
-
-  const FilterOptions = ({ filterParams }) => {
-    // const { filterParamKeyword } = filterParams;
-    const [selectedFilters, setSelectedFilters] = useState([]);
-    const [location, setLocation] = useState("");
-    const [radius, setRadius] = useState("");
-    const [keyword, setKeyword] = useState("");
-    const [selectedDate, setSelectedDate] = useState("");
-    const [selectedCategory, setSelectedCategory] = useState("");
-
-    
-    const handleFilterChange = (event) => {
-      const value = event.target.value;
-      if (selectedFilters.includes(value)) {
-        setSelectedFilters(
-          selectedFilters.filter((filter) => filter !== value)
-        );
-      } else {
-        setSelectedFilters([...selectedFilters, value]);
-      }
-    };
-
-    const handleClearFilters = () => {
-      // Clear all filter values and reset the filters
-      setSelectedFilters([]);
-      setLocation("");
-      setRadius("");
-      setKeyword("");
-      setSelectedDate("");
-      setSelectedCategory("");
-    };
-
-    const handleSubmit = (event) => {
-      event.preventDefault();
-      if (selectedFilters.includes("category") && selectedCategory === "") {
-        toast.error("Please select a category!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-      } else if (selectedFilters.includes("date") && selectedDate === "") {
-        toast.error("Please select a date!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-      } else if (selectedFilters.includes("keyword") && keyword === "") {
-        toast.error("Please enter a keyword!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-      } else {
-        // Handle form submission with selectedFilters, radius, name, selectedDate, and locationFile
-        console.log("Selected Filters:", selectedFilters);
-        console.log("Radius:", radius);
-        console.log("Date:", selectedDate);
-        console.log("Location:", location);
-        console.log("Keyword:", keyword);
-        console.log("Category:", selectedCategory);
-
-        // Check if "Location" filter is checked
-        const isLocationFilterChecked = selectedFilters.includes("location");
-
-        if (isLocationFilterChecked && (!location || !radius)) {
-          toast.error("please select location and radius!", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
-        }
-
-        const filterParams = {};
-
-        // Check if "Keyword" filter is checked
-        if (selectedFilters.includes("keyword") && keyword) {
-          filterParams.keyword = keyword;
-        }
-
-        // Check if "Date" filter is checked
-        if (selectedFilters.includes("date") && selectedDate) {
-          filterParams.date = selectedDate;
-        }
-
-        // Check if "Location" filter is checked
-        if (selectedFilters.includes("location") && location && radius) {
-          let selectedLong = location[0]?.lng ? location[0]?.lng : "";
-          let selectedLat = location[0]?.lat ? location[0]?.lat : "";
-          filterParams.location = {
-            x: selectedLong,
-            y: selectedLat,
-            radius: radius,
-          };
-          // filterParams.longitude = selectedLong;
-          // filterParams.latitude = selectedLat;
-          // filterParams.distance = radius;
-        }
-
-        // Check if "Category" filter is selected
-        if (selectedCategory) {
-          filterParams.category = selectedCategory;
-        }
-
-        // Handle form submission with the filtered parameters
-        console.log("Filter Parameters:", filterParams);
-        setFilterParams(filterParams);
-
-       
-      }
-    };
-
-    const setFilterParamKeyword = (event) => {
-      console.log("event captured", event);
-      filterParams.keyword = event;
-    };
-
-    return (
-      <form style={{ textAlign: "center" }}>
-        <div style={filterContainerStyle}>
-          <div>
-            <label style={labelCheckBox}>
-              <input
-                type="checkbox"
-                value="keyword"
-                checked={selectedFilters.includes("keyword")}
-                onChange={handleFilterChange}
-              />
-              Keyword
-            </label>
-            <label style={labelCheckBox}>
-              <input
-                type="checkbox"
-                value="date"
-                checked={selectedFilters.includes("date")}
-                onChange={handleFilterChange}
-              />
-              Date
-            </label>
-            <label style={labelCheckBox}>
-              <input
-                type="checkbox"
-                value="location"
-                checked={selectedFilters.includes("location")}
-                onChange={handleFilterChange}
-              />
-              Location
-            </label>
-          </div>
-          <label>
-            Category:
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-            >
-              <option value="">All Categories</option>
-              <option value="personal">Personal Item</option>
-              <option value="electronics">Electronics</option>
-              <option value="document">Document</option>
-            </select>
-          </label>
-          <input
-            type="text"
-            placeholder="Keyword"
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            style={filterOptionsStyle}
-          />
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            style={filterOptionsStyle}
-          />
-          <MapWrapper setLocation={setLocation} />
-          <input
-            type="number"
-            placeholder="Radius (meters)"
-            value={radius}
-            onChange={(e) => setRadius(e.target.value)}
-            style={filterOptionsStyle}
-          />
-
-          <div>
-            <button onClick={handleSubmit} style={filterButtonStyle}>
-              Apply Filter
-            </button>
-
-            <button onClick={handleClearFilters} style={clearButtonStyle}>
-              Clear Filter
-            </button>
-          </div>
-        </div>
-      </form>
-    );
+  const applyFilter = (filterParams) => {
+    console.log("filterParams", filterParams)
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    setFilterParams(filterParams);
   };
 
   return (
     <div>
-     
+      
       <div className="margin-left-20 margin-bottom-20">
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
@@ -460,7 +130,6 @@ const HomePage = () => {
           </Tabs>
         </Box>
       </div>
-      {/* </div> */}
       <div className="flex">
         {value === 0 ? (
           <div>
@@ -476,7 +145,7 @@ const HomePage = () => {
               </div>
               {isFilterOpen && (
                 <div style={filterOptionsContainerStyle}>
-                  <FilterOptions filterParams={filterParams} />
+                  <FilterOptions applyFilter={applyFilter} />
                 </div>
               )}
             </div>

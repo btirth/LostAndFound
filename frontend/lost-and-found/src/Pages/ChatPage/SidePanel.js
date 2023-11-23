@@ -18,7 +18,6 @@ const SidePanel = (props) => {
     const handleSelect = (user) => {
 
         selectUserFunction(user);
-        // console.log(selectedUser);
     };
 
     function getNameForChat(chatopt){
@@ -65,7 +64,6 @@ const SidePanel = (props) => {
     }, [currentUser]);
 
     useEffect(() => {
-        // console.log(usersForChat[0])
         if (usersForChat.length > 0 && usersForChat[0].lastMessageBy != currentUser) {
             setShowAlert(true);
             setTimeout(() => {
