@@ -13,6 +13,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Query;
 
 public class SearchFilterTest {
+
+  private final Double RADIUS = 100.0;
+
+  private final int PAGE = 5;
   @Test
   void testBuildQueryWithDateFilterSuccess() {
     // arrange
@@ -79,7 +83,7 @@ public class SearchFilterTest {
     // arrange
     SearchFilter searchFilter = new SearchFilter();
     HashMap<String, FilterOptions> filters = new HashMap<>();
-    LafLocation location = new LafLocation(0.0, 0.0, 100.0);
+    LafLocation location = new LafLocation(0.0, 0.0, RADIUS);
     filters.put("location", new FilterOptions(location, "geo"));
     searchFilter.setFilters(filters);
 
@@ -113,7 +117,7 @@ public class SearchFilterTest {
     HashMap<String, FilterOptions> filters = new HashMap<>();
     filters.put("postedBy", new FilterOptions("harshshah@gmail.com", "equals"));
     searchFilter.setFilters(filters);
-    searchFilter.setPage(5);
+    searchFilter.setPage(PAGE);
     searchFilter.setSortField("postedAt");
     searchFilter.setSortDirection(Sort.Direction.ASC);
     // act

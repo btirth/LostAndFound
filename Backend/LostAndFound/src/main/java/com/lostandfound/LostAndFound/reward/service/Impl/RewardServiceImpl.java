@@ -1,5 +1,6 @@
 package com.lostandfound.LostAndFound.reward.service.Impl;
 
+import com.lostandfound.LostAndFound.Item.entities.Item;
 import com.lostandfound.LostAndFound.reward.entities.Reward;
 import com.lostandfound.LostAndFound.reward.entities.RewardData;
 import com.lostandfound.LostAndFound.reward.repo.RewardRepository;
@@ -18,6 +19,8 @@ public class RewardServiceImpl implements RewardService {
   @Autowired private RewardRepository rewardRepository;
 
   @Autowired private RewardDataService rewardDataService;
+
+  private final int VALIDITY = 30;
 
   /**
    * Create a new reward
@@ -39,7 +42,7 @@ public class RewardServiceImpl implements RewardService {
     RewardData rewardData = rewardDataService.findById(rewardId);
 
     Calendar cal = Calendar.getInstance();
-    cal.add(Calendar.DATE, 30);
+    cal.add(Calendar.DATE, VALIDITY);
     Date expiryDate = new Date(cal.getTime().getTime());
 
     reward.setRewardData(rewardData);
@@ -62,22 +65,19 @@ public class RewardServiceImpl implements RewardService {
   /**
    * Give reward to the winner
    *
-   * @param winnerId email/id of the winner
    * @param lostItemUserId id of the lost item user
    * @param lostItemId id of the lost item
-   * @param itemId id of the found item
-   * @param itemTitle title of the found item
+   * @param item stored item
    */
   @Override
-  public void giveReward(
-      String winnerId, String lostItemUserId, String lostItemId, String itemId, String itemTitle) {
+  public void giveReward(String lostItemUserId, String lostItemId, Item item) {
     Reward reward = new Reward();
 
-    reward.setWinnerId(winnerId);
+    reward.setWinnerId(item.getCreatedBy());
     reward.setLostItemUserId(lostItemUserId);
     reward.setLostItemId(lostItemId);
-    reward.setItemId(itemId);
-    reward.setItemTitle(itemTitle);
+    reward.setItemId(item.getId());
+    reward.setItemTitle(item.getTitle());
 
     this.create(reward);
   }
