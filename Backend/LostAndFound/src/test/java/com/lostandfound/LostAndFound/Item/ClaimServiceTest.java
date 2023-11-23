@@ -157,7 +157,7 @@ public class ClaimServiceTest {
         },
         "Your claim request has already been accepted for this item.");
   }
-  
+
   @Test
   public void testClaimRequestedAlreadyRejected() {
     // arrange
@@ -167,12 +167,12 @@ public class ClaimServiceTest {
     foundItem.getClaimRejected().put(lostItem.getId(), lostItem.getCreatedBy());
     // act + assert
     Assertions.assertThrows(
-            LostAndFoundValidationException.class,
-            () -> {
-              claimService.updateClaimRequest(
-                      lostItem.getCreatedBy(), foundItem.getId(), lostItem.getId());
-            },
-            "Your claim request has already been rejected for this item.");
+        LostAndFoundValidationException.class,
+        () -> {
+          claimService.updateClaimRequest(
+              lostItem.getCreatedBy(), foundItem.getId(), lostItem.getId());
+        },
+        "Your claim request has already been rejected for this item.");
   }
 
   @Test
