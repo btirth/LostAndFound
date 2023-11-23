@@ -1,17 +1,15 @@
-import React, { useState } from 'react'
-import { Navbar, Card, Col, Container, Row } from 'react-bootstrap'
-import { Box2Fill } from 'react-bootstrap-icons'
+import React, { useState } from 'react';
+import { Card, Col, Container, Navbar, Row } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
 import FooterComponent from '../../Components/FooterComponent';
-import { useHistory } from 'react-router-dom'
 
 // Images
-import LandingPageImg from '../../Assets/Images/landing_page_image.jpg'
-import Logo from '../../Assets/Images/LAF-logo.png'
+import Logo from '../../Assets/Images/LAF-logo.png';
+import LandingPageImg from '../../Assets/Images/landing_page_image.jpg';
 
 // Components
-import LoginCard from './LoginCard'
-import SignUpCard from './SignUpCard'
-import ForgetPasswordCard from './ForgetPasswordCard'
+import ForgetPasswordCard from './ForgetPasswordCard';
+import LoginCard from './LoginCard';
 
 
 function LoginMainPage() {

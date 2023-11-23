@@ -1,19 +1,15 @@
 // Navbar.js
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { loginSuccess, logout } from '../actions/authActions';
 import FoundItemForm from '../Pages/FoundItemForm/FoundItemForm';
 
 const Navbar = () => {
-  const dispatch = useDispatch();
   const [isHovered, setIsHovered] = useState(null); // Track the hovered item
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [resetVariable, setResetVariable] = useState(false);
   const currentUserName = localStorage.getItem('username');
   const handleLogout = () => {
     localStorage.removeItem('access_token');
-    dispatch(logout());
     window.location = '/login';
   };
 

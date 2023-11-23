@@ -1,9 +1,8 @@
-import React from 'react'
-import SidePanel from './SidePanel'
-import MessagePanel from './MessagePanel'
-import './ChatPage.css'
+import React, { useState } from 'react'
 import Navbar from '../../Components/Navbar'
-import  { useContext, useEffect, useState } from "react";
+import './ChatPage.css'
+import MessagePanel from './MessagePanel'
+import SidePanel from './SidePanel'
 
 const ChatPage = () => {
     const [selectedUser, setSelectedUser] = useState({

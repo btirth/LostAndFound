@@ -1,10 +1,7 @@
-import React from 'react'
-import imageIcon from './../../Assets/Images/boy-icon.png';
-import { db } from "./../../firebase-config";
 import { doc, onSnapshot } from "firebase/firestore";
-import { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import { Alert } from 'react-bootstrap';
-import { ConeStriped } from 'react-bootstrap-icons';
+import { db } from "./../../firebase-config";
 
 
 

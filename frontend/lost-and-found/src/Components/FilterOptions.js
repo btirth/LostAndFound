@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import MapWrapper from "./MapWrapper";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import Switch from '@mui/material/Switch';
+import React, { useState } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import MapWrapper from "./MapWrapper";
 
 
 
@@ -144,7 +144,7 @@ const FilterOptions = ({ applyFilter }) => {
       if (selectedFilters.includes("date") && selectedDate) {
         const startTime = `${selectedDate}T23:59:59.999Z`;
 
-        filterParams.date = {
+        filterParams.postedAt = {
           mode: "on",
           value: startTime,
         };
