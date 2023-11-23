@@ -42,9 +42,9 @@ public class ClaimServiceImpl implements ClaimService {
     }
 
     Map<String, String> claimRejected = storedItem.getClaimRejected();
-    if(claimRejected != null && claimRejected.containsValue(userId)) {
+    if (claimRejected != null && claimRejected.containsValue(userId)) {
       throw new LostAndFoundValidationException(
-              "Your claim request has already been rejected for this item.");
+          "Your claim request has already been rejected for this item.");
     }
 
     Map<String, String> claimRequested = storedItem.getClaimRequested();

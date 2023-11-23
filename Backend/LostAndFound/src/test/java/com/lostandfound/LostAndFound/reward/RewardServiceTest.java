@@ -45,7 +45,7 @@ public class RewardServiceTest {
   @Test
   public void testCreateSuccess() {
     when(rewardRepository.save(reward)).thenReturn(reward);
-    when(rewardDataService.getAllIds()).thenReturn(List.of(reward.getId()));
+    when(rewardDataService.getAllIds()).thenReturn(List.of(rewardData.getId()));
     Reward expectedReward = rewardService.create(reward);
 
     Assertions.assertEquals(expectedReward, reward);
@@ -58,5 +58,26 @@ public class RewardServiceTest {
     List<Reward> expectedReward = rewardService.findAllByWinnerId(reward.getWinnerId());
 
     Assertions.assertEquals(expectedReward, List.of(reward));
+  }
+
+  @Test
+  public void testGiveRewardSuccess() {
+    Reward customeReward = new Reward();
+    customeReward.setWinnerId("user1@dal.ca");
+    customeReward.setLostItemUserId("lostuser1@dal.ca");
+    customeReward.setItemId("item123");
+    customeReward.setItemTitle("Item test");
+
+    when(rewardDataService.getAllIds()).thenReturn(List.of(rewardData.getId(), rewardData.getId()));
+    when(rewardDataService.findById(rewardData.getId())).thenReturn(rewardData);
+
+    rewardService.giveReward(
+        customeReward.getWinnerId(),
+        customeReward.getLostItemUserId(),
+        customeReward.getLostItemId(),
+        customeReward.getItemId(),
+        customeReward.getItemTitle());
+
+    Assertions.assertEquals(customeReward.getWinnerId(), reward.getWinnerId());
   }
 }
