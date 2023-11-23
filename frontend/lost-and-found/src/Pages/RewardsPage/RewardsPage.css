@@ -4,6 +4,7 @@
     background-color: #f4f4f4; 
     border: none; 
     border-radius: 10px; 
+    height: 300px;
   }
   
   .reward-card:hover {

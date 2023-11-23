@@ -6,113 +6,11 @@ import { API_URL } from "../../config/api-end-points";
 import { ApiRequest } from "../../helpers/api-request";
 import "./RewardsPage.css";
 
-const dummyData = [
-  {
-    id: 1,
-    title: "Reward 1",
-    description: "This is the description for Reward 1.",
-    code: "ABC123",
-    issuedAt: "2023-01-01",
-    expiryDate: "2023-12-31",
-    itemName: "Item 1",
-  },
-  {
-    id: 2,
-    title: "Reward 2",
-    description: "This is the description for Reward 2.",
-    code: "ABCguuuui",
-    issuedAt: "2022-01-01",
-    expiryDate: "2022-12-31",
-    itemName: "Item 2",
-  },
-  {
-    id: 3,
-    title: "Reward 2",
-    description: "This is the description for Reward 2.",
-    code: "ABCguuuui",
-    issuedAt: "2022-01-01",
-    expiryDate: "2022-12-31",
-    itemName: "Item 2",
-  },
-  {
-    id: 4,
-    title: "Reward 2",
-    description: "This is the description for Reward 2.",
-    code: "ABCguuuui",
-    issuedAt: "2022-01-01",
-    expiryDate: "2022-12-31",
-    itemName: "Item 2",
-  },
-  {
-    id: 5,
-    title: "Reward 2",
-    description: "This is the description for Reward 2.",
-    code: "ABCguuuui",
-    issuedAt: "2022-01-01",
-    expiryDate: "2022-12-31",
-    itemName: "Item 2",
-  },
-  {
-    id: 6,
-    title: "Reward 2",
-    description: "This is the description for Reward 2.",
-    code: "ABCguuuui",
-    issuedAt: "2022-01-01",
-    expiryDate: "2022-12-31",
-    itemName: "Item 2",
-  },
-  {
-    id: 7,
-    title: "Reward 2",
-    description: "This is the description for Reward 2.",
-    code: "ABCguuuui",
-    issuedAt: "2022-01-01",
-    expiryDate: "2022-12-31",
-    itemName: "Item 2",
-  },
-  {
-    id: 8,
-    title: "Reward 2",
-    description: "This is the description for Reward 2.",
-    code: "ABCguuuui",
-    issuedAt: "2022-01-01",
-    expiryDate: "2022-12-31",
-    itemName: "Item 2",
-  },
-  {
-    id: 9,
-    title: "Reward 2",
-    description: "This is the description for Reward 2.",
-    code: "ABCguuuui",
-    issuedAt: "2022-01-01",
-    expiryDate: "2022-12-31",
-    itemName: "Item 2",
-  },
-  {
-    id: 10,
-    title: "Reward 2",
-    description: "This is the description for Reward 2.",
-    code: "ABCguuuui",
-    issuedAt: "2022-01-01",
-    expiryDate: "2022-12-31",
-    itemName: "Item 2",
-  },
-  {
-    id: 11,
-    title: "Reward 2",
-    description: "This is the description for Reward 2.",
-    code: "ABCguuuui",
-    issuedAt: "2022-01-01",
-    expiryDate: "2022-12-31",
-    itemName: "Item 2",
-  },
-];
-
 const RewardsPage = () => {
   const [showCode, setShowCode] = useState({});
   const [activeTab, setActiveTab] = useState("all");
-  const [filteredRewards, setFilteredRewards] = useState([])
-  const [rewards, setRewards] = useState([])
+  const [filteredRewards, setFilteredRewards] = useState([]);
+  const [rewards, setRewards] = useState([]);
 
   const toggleCodeVisibility = (id) => {
     setShowCode((prevShowCode) => ({
@@ -121,50 +19,38 @@ const RewardsPage = () => {
     }));
   };
 
-  const userEmail = localStorage.getItem('user_email');
+  const userEmail = localStorage.getItem("user_email");
   useEffect(() => {
     ApiRequest.fetch({
       method: "get",
       url: `${API_URL}/api/v1/reward/all/${userEmail}`,
     })
       .then((response) => {
-        setFilteredRewards(response)
-        setRewards(response)
+        setFilteredRewards(response);
+        setRewards(response);
       })
       .catch((error) => {
-       console.error("error",error);
-      })
-  }, [userEmail])
-  
-
-  // const filterRewards = (reward) => {
-  //   const currentDate = new Date().toISOString().split("T")[0];
-
-  //   if (activeTab === "active") {
-  //     return reward.expiryDate >= currentDate;
-  //   } else if (activeTab === "expired") {
-  //     return reward.expiryDate < currentDate;
-  //   }
-
-  //   return true;
-  // };
+        console.error("error", error);
+      });
+  }, [userEmail]);
 
   useEffect(() => {
-    console.log("tab changed");
     const currentDate = new Date().toISOString().split("T")[0];
 
     if (activeTab === "active") {
-      setFilteredRewards(rewards.filter((item) => item.expiryDate >= currentDate))
+      setFilteredRewards(
+        rewards.filter((item) => item.expiryDate >= currentDate)
+      );
       // return reward.expiryDate >= currentDate;
     } else if (activeTab === "expired") {
-      setFilteredRewards(rewards.filter((item) => item.expiryDate < currentDate))
+      setFilteredRewards(
+        rewards.filter((item) => item.expiryDate < currentDate)
+      );
       // return reward.expiryDate < currentDate;
+    } else {
+      setFilteredRewards(rewards);
     }
-    else{
-      setFilteredRewards(rewards)
-    }
-  }, [activeTab,rewards])
-  
+  }, [activeTab, rewards]);
 
   const copyCodeToClipboard = (code) => {
     const textarea = document.createElement("textarea");
@@ -201,53 +87,90 @@ const RewardsPage = () => {
       <Row className="mt-4">
         {filteredRewards?.map((reward) => (
           <Col key={reward.id} xs={12} sm={6} md={4} lg={3}>
-            <Card className={`mb-4 reward-card ${reward.expiryDate < new Date().toISOString().split("T")[0] ? 'expired' : ''}`}>
+            <Card
+              className={`mb-4 reward-card ${
+                reward.expiryDate < new Date().toISOString().split("T")[0]
+                  ? "expired"
+                  : ""
+              }`}>
               <Card.Body>
-                <Card.Title>{reward.rewardData.title}</Card.Title>
-                <Card.Text>{reward.rewardData.description}</Card.Text>
-                <Card.Text>
+                <Card.Title
+                  style={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}>
+                  {reward.rewardData.title}
+                </Card.Title>
+                <Card.Text
+                  style={{
+                    whiteSpace: "pre-line",
+                    minHeight: "3em",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}>
+                  {reward.rewardData.description}
+                </Card.Text>
+                <Card.Text
+                  style={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}>
                   <strong>Item:</strong> {reward.itemTitle}
                 </Card.Text>
                 <Card.Text>
-                  <strong>Issued At:</strong> {new Date(reward.issuedAt).toLocaleDateString('en-GB').split('/').reverse().slice(0, 3).join('-')}
+                  <strong>Issued At:</strong>{" "}
+                  {new Date(reward.issuedAt)
+                    .toLocaleDateString("en-GB")
+                    .split("/")
+                    .reverse()
+                    .slice(0, 3)
+                    .join("-")}
                 </Card.Text>
                 <Card.Text>
                   <strong>Expiry Date:</strong>{" "}
-                  <Badge bg="danger">{new Date(reward.expiryDate).toLocaleDateString('en-GB').split('/').reverse().slice(0, 3).join('-') }</Badge>
+                  <Badge bg="danger">
+                    {new Date(reward.expiryDate)
+                      .toLocaleDateString("en-GB")
+                      .split("/")
+                      .reverse()
+                      .slice(0, 3)
+                      .join("-")}
+                  </Badge>
                 </Card.Text>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              
-                    <Button
-                      variant="link"
-                      onClick={() => copyCodeToClipboard(reward.rewardData.code)}
-                      className="copy-icon-button">
-                      <FileCopyIcon className="icon" />
-                    </Button>
-                    {showCode[reward.id] ? (
-                      <span className="code-text">{reward.rewardData.code}</span>
-                    ) : (
-                      <span
-                        className={`blurred-code ${
-                          reward.expiryDate <
-                          new Date().toISOString().split("T")[0]
-                            ? "expired"
-                            : ""
-                        }`}>
-                        ********
-                      </span>
-                    )}
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}>
+                  <Button
+                    variant="link"
+                    onClick={() => copyCodeToClipboard(reward.rewardData.code)}
+                    className="copy-icon-button">
+                    <FileCopyIcon className="icon" />
+                  </Button>
+                  {showCode[reward.id] ? (
+                    <span className="code-text">{reward.rewardData.code}</span>
+                  ) : (
+                    <span
+                      className={`blurred-code ${
+                        reward.expiryDate <
+                        new Date().toISOString().split("T")[0]
+                          ? "expired"
+                          : ""
+                      }`}>
+                      ********
+                    </span>
+                  )}
 
-                      <Button
-                        variant="link"
-                        onClick={() => toggleCodeVisibility(reward.id)}
-                        className="code-toggle-button">
-                        {showCode[reward.id] ? (
-                          <VisibilityOff className="icon" />
-                        ) : (
-                          <Visibility className="icon" />
-                        )}
-                      </Button>
-                   
+                  <Button
+                    variant="link"
+                    onClick={() => toggleCodeVisibility(reward.id)}
+                    className="code-toggle-button">
+                    {showCode[reward.id] ? (
+                      <VisibilityOff className="icon" />
+                    ) : (
+                      <Visibility className="icon" />
+                    )}
+                  </Button>
                 </div>
               </Card.Body>
             </Card>
@@ -259,6 +182,3 @@ const RewardsPage = () => {
 };
 
 export default RewardsPage;
-// change
-// change
-// change
