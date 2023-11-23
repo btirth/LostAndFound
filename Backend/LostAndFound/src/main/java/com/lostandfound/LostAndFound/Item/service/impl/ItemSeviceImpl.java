@@ -115,6 +115,10 @@ public class ItemSeviceImpl implements IItemService {
             .findFirst()
             .orElse(null);
 
+    if (lostItemId == null) {
+      throw new LostAndFoundValidationException("Claim request is not yet accepted for this user.");
+    }
+
     storedItem.setReturned(true);
     this.rewardService.giveReward(
         storedItem.getCreatedBy(), userId, lostItemId, storedItem.getId(), storedItem.getTitle());
