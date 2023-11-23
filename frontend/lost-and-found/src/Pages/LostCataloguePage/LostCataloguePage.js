@@ -28,8 +28,8 @@ const LostCatalogue = () => {
   const componentAStyle = {
     flex: "1",
     padding: "16px",
-    border: "2px solid #000",
-    boxShadow: "2px 2px 5px rgba(0, 0, 0, 0.3)",
+    boxShadow: "0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)",
+    outline: "2px solid #35ac65",
     padding: "20px",
     borderBottom: "none",
   };
@@ -43,7 +43,7 @@ const LostCatalogue = () => {
     background: "#fff",
     borderRadius: "8px",
     padding: "16px 16px 25px 16px",
-    marginBottom:'20px',
+    marginBottom: "20px",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -51,7 +51,8 @@ const LostCatalogue = () => {
     transition: "transform 0.2s",
     cursor: "pointer",
     overflow: "hidden",
-    height : "360px"
+    height: "360px",
+    width: "100%",
   };
 
   const cardHoverStyle = {
@@ -77,7 +78,8 @@ const LostCatalogue = () => {
     fontSize: "20px",
     // margin: "0",
     // maxHeight: "30px",
-    maxHeight: "1.2em", overflow: "hidden",
+    maxHeight: "1.4em",
+    overflow: "hidden",
     textOverflow: "ellipsis",
     // whiteSpace: "nowrap",
   };
@@ -85,8 +87,9 @@ const LostCatalogue = () => {
   const itemTextStyle = {
     color: "#333",
     fontSize: "15px",
-    margin: "4px 4px",
-    maxHeight: "1.4em", overflow: "hidden",
+    margin: "4px 0px",
+    maxHeight: "1.4em",
+    overflow: "hidden",
     textOverflow: "ellipsis",
   };
 
@@ -105,6 +108,7 @@ const LostCatalogue = () => {
     borderRadius: "4px",
     padding: "8px 16px",
     cursor: "pointer",
+    width: "200px",
   };
 
   const lightButtonStyle = {
@@ -115,6 +119,7 @@ const LostCatalogue = () => {
     padding: "8px 16px",
     cursor: "pointer",
     pointerEvents: "none",
+    width: "200px",
   };
 
   const itemContainerStyle = {
@@ -379,12 +384,45 @@ const LostCatalogue = () => {
 
     const renderItemImage = () => {
       if (sensitive) {
-        return <img src={sensitiveImg} alt="Default" style={{...defaultImageStyle, objectFit: 'cover', width: '200px', height: '200px' }} />;
+        return (
+          <img
+            src={sensitiveImg}
+            alt="Default"
+            style={{
+              ...defaultImageStyle,
+              objectFit: "cover",
+              width: "200px",
+              height: "200px",
+            }}
+          />
+        );
       } else {
         if (!image) {
-          return <img src={noImg} alt="Default" style={{...defaultImageStyle, objectFit: 'cover', width: '200px', height: '200px' }} />;
+          return (
+            <img
+              src={noImg}
+              alt="Default"
+              style={{
+                ...defaultImageStyle,
+                objectFit: "cover",
+                width: "200px",
+                height: "200px",
+              }}
+            />
+          );
         } else {
-          return <img src={image[0]} alt={title} style={{...imageStyle, objectFit: 'cover', width: '200px', height: '200px' }} />;
+          return (
+            <img
+              src={image[0]}
+              alt={title}
+              style={{
+                ...imageStyle,
+                objectFit: "cover",
+                width: "200px",
+                height: "200px",
+              }}
+            />
+          );
         }
       }
     };
@@ -417,6 +455,7 @@ const LostCatalogue = () => {
             </p>
             <p style={itemTextStyle}>Description: {description}</p>
           </div>
+          <div style={{textAlign:'center'}}>
           {claimedBy == userEmail ? (
             <button style={lightButtonStyle}>Claim Approved</button>
           ) : Object.values(claimRequestAccepted).some(
@@ -436,6 +475,7 @@ const LostCatalogue = () => {
               Claim
             </button>
           )}
+        </div>
         </div>
       </div>
     );
@@ -552,12 +592,21 @@ const LostCatalogue = () => {
                       {lostItems?.map((item) => (
                         <Dropdown.Item
                           key={item.id}
-                          style={{ width: "250px", marginRight: "10px" , overflow: "hidden", textOverflow: "ellipsis" }}
+                          style={{
+                            width: "250px",
+                            marginRight: "10px",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          }}
                           onClick={() => setSelectedLinkItem(item)}>
                           <img
                             src={item.image[0]}
                             alt={item.title}
-                            style={{ width: "50px",height:'40px', marginRight: "10px" }}
+                            style={{
+                              width: "50px",
+                              height: "40px",
+                              marginRight: "10px",
+                            }}
                           />
                           {item.title}
                         </Dropdown.Item>

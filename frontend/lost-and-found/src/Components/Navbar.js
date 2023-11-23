@@ -82,8 +82,8 @@ const Navbar = () => {
           <Link
             to="/home"
             style={isHovered === 'home' ? { ...navLinkStyle, ...highlightStyle } : navLinkStyle}
-            onMouseEnter={() => setIsHovered('home')}
-            onMouseLeave={() => setIsHovered(null)}
+            onClick={() => setIsHovered('home')}
+            // onMouseLeave={() => setIsHovered(null)}
           >
             Home
           </Link>
@@ -93,8 +93,8 @@ const Navbar = () => {
           <Link
             to="/lost-catalogue"
             style={isHovered === 'lost-catalogue' ? { ...navLinkStyle, ...highlightStyle } : navLinkStyle}
-            onMouseEnter={() => setIsHovered('lost-catalogue')}
-            onMouseLeave={() => setIsHovered(null)}
+            onClick={() => setIsHovered('lost-catalogue')}
+            // onMouseLeave={() => setIsHovered(null)}
           >
             Lost Catalogue
           </Link>
@@ -103,19 +103,21 @@ const Navbar = () => {
           <Link
             to="/lost-form"
             style={isHovered === 'lost-form' ? { ...navLinkStyle, ...highlightStyle } : navLinkStyle}
-            onMouseEnter={() => setIsHovered('lost-form')}
-            onMouseLeave={() => setIsHovered(null)}
+            onClick={() => setIsHovered('lost-form')}
+            // onMouseLeave={() => setIsHovered(null)}
           >
             Report Lost Item
           </Link>
         </li>
         <li style={navItemStyle}>
           <p
-            onClick={openForm}
-
+        
+            onClick={() => {
+            setIsHovered('found-form')
+            openForm()
+          }}
             style={isHovered === 'found-form' ? { ...navLinkStyle, ...highlightStyle } : navLinkStyle}
-            onMouseEnter={() => setIsHovered('found-form')}
-            onMouseLeave={() => setIsHovered(null)}
+            // onMouseLeave={() => setIsHovered(null)}
           >
             Report Found Item
           </p>
@@ -124,8 +126,8 @@ const Navbar = () => {
           <Link
             to="/chat"
             style={isHovered === 'chat' ? { ...navLinkStyle, ...highlightStyle } : navLinkStyle}
-            onMouseEnter={() => setIsHovered('chat')}
-            onMouseLeave={() => setIsHovered(null)}
+            onClick={() => setIsHovered('chat')}
+            // onMouseLeave={() => setIsHovered(null)}
           >
             Chat
           </Link>
@@ -134,8 +136,8 @@ const Navbar = () => {
           <Link
             to="/reward"
             style={isHovered === 'reward' ? { ...navLinkStyle, ...highlightStyle } : navLinkStyle}
-            onMouseEnter={() => setIsHovered('reward')}
-            onMouseLeave={() => setIsHovered(null)}
+            onClick={() => setIsHovered('reward')}
+            // onMouseLeave={() => setIsHovered(null)}
           >
             Rewards
           </Link>
@@ -148,7 +150,7 @@ const Navbar = () => {
         onClick={handleLogout}
         style={isHovered === 'logout' ? { ...logoutButtonStyle, ...logoutHighlightStyle } : logoutButtonStyle}
         onMouseEnter={() => setIsHovered('logout')}
-        onMouseLeave={() => setIsHovered(null)}
+        // onMouseLeave={() => setIsHovered(null)}
       >
         Logout
       </button>

@@ -351,9 +351,10 @@ const LostItemForm = () => {
                     width: "100%",
                     height: "200px",
                     position: "relative",
+                    borderRadius:'10px'
                   }}
                   key={index}>
-                  <li className="item-card" style={{ height: "100%" }}>
+                  <li className="item-card" style={{ height: "100%", overflow:'hidden' }}>
                     <div
                       className="item-actions"
                       style={{
