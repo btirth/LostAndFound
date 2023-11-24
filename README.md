@@ -212,7 +212,7 @@ The following tools were used in the construction of the project:
     <span>
    <span>
 
-10. CList of claim request received
+10. List of claim request received
     1.  List of request received and can also filter based on status
         ![received](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage12.png?alt=media&token=35b86b00-f861-4dbe-b917-b5780819a02d)
     2.  See the details of linked lost item
