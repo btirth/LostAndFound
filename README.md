@@ -222,7 +222,7 @@ The following tools were used in the construction of the project:
    <span>
    <span>
 5. **Home Screen**
-   1. **Found items posted by users**
+   1. **Found items posted by user**
     ![itemposted](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage20.png?alt=media&token=0c2d183a-9014-4ed4-92f5-907fae0f3646)
 
    2. **Apply filters (Below image shows filter applied using keyword)**
@@ -273,7 +273,7 @@ The following tools were used in the construction of the project:
     <span>
    <span>
 
-13. **Founder recieving reward**
+13. **Founder receiving reward**
     ![rewards](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage7.png?alt=media&token=530e7679-af20-42fc-aa96-33b4d4343837)
     <span>
    <span>
