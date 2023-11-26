@@ -1,15 +1,15 @@
-<h1 align="center">
-    <img alt="project" height=200px title="#About" src="./frontend/lost-and-found/src/Assets/Images/LAF-logo.png" />
+<h1 align="center" style="text-align: center;">
+    <a href="http://172.17.0.80:3000/"><img alt="project" height=200px title="#About" src="./frontend/lost-and-found/src/Assets/Images/LAF-logo.png" /></a>
 </h1>
 
-<h1 align="center" style="color:green;">
-  <a href="http://172.17.0.80:3001/"> Lost And Found </a>
+<h1 align="center" style="text-align: center; color:green;">
+  <a href="http://172.17.0.80:3000/"> Lost And Found </a>
 </h1>
 
-<h3 align="center">We help you find your lost items!</h3>
+<h3 align="center" style="text-align: center;">We help you find your lost items!</h3>
 
 
-<p align="center">
+<p align="center" style="text-align: center;">
  <a href="#about">About</a> •
  <a href="#features">Features</a> •
  <a href="#how-it-works">How it works</a> • 
@@ -50,6 +50,7 @@ Before you begin, you will need to have the following tools installed on your ma
 - [Git](https://git-scm.com)
 - [Node.js](https://nodejs.org/en/) v14.21.3
 - [Java](https://www.oracle.com/java/technologies/downloads/) v17
+- [Docker](https://www.docker.com/products/docker-desktop/)
 
 ### Preferred IDE
 - Frontend - [VS Code](https://code.visualstudio.com/download)
@@ -81,23 +82,57 @@ $ npm run start
 # The application will open on the port: 3000 - go to http://localhost:3000
 ```
 
+#### Build and deploy web application using docker
+
+```bash
+# Create docker image of frontend application
+$ docker build -t <your_dockerhub_username>/lost-and-found:latest-fe -f ./frontend/LostAndFound/Dockerfile ./frontend/LostAndFound    
+
+# Push the docker image to Docker hub.
+$ docker push lost-and-found:latest-fe
+
+# Pull the docker image from Docker hub to your server.
+$ docker pull docker.io/<your_dockerhub_username>/lost-and-found:latest-fe
+
+# Run the docker command to start the frontend application on your server.
+$ docker run -d -p 3000:3000 --name lost-and-found-frontend docker.io/<your_dockerhub_username>/lost-and-found:latest-fe
+
+```
+
 #### Running the springboot application (Backend)
 
 ```bash    
 
 # Access the project folder in your terminal
-$ cd your-project   
+$ cd Backend/LostAndFound  
 
 # Build the project    
 $ mvn clean install     
     
 # Run the Spring Boot application 
 $ mvn spring-boot:run    
+```
 
-# Access the application on [http://localhost:8080]
-  
+#### Build and deploy springboot application using docker
+
+```bash
+# Create docker image of backend application
+$ docker build -t <your_dockerhub_username>/lost-and-found:latest-be -f ./Backend/LostAndFound/Dockerfile ./Backend/LostAndFound    
+
+# Push the docker image to Docker hub.
+$ docker push lost-and-found:latest-be
+
+# Pull the docker image from Docker hub to your server.
+$ docker pull docker.io/<your_dockerhub_username>/lost-and-found:latest-be
+
+# Run the docker command to start the backend application on your server.
+$ docker run -d -p 8080:8080 --name lost-and-found-backend docker.io/<your_dockerhub_username>/lost-and-found:latest-be
+
   ```
+
+
 ---
+
 
 ## Tech Stack
 
@@ -166,105 +201,108 @@ The following tools were used in the construction of the project:
 
 ## User Scenarios
 
-1. Sign-up Screen
+1. **Sign-up Screen**
   ![Signup](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage19.png?alt=media&token=3fa8d262-9194-456b-892c-012b64ff603e)
   <span>
   <span>
-2. Login Screen
+2. **Login Screen**
    ![login](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage11.png?alt=media&token=c742bf48-2bd1-476a-8ee1-cd6ce59267d3)
   <span>
   <span>
 
-3. Verify Email before login
+3. **Verify Email before login**
    ![verify](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage11.png?alt=media&token=c742bf48-2bd1-476a-8ee1-cd6ce59267d3)
   <span>
   <span>
 
-4. Reset password
+4. **Reset password**
    ![reset](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage16.png?alt=media&token=a7e2b74d-d64e-4eb4-b361-569dce7e1ea5)
    
    ![emailreset](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage13.png?alt=media&token=abba4ca5-5e71-4433-b239-8cd8a756eb66)
    <span>
    <span>
-5. Home Screen
-   1. Found items posted by users
+5. **Home Screen**
+   1. **Found items posted by users**
     ![itemposted](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage20.png?alt=media&token=0c2d183a-9014-4ed4-92f5-907fae0f3646)
 
-   2. Apply filters (Below image shows filter applied using keyword)
+   2. **Apply filters (Below image shows filter applied using keyword)**
    ![filter](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage18.png?alt=media&token=52cb5c49-009b-4684-a4d3-f7f6135080ad)
    <span>
    <span>
-6. Report Lost Item
+6. **Report Lost Item**
    ![postlost](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage6.png?alt=media&token=dfc6a691-fdf5-442a-9bf7-f9dab501d6a7)
    <span>
    <span>
-7. Report Found Item
+7. **Report Found Item**
    ![founditem](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage9.png?alt=media&token=a0ce72a9-90f9-4778-ab44-2717c94cbaaa)
    <span>
    <span>
-8. Lost catalogue (List of items found by all users)
+8. **Lost catalogue (List of items found by all users)**
     ![catalogue](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage8.png?alt=media&token=8f7aafcb-a5a0-4f10-85ef-fcc0bab1b00a)
     <span>
    <span>
 
-9.  Raise claim request by linking your lost item
+9.  **Raise claim request by linking your lost item**
     ![claimlink](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage17.png?alt=media&token=90a7a152-9b04-42c1-b63b-fd576264d0b2)
     <span>
    <span>
 
-10. List of claim request received
-    1.  List of request received and can also filter based on status
+10. **List of claim request received**
+    1.  **List of request received and can also filter based on status**
         ![received](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage12.png?alt=media&token=35b86b00-f861-4dbe-b917-b5780819a02d)
-    2.  See the details of linked lost item
+    2.  **See the details of linked lost item**
       ![lostitem](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage5.png?alt=media&token=8cd5fa3c-7adf-48a9-8be9-af108b004289)
     <span>
    <span>
 
 
-11. Claim request raised (User can revoke request posted by them)
+11. **Claim request raised (User can revoke request posted by them)**
     ![raised](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage1.png?alt=media&token=6adcfaca-74e6-48e5-b037-3a6195294069)
     <span>
    <span>
 
-12. Chats 
-    1.  Chat with accepted users
+12. **Chats**
+    1.  **Chat with accepted users**
         ![approve](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage10.png?alt=media&token=912b8c0b-29a3-4b2c-84d7-b0553b28255d)
-    2.  Founder approve the user as owner after chatting
+    2.  **Founder approve the user as owner after chatting**
       ![approve](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage14.png?alt=media&token=8753b2ed-167f-441a-837d-42ae94fbbaae)
-    3.  Owner confirming the return of item
+    3.  **Owner confirming the return of item**
         ![return](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage15.png?alt=media&token=1038d1e1-6736-49f3-8c2f-2db889e53576)
 
         ![returnMsg](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage2.png?alt=media&token=1e089beb-bc82-48ab-8ce7-c7050e9cfd2e)
     <span>
    <span>
 
-13. Founder recieving reward
+13. **Founder recieving reward**
     ![rewards](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage7.png?alt=media&token=530e7679-af20-42fc-aa96-33b4d4343837)
     <span>
    <span>
+
+
 ---
+
 
 ## Contributors
 
-Meet the team behind the LostAndFound project:
+Meet the team behind the **Lost and Found** project:
 
 1. **Heramb Kulkarni**
    <img src="https://cdn-icons-png.flaticon.com/512/6711/6711567.png" alt="React" height="20"> **heramb.kulkarni@dal.ca**
-  <img src="https://icons.iconarchive.com/icons/limav/flat-gradient-social/512/Linkedin-icon.png" alt="React" height="20"> [Heramb Kulkarni](www.linkedin.com/in/heramb-kulkarni-8bb735193)
+  <img src="https://icons.iconarchive.com/icons/limav/flat-gradient-social/512/Linkedin-icon.png" alt="React" height="20"> [Heramb Kulkarni](https://www.linkedin.com/in/heramb-kulkarni-8bb735193)
 
-1. **Angel Christian**
+2. **Angel Christian**
    <img src="https://cdn-icons-png.flaticon.com/512/6711/6711567.png" alt="React" height="20"> **angel.christian@dal.ca**
   <img src="https://icons.iconarchive.com/icons/limav/flat-gradient-social/512/Linkedin-icon.png" alt="React" height="20"> [Angel Christian](https://www.linkedin.com/in/angel-christian25/)
 
-1. **Aman Desai**
+3. **Aman Desai**
    <img src="https://cdn-icons-png.flaticon.com/512/6711/6711567.png" alt="React" height="20"> **am839007@dal.ca**
   <img src="https://icons.iconarchive.com/icons/limav/flat-gradient-social/512/Linkedin-icon.png" alt="React" height="20"> [Aman Desai](https://www.linkedin.com/in/AmanDesai10/)
 
-1. **Harsh Mehta**
+4. **Harsh Mehta**
    <img src="https://cdn-icons-png.flaticon.com/512/6711/6711567.png" alt="React" height="20"> **hr699843@dal.ca**
-  <img src="https://icons.iconarchive.com/icons/limav/flat-gradient-social/512/Linkedin-icon.png" alt="React" height="20"> [Harsh Mehta](www.linkedin.com/in/heramb-kulkarni-8bb735193)
+  <img src="https://icons.iconarchive.com/icons/limav/flat-gradient-social/512/Linkedin-icon.png" alt="React" height="20"> [Harsh Mehta](https://www.linkedin.com/in/harsh-mehta-414628168/)
 
-1. **Tirth Bharatiya**
+5. **Tirth Bharatiya**
    <img src="https://cdn-icons-png.flaticon.com/512/6711/6711567.png" alt="React" height="20"> **tr608606@dal.ca**
   <img src="https://icons.iconarchive.com/icons/limav/flat-gradient-social/512/Linkedin-icon.png" alt="React" height="20"> [Tirth Bharatiya](https://www.linkedin.com/in/tirth1/)
 
