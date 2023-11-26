@@ -15,7 +15,8 @@
  <a href="#how-it-works">How it works</a> • 
  <a href="#tech-stack">Tech Stack</a> •  
  <a href="#user-scenarios">User Scenarios</a> •  
- <a href="#contributors">Contributors</a>
+ <a href="#contributors">Contributors</a> •
+ <a href="#test-coverage">Test Coverage</a>
  </p>
 
 ## About
@@ -230,43 +231,68 @@ The following tools were used in the construction of the project:
    <span>
    <span>
 6. **Report Lost Item**
+  User can report lost items by entering following details:
+   - Name of item
+   - Item Description
+   - Category
+   - Upload images/videos related to item
+   - Last seen location of item
+  Users can edit the details of posted lost items
    ![postlost](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage6.png?alt=media&token=dfc6a691-fdf5-442a-9bf7-f9dab501d6a7)
    <span>
    <span>
 7. **Report Found Item**
+   User can report found items by entering following details:
+   - Name of item
+   - Item Description
+   - Category
+   - Upload images/videos related to item
+   - Location at which item was found
+  
    ![founditem](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage9.png?alt=media&token=a0ce72a9-90f9-4778-ab44-2717c94cbaaa)
    <span>
    <span>
 8. **Lost catalogue (List of items found by all users)**
+    User can search found items by applying following filters:
+   - Keyword (Present in title and description)
+   - Date 
+   - Category 
+   - Location with radius
+ 
     ![catalogue](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage8.png?alt=media&token=8f7aafcb-a5a0-4f10-85ef-fcc0bab1b00a)
     <span>
    <span>
 
 9.  **Raise claim request by linking your lost item**
+   While raising claim request, user should linked the lost item posted by them, so that founder can verify authenticity of the request
+  
     ![claimlink](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage17.png?alt=media&token=90a7a152-9b04-42c1-b63b-fd576264d0b2)
     <span>
    <span>
 
-10. **List of claim request received**
-    1.  **List of request received and can also filter based on status**
+10.  **List of claim request received**
+    1.  **List of request received and user can also filter based on status (Requested, Accepted, Rejected)**
         ![received](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage12.png?alt=media&token=35b86b00-f861-4dbe-b917-b5780819a02d)
     2.  **See the details of linked lost item**
+        Based on the details of linked lost item, user can decide whether to approve or reject claim request
       ![lostitem](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage5.png?alt=media&token=8cd5fa3c-7adf-48a9-8be9-af108b004289)
     <span>
    <span>
 
 
-11. **Claim request raised (User can revoke request posted by them)**
+11. **List of Claim request raised**
+  User can revoke claim request posted by them
     ![raised](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage1.png?alt=media&token=6adcfaca-74e6-48e5-b037-3a6195294069)
     <span>
    <span>
 
 12. **Chats**
-    1.  **Chat with accepted users**
+    1.  **Users can only chat with users only if claim request is accepted**
         ![approve](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage10.png?alt=media&token=912b8c0b-29a3-4b2c-84d7-b0553b28255d)
-    2.  **Founder approve the user as owner after chatting**
+    2.  **Founder can approve the user as owner after chatting**
       ![approve](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage14.png?alt=media&token=8753b2ed-167f-441a-837d-42ae94fbbaae)
     3.  **Owner confirming the return of item**
+        Requested user can only see confirm return button, when founder approves the requester as owner
         ![return](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage15.png?alt=media&token=1038d1e1-6736-49f3-8c2f-2db889e53576)
 
         ![returnMsg](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage2.png?alt=media&token=1e089beb-bc82-48ab-8ce7-c7050e9cfd2e)
@@ -274,9 +300,25 @@ The following tools were used in the construction of the project:
    <span>
 
 13. **Founder receiving reward**
+    Once the owner confirms the return of item, founder will receive reward
     ![rewards](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage7.png?alt=media&token=530e7679-af20-42fc-aa96-33b4d4343837)
     <span>
    <span>
+
+
+---
+
+
+## Test Coverage
+
+
+
+- Class Coverage: 96% (24/25)
+- Method Coverage: 95% (134/141)
+- Line Coverage: 96% (353/367)
+
+![coverage-img](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Ftest_coverage.png?alt=media&token=f761e61f-a0b1-4c0f-b17d-07d131ebe802)
+
 
 
 ---
@@ -295,7 +337,7 @@ Meet the team behind the **Lost and Found** project:
   <img src="https://icons.iconarchive.com/icons/limav/flat-gradient-social/512/Linkedin-icon.png" alt="React" height="20"> [Angel Christian](https://www.linkedin.com/in/angel-christian25/)
 
 3. **Aman Desai**
-   <img src="https://cdn-icons-png.flaticon.com/512/6711/6711567.png" alt="React" height="20"> **am839007@dal.ca**
+   <img src="https://cdn-icons-png.flaticon.com/512/6711/6711567.png" alt="React" height="20"> **amandesai@dal.ca**
   <img src="https://icons.iconarchive.com/icons/limav/flat-gradient-social/512/Linkedin-icon.png" alt="React" height="20"> [Aman Desai](https://www.linkedin.com/in/AmanDesai10/)
 
 4. **Harsh Mehta**
