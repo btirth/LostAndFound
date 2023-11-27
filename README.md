@@ -1,6 +1,7 @@
-<h1 align="center" width="100%" style="text-align: center;">
-    <a href="http://172.17.0.80:3000/"><img alt="project" height=200px width="33%" title="#About" src="./frontend/lost-and-found/src/Assets/Images/LAF-logo.png" /></a>
+<center><h1 align="center">
+    <a href="http://172.17.0.80:3000/"><img alt="project" height=200px title="#About" src="./frontend/lost-and-found/src/Assets/Images/LAF-logo.png" /></a>
 </h1>
+</center>
 
 <h1 align="center" width="100%" style="text-align: center; color:green;">
   <a href="http://172.17.0.80:3000/"> Lost And Found </a>
