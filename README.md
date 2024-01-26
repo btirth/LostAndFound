@@ -269,21 +269,6 @@ The following tools were used in the construction of the project:
 ---
 
 
-## Test Coverage
-
-
-
-- Class Coverage: 96% (24/25)
-- Method Coverage: 95% (134/141)
-- Line Coverage: 96% (353/367)
-
-![coverage-img](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Ftest_coverage.png?alt=media&token=f761e61f-a0b1-4c0f-b17d-07d131ebe802)
-
-
-
----
-
-
 ## Contributors
 
 Meet the team behind the **Lost and Found** project:
