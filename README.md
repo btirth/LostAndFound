@@ -149,55 +149,6 @@ The following tools were used in the construction of the project:
 - A NoSQL database for storing and retrieving data.
 
 
-
-#### Dependencies
-
-##### Frontend
-
-- **@emotion/react**: ^11.11.1
-- **@emotion/styled**: ^11.11.0
-- **@mui/icons-material**: ^5.14.18
-- **@mui/material**: ^5.14.18
-- **@testing-library/jest-dom**: ^5.17.0
-- **@testing-library/react**: ^13.4.0
-- **@testing-library/user-event**: ^13.5.0
-- **axios**: ^1.5.1
-- **bootstrap-icons**: ^1.11.1
-- **cross-env**: ^7.0.3
-- **dotenv**: ^16.3.1
-- **firebase**: ^10.5.0
-- **leaflet**: 1.7.1
-- **leaflet-geosearch**: 3.2.1
-- **leaflet-search**: ^4.0.0
-- **lodash**: ^4.17.21
-- **react**: ^17.0.2
-- **react-bootstrap**: ^2.9.0
-- **react-bootstrap-icons**: ^1.10.3
-- **react-bootstrap-toggle**: ^2.3.2
-- **react-dom**: ^17.0.2
-- **react-footer-comp**: ^3.0.1
-- **react-icons**: ^4.11.0
-- **react-leaflet**: 3.1.0
-- **react-redux**: ^8.1.3
-- **react-router-dom**: ^5.3.4
-- **react-scripts**: 5.0.1
-- **react-scroll**: ^1.9.0
-- **react-toastify**: ^9.1.3
-- **redux**: ^4.2.1
-- **redux-thunk**: ^2.4.2
-- **uuid**: ^9.0.1
-- **validator**: ^13.11.0
-- **web-vitals**: ^2.1.4
-
-##### Backend
-
-- **Spring Boot Starter Parent Version**: 2.7.16
-- **Java Version**: 17
-- **Auth0 Spring Security API Version**: 1.5.2
-- **JUnit Jupiter API Version**: 5.10.1
-- **Spring Boot Starter Data MongoDB Version**: 3.1.4
-- **Lombok Version**: 1.18.30
-
 ---
 
 ## User Scenarios
@@ -337,24 +288,26 @@ The following tools were used in the construction of the project:
 
 Meet the team behind the **Lost and Found** project:
 
-1. **Heramb Kulkarni**
+1. **Tirth Bharatiya**
+   <img src="https://cdn-icons-png.flaticon.com/512/6711/6711567.png" alt="React" height="20"> **tirth@dal.ca**
+  <img src="https://icons.iconarchive.com/icons/limav/flat-gradient-social/512/Linkedin-icon.png" alt="React" height="20"> [Tirth Bharatiya](https://www.linkedin.com/in/tirth1/)
+
+2. **Heramb Kulkarni**
    <img src="https://cdn-icons-png.flaticon.com/512/6711/6711567.png" alt="React" height="20"> **heramb.kulkarni@dal.ca**
   <img src="https://icons.iconarchive.com/icons/limav/flat-gradient-social/512/Linkedin-icon.png" alt="React" height="20"> [Heramb Kulkarni](https://www.linkedin.com/in/heramb-kulkarni-8bb735193)
 
-2. **Angel Christian**
+3. **Angel Christian**
    <img src="https://cdn-icons-png.flaticon.com/512/6711/6711567.png" alt="React" height="20"> **angel.christian@dal.ca**
   <img src="https://icons.iconarchive.com/icons/limav/flat-gradient-social/512/Linkedin-icon.png" alt="React" height="20"> [Angel Christian](https://www.linkedin.com/in/angel-christian25/)
 
-3. **Aman Desai**
+4. **Aman Desai**
    <img src="https://cdn-icons-png.flaticon.com/512/6711/6711567.png" alt="React" height="20"> **amandesai@dal.ca**
   <img src="https://icons.iconarchive.com/icons/limav/flat-gradient-social/512/Linkedin-icon.png" alt="React" height="20"> [Aman Desai](https://www.linkedin.com/in/AmanDesai10/)
 
-4. **Harsh Mehta**
+5. **Harsh Mehta**
    <img src="https://cdn-icons-png.flaticon.com/512/6711/6711567.png" alt="React" height="20"> **hr699843@dal.ca**
   <img src="https://icons.iconarchive.com/icons/limav/flat-gradient-social/512/Linkedin-icon.png" alt="React" height="20"> [Harsh Mehta](https://www.linkedin.com/in/harsh-mehta-414628168/)
 
-5. **Tirth Bharatiya**
-   <img src="https://cdn-icons-png.flaticon.com/512/6711/6711567.png" alt="React" height="20"> **tr608606@dal.ca**
-  <img src="https://icons.iconarchive.com/icons/limav/flat-gradient-social/512/Linkedin-icon.png" alt="React" height="20"> [Tirth Bharatiya](https://www.linkedin.com/in/tirth1/)
+
 
 
