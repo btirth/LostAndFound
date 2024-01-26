@@ -15,8 +15,7 @@
  <a href="#how-it-works">How it works</a> • 
  <a href="#tech-stack">Tech Stack</a> •  
  <a href="#user-scenarios">User Scenarios</a> •  
- <a href="#contributors">Contributors</a> •
- <a href="#test-coverage">Test Coverage</a>
+ <a href="#contributors">Contributors</a>
  </p>
 
 ## About
