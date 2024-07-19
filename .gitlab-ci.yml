@@ -1,0 +1,255 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+stages:
+  - build
+  - deploy
+  - issue
+
+variables:
+  DOCKERHUB_IMAGE_PREFIX: "lostandfound12/lost-and-found"
+  DOCKER_TLS_CERTDIR: ""    
+  DOCKER_HOST: "tcp://docker:2375"
+
+maven-build:
+  image: maven:3-amazoncorretto-17
+  stage: build
+  only:
+    - dev
+    - main
+    - fix-pipeline
+  tags:
+    - deployment
+  script:
+    - cd Backend/LostAndFound
+    - mvn package -B
+  artifacts:
+    paths:
+      - Backend/LostAndFound/target/*.jar
+
+build-temp:
+  stage: build
+  tags:
+    - deployment
+  only:
+    - fix-pipeline
+  needs:
+    - maven-build
+  script:
+    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io
+    - docker build -t $DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA -f ./Backend/LostAndFound/Dockerfile ./Backend/LostAndFound
+    - docker push $DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA
+
+deploy-temp:
+  image: alpine:latest
+  stage: deploy
+  only:
+    - fix-pipeline
+  needs:
+    - build-temp
+  tags:
+    - deployment
+  script:
+    - echo $ID_RSA
+    - chmod og= $ID_RSA
+    - apk update && apk add openssh-client
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull docker.io/$DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f my-app || true"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p 8001:8080 --name my-app docker.io/$DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA"
+  environment:
+    name: temp
+    url: http://172.17.0.80:8001
+
+smells-job:
+  image: openjdk:17
+  stage: issue
+  tags:
+    - deployment
+  only:
+    - dev
+  script:
+    - mkdir smells/
+    - java -jar $CI_PROJECT_DIR/.gitlab/DesigniteJava.jar -i $CI_PROJECT_DIR -o $CI_PROJECT_DIR/smells/ -d
+  artifacts:
+    paths:
+      - smells/*.csv
+
+issue-job:
+  stage: issue
+  tags:
+    - deployment
+  only:
+    - dev
+  needs:
+    - smells-job
+  image: "python:3.10"
+  script:
+    - pip install -r $CI_PROJECT_DIR/.gitlab/requirements.txt
+    - python $CI_PROJECT_DIR/.gitlab/smellIssue.py $CI_COMMIT_SHA $GITLAB_USER_ID
+
+build-dev:
+  stage: build
+  tags:
+    - deployment
+  only:
+    - dev
+  needs:
+    - maven-build
+  script:
+    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io
+    - docker build -t $DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA -f ./Backend/LostAndFound/Dockerfile ./Backend/LostAndFound
+    - docker push $DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA
+
+deploy-dev:
+  image: alpine:latest
+  stage: deploy
+  only:
+    - dev
+  needs:
+    - build-dev
+  tags:
+    - deployment
+  script:
+    - chmod og= $ID_RSA
+    - apk update && apk add openssh-client
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull docker.io/$DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f my-app || true"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p 8080:8080 --name my-app docker.io/$DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA"
+  environment:
+    name: development
+    url: http://172.17.0.80:8080
+
+build-main:
+  stage: build
+  tags:
+    - deployment
+  only:
+    - main
+  needs:
+    - maven-build
+  script:
+    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io
+    - docker build -t $DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA -f ./Backend/LostAndFound/Dockerfile ./Backend/LostAndFound
+    - docker push $DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA
+
+deploy-main:
+  image: alpine:latest
+  stage: deploy
+  only:
+    - main
+  needs:
+    - build-main
+  tags:
+    - deployment
+  script:
+    - echo $ID_RSA
+    - chmod og= $ID_RSA
+    - apk update && apk add openssh-client
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull docker.io/$DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f my-app || true"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p 1701:8080 --name my-app docker.io/$DOCKERHUB_IMAGE_PREFIX:$CI_COMMIT_SHORT_SHA"
+  environment:
+    name: main
+    url: http://172.17.0.80:1701
+
+deploy-temp-fe:
+  image: alpine:latest
+  stage: deploy
+  only:
+    - fix-pipeline
+  needs:
+    - build-temp-fe
+  tags:
+    - deployment
+  script:
+    - echo $ID_RSA
+    - chmod og= $ID_RSA
+    - apk update && apk add openssh-client
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull docker.io/$DOCKERHUB_IMAGE_PREFIX:fe_$CI_COMMIT_SHORT_SHA"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f my-app-fe || true"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p 3002:3000 --name my-app-fe -e REACT_APP_ENV=temp docker.io/$DOCKERHUB_IMAGE_PREFIX:fe_$CI_COMMIT_SHORT_SHA"
+  environment:
+    name: temp-fe
+    url: http://172.17.0.80:3002
+
+build-temp-fe:
+  stage: build
+  tags:
+    - deployment
+  only:
+    - fix-pipeline
+  script:
+    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io
+    - docker build -t $DOCKERHUB_IMAGE_PREFIX:fe_$CI_COMMIT_SHORT_SHA -f ./frontend/lost-and-found/Dockerfile ./frontend/lost-and-found
+    - docker push $DOCKERHUB_IMAGE_PREFIX:fe_$CI_COMMIT_SHORT_SHA
+
+deploy-dev-fe:
+  image: alpine:latest
+  stage: deploy
+  only:
+    - dev
+  needs:
+    - build-dev-fe
+  tags:
+    - deployment
+  script:
+    - echo $ID_RSA
+    - chmod og= $ID_RSA
+    - apk update && apk add openssh-client
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull docker.io/$DOCKERHUB_IMAGE_PREFIX:fe_$CI_COMMIT_SHORT_SHA"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f my-app-fe || true"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p 3001:3000 --name my-app-fe -e REACT_APP_ENV=development docker.io/$DOCKERHUB_IMAGE_PREFIX:fe_$CI_COMMIT_SHORT_SHA"
+  environment:
+    name: development-fe
+    url: http://172.17.0.80:3001
+
+
+build-dev-fe:
+  stage: build
+  tags:
+    - deployment
+  only:
+    - dev
+  script:
+    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io
+    - docker build -t $DOCKERHUB_IMAGE_PREFIX:fe_$CI_COMMIT_SHORT_SHA -f ./frontend/lost-and-found/Dockerfile ./frontend/lost-and-found
+    - docker push $DOCKERHUB_IMAGE_PREFIX:fe_$CI_COMMIT_SHORT_SHA
+
+deploy-main-fe:
+  image: alpine:latest
+  stage: deploy
+  only:
+    - main
+  needs:
+    - build-main-fe
+  tags:
+    - deployment
+  script:
+    - echo $ID_RSA
+    - chmod og= $ID_RSA
+    - apk update && apk add openssh-client
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull docker.io/$DOCKERHUB_IMAGE_PREFIX:fe_$CI_COMMIT_SHORT_SHA"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f my-app-fe || true"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p 3000:3000 --name my-app-fe -e REACT_APP_ENV=production docker.io/$DOCKERHUB_IMAGE_PREFIX:fe_$CI_COMMIT_SHORT_SHA"
+  environment:
+    name: main-fe
+    url: http://172.17.0.80:3000
+
+build-main-fe:
+  stage: build
+  tags:
+    - deployment
+  only:
+    - main
+  script:
+    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io
+    - docker build -t $DOCKERHUB_IMAGE_PREFIX:fe_$CI_COMMIT_SHORT_SHA -f ./frontend/lost-and-found/Dockerfile ./frontend/lost-and-found
+    - docker push $DOCKERHUB_IMAGE_PREFIX:fe_$CI_COMMIT_SHORT_SHA
