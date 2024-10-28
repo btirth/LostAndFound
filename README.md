@@ -218,11 +218,9 @@ The following tools were used in the construction of the project:
       <span>
     1.  **Users can only chat with users only if claim request is accepted**
         ![approve](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage10.png?alt=media&token=912b8c0b-29a3-4b2c-84d7-b0553b28255d)
-      <span>
     2.  **Founder can approve the user as owner after chatting**
          
          ![approve](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage14.png?alt=media&token=8753b2ed-167f-441a-837d-42ae94fbbaae)
-      <span>
     3.  **Owner confirming the return of item**
          ***Requested user can only see confirm return button, when founder approves the requester as owner***
          
