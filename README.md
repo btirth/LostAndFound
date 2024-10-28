@@ -195,6 +195,7 @@ The following tools were used in the construction of the project:
    ![founditem](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage9.png?alt=media&token=a0ce72a9-90f9-4778-ab44-2717c94cbaaa)
    <span>
    <span>
+
 7.   **List of claim request received**
    <span>
     1.  **List of request received and user can also filter based on status (Requested, Accepted, Rejected)**
@@ -205,16 +206,22 @@ The following tools were used in the construction of the project:
       ![lostitem](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage5.png?alt=media&token=8cd5fa3c-7adf-48a9-8be9-af108b004289)
     <span>
    <span>
+
 8.  **List of Claim request raised**
-  User can revoke claim request posted by them
+      <span>
+      User can revoke claim request posted by them
     ![raised](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage1.png?alt=media&token=6adcfaca-74e6-48e5-b037-3a6195294069)
     <span>
    <span>
+
 9.  **Chats**
+   <span>
     1.  **Users can only chat with users only if claim request is accepted**
         ![approve](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage10.png?alt=media&token=912b8c0b-29a3-4b2c-84d7-b0553b28255d)
+    <span>
     2.  **Founder can approve the user as owner after chatting**
       ![approve](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage14.png?alt=media&token=8753b2ed-167f-441a-837d-42ae94fbbaae)
+    <span>
     3.  **Owner confirming the return of item**
         <span>
         Requested user can only see confirm return button, when founder approves the requester as owner
@@ -223,6 +230,7 @@ The following tools were used in the construction of the project:
         ![returnMsg](https://firebasestorage.googleapis.com/v0/b/lostnfound-7c21c.appspot.com/o/github-readme%2Fimage2.png?alt=media&token=1e089beb-bc82-48ab-8ce7-c7050e9cfd2e)
     <span>
    <span>
+   
 10.  **Receive reward**
     <span>
     Once the owner confirms the return of item, founder will receive reward
