@@ -6,15 +6,14 @@
   <a href="http://172.17.0.80:3000/"> Lost And Found </a>
 </h1>
 
-<h3 align="center" width="100%" style="text-align: center;">We help you find your lost items!</h3>
+<h3 align="center" width="100%" style="text-align: center;">Upload • Claim • Reunit</h3>
 
 
 <p align="center" width="100%" style="text-align: center;">
  <a href="#about">About</a> •
  <a href="#features">Features</a> •
  <a href="#how-it-works">How it works</a> • 
- <a href="#tech-stack">Tech Stack</a> •  
- <a href="#user-scenarios">User Scenarios</a> •  
+ <a href="#tech-stack">Tech Stack</a> 
  </p>
 
 ## About
