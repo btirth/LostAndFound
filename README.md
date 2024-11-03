@@ -58,16 +58,13 @@ Before you begin, you will need to have the following tools installed on your ma
 #### Cloning project
 
 ```bash
-
 # Clone this repository
 $ git clone https://git.cs.dal.ca/courses/2023-fall/csci-5308/Group07
-
 ```
 
 #### Running the web application (Frontend)
 
 ```bash
-
 # Access the project folder in your terminal
 $ cd frontend/lost-and-found
 
@@ -94,13 +91,11 @@ $ docker pull docker.io/<your_dockerhub_username>/lost-and-found:latest-fe
 
 # Run the docker command to start the frontend application on your server.
 $ docker run -d -p 3000:3000 --name lost-and-found-frontend docker.io/<your_dockerhub_username>/lost-and-found:latest-fe
-
 ```
 
 #### Running the springboot application (Backend)
 
 ```bash    
-
 # Access the project folder in your terminal
 $ cd Backend/LostAndFound  
 
@@ -125,8 +120,7 @@ $ docker pull docker.io/<your_dockerhub_username>/lost-and-found:latest-be
 
 # Run the docker command to start the backend application on your server.
 $ docker run -d -p 8080:8080 --name lost-and-found-backend docker.io/<your_dockerhub_username>/lost-and-found:latest-be
-
-  ```
+```
 
 
 ---
